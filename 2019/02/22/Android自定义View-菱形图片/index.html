@@ -6,15 +6,26 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | Hexo</title>
+  <title>Android自定义View_菱形图片 | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="###前言在实际项目中，用户头像，音乐专辑都有可能用到圆形，菱形等无规则图像，需要自己自定义View实现相应的功能。 ###思路 需求：制作圆角菱形的图片思路：1、绘制出圆角矩形的遮罩层；2、将矩形旋转45°；3、使用画笔的PorterDuffXfermode的SRC_IN属性；4、将图片绘制遮罩层上。 ###PorterDuffXfermodePorterDuffXfermode在网上有许多讲">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android自定义View_菱形图片">
+<meta property="og:url" content="http://yoursite.com/2019/02/22/Android自定义View-菱形图片/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="###前言在实际项目中，用户头像，音乐专辑都有可能用到圆形，菱形等无规则图像，需要自己自定义View实现相应的功能。 ###思路 需求：制作圆角菱形的图片思路：1、绘制出圆角矩形的遮罩层；2、将矩形旋转45°；3、使用画笔的PorterDuffXfermode的SRC_IN属性；4、将图片绘制遮罩层上。 ###PorterDuffXfermodePorterDuffXfermode在网上有许多讲">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-5b6a8c54d9c86354.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-89f73bd147a9220f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-8f3259998c348c72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-25d6ac45a33dc23e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-4f515fffe7c917d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-f4311811772c0b30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:updated_time" content="2019-02-22T14:48:34.020Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Hexo">
+<meta name="twitter:title" content="Android自定义View_菱形图片">
+<meta name="twitter:description" content="###前言在实际项目中，用户头像，音乐专辑都有可能用到圆形，菱形等无规则图像，需要自己自定义View实现相应的功能。 ###思路 需求：制作圆角菱形的图片思路：1、绘制出圆角矩形的遮罩层；2、将矩形旋转45°；3、使用画笔的PorterDuffXfermode的SRC_IN属性；4、将图片绘制遮罩层上。 ###PorterDuffXfermodePorterDuffXfermode在网上有许多讲">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3585491-5b6a8c54d9c86354.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -150,103 +161,170 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
+            <article id="post-Android自定义View-菱形图片" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
   
+    <h1 class="article-title" itemprop="name">
+      Android自定义View_菱形图片
+    </h1>
   
-    
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/22/Android自定义View-菱形图片/" class="archive-article-date">
+
+        
+        <a href="/2019/02/22/Android自定义View-菱形图片/" class="archive-article-date">
   	<time datetime="2019-02-22T14:47:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
 </a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/22/Android自定义View-菱形图片/">Android自定义View_菱形图片</a>
-    </h1>
-  
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="https://upload-images.jianshu.io/upload_images/3585491-5b6a8c54d9c86354.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="自定义菱形图片.png"></p>
+<p>###前言<br>在实际项目中，用户头像，音乐专辑都有可能用到圆形，菱形等无规则图像，需要自己自定义View实现相应的功能。</p>
+<p>###思路</p>
+<p>需求：制作圆角菱形的图片<br>思路：<br>1、绘制出圆角矩形的遮罩层；<br>2、将矩形旋转45°；<br>3、使用画笔的PorterDuffXfermode的SRC_IN属性；<br>4、将图片绘制遮罩层上。</p>
+<p>###PorterDuffXfermode<br>PorterDuffXfermode在网上有许多讲解它的文章，这里只讲解最常用的两种模式SRC_IN和DST_IN。<br><strong>SRC_IN</strong>：【本文所用的模式】显示底层图像和上方图像的相交区域，且<strong><em>显示的是上方图像</em></strong>。如图所示，先绘制出黄色的底层图像，再绘制出蓝色的图像，设置的模式为SRC_IN，则显示的是两张图像相交的扇形区域，且为上层蓝色图像。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-89f73bd147a9220f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Picture.png"><img src="https://upload-images.jianshu.io/upload_images/3585491-8f3259998c348c72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="SRC_IN.png"><br><strong>DST_IN</strong>：显示底层图像和上方图像的相交区域，且<strong><em>显示的是底层图像</em></strong>。如图所示，先绘制出黄色的底层图像，再绘制出蓝色的图像，设置的模式为DST_IN，则显示的是两张图像相交的扇形区域，且为底层黄色图像。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-25d6ac45a33dc23e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DST_IN.png"></p>
+<p>###实现<br>1、根据图片的大小绘制出圆角矩形的遮罩层；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//        创建图片</span></span><br><span class="line">        mImageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture);</span><br><span class="line"><span class="comment">//        获取图片的宽高</span></span><br><span class="line">        mWidth = mImageBitmap.getWidth();</span><br><span class="line">        mHeight = mImageBitmap.getHeight();</span><br><span class="line">        mMaskBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);</span><br><span class="line">        Canvas maskCanvas = <span class="keyword">new</span> Canvas(mMaskBitmap);</span><br><span class="line"></span><br><span class="line">        mPaint = <span class="keyword">new</span> Paint();</span><br><span class="line">        mPaint.setColor(Color.YELLOW);</span><br><span class="line">        mPaint.setAntiAlias(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//        画布先平移后旋转</span></span><br><span class="line">        maskCanvas.translate(mWidth / <span class="number">2</span>, <span class="number">0</span>);</span><br><span class="line">        maskCanvas.rotate(<span class="number">45</span>);</span><br><span class="line">        <span class="keyword">int</span> rectSize = (<span class="keyword">int</span>) (mWidth / <span class="number">2</span> / Math.sin(Math.toRadians(<span class="number">45</span>)));</span><br><span class="line"><span class="comment">//        绘制圆角矩形</span></span><br><span class="line">        maskCanvas.drawRoundRect(<span class="number">0</span>, <span class="number">0</span>, rectSize, rectSize, <span class="number">50</span>, <span class="number">50</span>, mPaint);</span><br></pre></td></tr></table></figure></p>
+<p>2、设置两张图像的显示模式为SRC_IN;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));</span><br></pre></td></tr></table></figure></p>
+<p>3、这里需要注意的是因为使用的是同一个画布Canvas，在绘制圆角矩形时已经将画布旋转45°并且平移，这里就需要将画布旋转平移回到初始状态，不然图片就会跟着旋转，就会如下图所示。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-4f515fffe7c917d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="RotatePicture.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//        画布先旋转后平移，防止图片也跟着旋转</span><br><span class="line">        maskCanvas.rotate(-45);</span><br><span class="line">        maskCanvas.translate(-mWidth / 2, 0);</span><br></pre></td></tr></table></figure></p>
+<p>4、绘制上层图片<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maskCanvas.drawBitmap(mImageBitmap, 0, 0, mPaint);</span><br></pre></td></tr></table></figure></p>
+<p>5、最后在onDraw方法中绘制出最后的图片；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;</span><br><span class="line">        canvas.drawBitmap(getBitmap(), 0, 0, null);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>###总结<br>设计无规则图形，方法大同小异，可使用PorterDuffXfermode的不同模式实现不同的效果。需要注意的是由于底层和上层的图像都是同一个Canvas绘制，绘制底层时已经改变了方向，后面绘制上层时需要回复到初始状态。另外也可以另写方法创建新的Canvas绘制上层图像，就不必恢复。</p>
+<hr>
+<p><strong><em>源码</em></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">public class CustomDiamondImage extends View &#123;</span><br><span class="line">    private Paint mPaint;</span><br><span class="line"></span><br><span class="line">    private int mWidth;</span><br><span class="line">    private int mHeight;</span><br><span class="line">    private Bitmap mMaskBitmap;</span><br><span class="line">    private Bitmap mImageBitmap;</span><br><span class="line"></span><br><span class="line">    public CustomDiamondImage(Context context) &#123;</span><br><span class="line">        super(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public CustomDiamondImage(Context context, AttributeSet attrs) &#123;</span><br><span class="line">        super(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;</span><br><span class="line">        canvas.drawBitmap(getBitmap(), 0, 0, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Bitmap getBitmap() &#123;</span><br><span class="line">//        创建图片</span><br><span class="line">        mImageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture);</span><br><span class="line">//        获取图片的宽高</span><br><span class="line">        mWidth = mImageBitmap.getWidth();</span><br><span class="line">        mHeight = mImageBitmap.getHeight();</span><br><span class="line">        mMaskBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);</span><br><span class="line">        Canvas maskCanvas = new Canvas(mMaskBitmap);</span><br><span class="line"></span><br><span class="line">        mPaint = new Paint();</span><br><span class="line">        mPaint.setColor(Color.YELLOW);</span><br><span class="line">        mPaint.setAntiAlias(true);</span><br><span class="line">//        画布先平移后旋转</span><br><span class="line">        maskCanvas.translate(mWidth / 2, 0);</span><br><span class="line">        maskCanvas.rotate(45);</span><br><span class="line">        int rectSize = (int) (mWidth / 2 / Math.sin(Math.toRadians(45)));</span><br><span class="line">//        绘制圆角矩形</span><br><span class="line">        maskCanvas.drawRoundRect(0, 0, rectSize, rectSize, 50, 50, mPaint);</span><br><span class="line">//        设置混合显示模式为SRC_IN</span><br><span class="line">        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));</span><br><span class="line">//        画布先旋转后平移，防止图片也跟着旋转</span><br><span class="line">        maskCanvas.rotate(-45);</span><br><span class="line">        maskCanvas.translate(-mWidth / 2, 0);</span><br><span class="line">        maskCanvas.drawBitmap(mImageBitmap, 0, 0, mPaint);</span><br><span class="line"></span><br><span class="line">        return mMaskBitmap;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>欢迎关注我的公众号:小猿说，大家一起学习交流。<br><img src="http://upload-images.jianshu.io/upload_images/3585491-f4311811772c0b30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="公众号"></p>
 
-        <div class="article-info info-on-right">
-          
-          
+      
 
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+      
+
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
+        </div>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/02/22/Android自定义View-菱形图片/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/22/Test/" class="archive-article-date">
-  	<time datetime="2019-02-22T14:45:16.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/02/22/Test/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Test</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/22/Test/">Test</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/21/hello-world/" class="archive-article-date">
-  	<time datetime="2019-02-21T13:32:26.381Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-21</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/21/hello-world/">Hello World</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
 
 
           </div>
@@ -269,8 +347,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
