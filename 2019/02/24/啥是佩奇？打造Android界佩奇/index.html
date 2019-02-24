@@ -6,15 +6,23 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives | 为未来</title>
+  <title>啥是佩奇？打造Android界佩奇 | 为未来</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="为未来">
-<meta property="og:url" content="http://yoursite.com/archives/index.html">
+  <meta name="description" content="利用PathMeasure，贝塞尔曲线绘制小猪佩奇">
+<meta name="keywords" content="自定义View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="啥是佩奇？打造Android界佩奇">
+<meta property="og:url" content="http://yoursite.com/2019/02/24/啥是佩奇？打造Android界佩奇/index.html">
 <meta property="og:site_name" content="为未来">
+<meta property="og:description" content="利用PathMeasure，贝塞尔曲线绘制小猪佩奇">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-60584fa3717a0ef6.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-de19d36846896995.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-02-24T02:13:59.934Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="为未来">
+<meta name="twitter:title" content="啥是佩奇？打造Android界佩奇">
+<meta name="twitter:description" content="利用PathMeasure，贝塞尔曲线绘制小猪佩奇">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3585491-60584fa3717a0ef6.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
   
     <link rel="alternative" href="/atom.xml" title="为未来" type="application/atom+xml">
   
@@ -150,36 +158,70 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-啥是佩奇？打造Android界佩奇" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/24/啥是佩奇？打造Android界佩奇/" class="archive-article-date">
-  	<time datetime="2019-02-24T02:10:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-24</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/24/啥是佩奇？打造Android界佩奇/">啥是佩奇？打造Android界佩奇</a>
+    <h1 class="article-title" itemprop="name">
+      啥是佩奇？打造Android界佩奇
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/02/24/啥是佩奇？打造Android界佩奇/" class="archive-article-date">
+  	<time datetime="2019-02-24T02:10:43.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-24</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h3><p>前段时间被“啥是佩奇”短片感动了一把，在网络上也掀起了一阵热潮，老爷子用自己的焊铁技术为孩子打造了别样的佩奇，今天用我那浅薄的知识打造Android佩奇。<br>&lt;–!more–&gt;<br><img src="http://upload-images.jianshu.io/upload_images/3585491-60584fa3717a0ef6.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="pig奇"></p>
+<h3 id="二、思路"><a href="#二、思路" class="headerlink" title="二、思路:"></a>二、思路:</h3><p>1、将佩奇分为鼻子，眼睛，嘴巴等相应的部位；<br>2、根据各个部位判断使用贝塞尔曲线还是运用canvas直接绘制图形。因为后面需要实现绘制的动态效果，则这里绘制图形时使用path绘制。<br>3、使用贝塞尔曲线绘制佩奇整个身体，耳朵和嘴巴，确定曲线的开始点和控制点；<br>4、使用PathMeasure的getLength,getSegment等方法实现每个部位的动态绘制。</p>
+<p>###三、知识点PathMeasure<br><strong>PathMeasure（Path path，boolean forceClosed）：</strong>表示创建与指定路径对象（已创建和指定）关联的PathMeasure对象。</p>
+<blockquote>
+<p><strong><em>参数</em></strong><br><strong>path：</strong>已绘制路径；<br><strong>forceClosed：</strong>如果为true，表示路径为闭合状态，即使路径未明确关闭，路径也将被视为“已关闭”。<br><strong><em>方法</em></strong><br><strong>getLength（）：</strong>获取path的总长度，如果没有路径就返回0；<br><strong>getSegment（float startD， float stopD，Path dst，boolean startWithMoveTo）：</strong>传入起始位置startD和结束位置stopD，在dst中返回startD和stopD中间的路径。如果startWithMoveTo为true，则使用moveTo开始片段。<br><strong>setPath（Path path， boolean forceClosed）：</strong>将path与PathMeasure 进行关联。</p>
+</blockquote>
+<p>上述为本文所使用的方法，PathMeasure其他详细方法可参照官方文档<a href="https://developer.android.google.cn/reference/android/graphics/PathMeasure" target="_blank" rel="noopener">PathMeasure</a>。</p>
+<h3 id="四、实现"><a href="#四、实现" class="headerlink" title="四、实现"></a>四、实现</h3><p>1、初始化画笔，佩奇出了眼睛和眼珠的颜色不同外，其他部位都用粉红色画笔绘制，这里定义了三种画笔；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">private void initPaint() &#123;</span><br><span class="line">       mPaint = new Paint();</span><br><span class="line">       mPaint.setColor(Color.parseColor(&quot;#FF69B4&quot;));</span><br><span class="line">       mPaint.setStyle(Paint.Style.STROKE);</span><br><span class="line">       mPaint.setStrokeWidth(6);</span><br><span class="line">       mPaint.setAntiAlias(true);</span><br><span class="line"></span><br><span class="line">       mEyePaint = new Paint();</span><br><span class="line">       mEyePaint.setColor(Color.parseColor(&quot;#F0F8FF&quot;));</span><br><span class="line">       mEyePaint.setAntiAlias(true);</span><br><span class="line"></span><br><span class="line">       mEyeBallPaint = new Paint();</span><br><span class="line">       mEyeBallPaint.setColor(Color.BLACK);</span><br><span class="line">       mEyeBallPaint.setAntiAlias(true);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、绘制佩奇外壳，佩奇身体呈弧形状，则需要运用到二阶和三阶贝塞尔曲线，利用贝塞尔曲线的数学公式大致确定出绘制起始位置，控制点和结束点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private void drawShell(Canvas canvas) &#123;</span><br><span class="line">        Path shellPath = new Path();</span><br><span class="line">        shellPath.moveTo(200, 100 - mRadius);</span><br><span class="line">//三阶贝塞尔曲线，设置两个控制点。</span><br><span class="line">        shellPath.cubicTo(800, 100 - mRadius, 1000, 600, 600, 700);</span><br><span class="line">        shellPath.cubicTo(300, 700, 300, 280, 350, 250);</span><br><span class="line">//两阶贝塞尔曲线，设置一个控制点。</span><br><span class="line">        shellPath.quadTo(200, 210, 200, 100 + mRadius);</span><br><span class="line"></span><br><span class="line">        drawAll(canvas,shellPath);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>3、依据各个位置点绘制出曲线后，PathMeasure和曲线路径进行关联，依据PathMeasure的getSegment方法，随着停止位置的不断增加，获取到的路径片段也在不停的增长，也就实现了路径绘制的动态效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> private void drawAll(Canvas canvas, Path path) &#123;</span><br><span class="line">        Path dst = new Path();</span><br><span class="line">//创建新的带有已绘制好的路径的PathMeasure</span><br><span class="line">        mPathMeasure = new PathMeasure(path, false);</span><br><span class="line">//获取路径的总长度</span><br><span class="line">        mLength = mPathMeasure.getLength();</span><br><span class="line">//获取起始位置到停止位置中的片段</span><br><span class="line">        mPathMeasure.getSegment(0, mStop, dst, true);</span><br><span class="line">//开始绘制</span><br><span class="line">        canvas.drawPath(dst, mPaint);</span><br><span class="line">//停止位置不断增加，路径就会不断绘制</span><br><span class="line">        if (mStop &lt; mLength) &#123;</span><br><span class="line">            mStop += mLength / 400;</span><br><span class="line">            invalidate();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>4、使用相同的手法先绘制出耳朵，鼻子和嘴巴的路径，然后按照上述PathMeasure的过程依次获取片段实现，详细代码见六。</p>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><p>小猪佩奇的绘制需要耐心，其中身体部分涉及到贝塞尔曲线，需要数学来计算，后期需要加强对公式的了解，PathMeasure的方法有很多，在实现绘制路径的动态效果上层出不穷，例如绘制无规则形状的进度条，随手势滑动绘制出随意的线条等等。后续加强对PathMeasure其他方法的使用。</p>
+<h3 id="六、项目地址"><a href="#六、项目地址" class="headerlink" title="六、项目地址"></a>六、项目地址</h3><p><a href="https://github.com/fuusy/PigDraw" target="_blank" rel="noopener">项目地址：https://github.com/fuusy/PigDraw</a></p>
+<hr>
+<p>欢迎关注我的公众号：小猿说，大家一起交流学习！感谢！<br><img src="https://upload-images.jianshu.io/upload_images/3585491-de19d36846896995.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="公众号"></p>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i>谢谢你请我吃糖果<i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -191,46 +233,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/02/24/啥是佩奇？打造Android界佩奇/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/02/22/Android自定义View-菱形图片/" class="archive-article-date">
-  	<time datetime="2019-02-22T14:47:39.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-02-22</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/02/22/Android自定义View-菱形图片/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">Android自定义View_菱形图片</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/02/22/Android自定义View-菱形图片/">Android自定义View_菱形图片</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
   
 
-    
+  
+
+  
 
 
           </div>
@@ -253,8 +355,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
