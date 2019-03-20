@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://yoursite.com">
   <title>Android自定义View_BitmapShader实现望远镜效果 | 为未来</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+  <meta name="description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。  二、知识点BitmapShader 【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。  简单来说，Shader可">
 <meta name="keywords" content="自定义View">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android自定义View_BitmapShader实现望远镜效果">
 <meta property="og:url" content="http://yoursite.com/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/index.html">
 <meta property="og:site_name" content="为未来">
-<meta property="og:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+<meta property="og:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。  二、知识点BitmapShader 【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。  简单来说，Shader可">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-03-06T15:13:45.686Z">
+<meta property="og:updated_time" content="2019-03-20T13:41:57.753Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android自定义View_BitmapShader实现望远镜效果">
-<meta name="twitter:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+<meta name="twitter:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。  二、知识点BitmapShader 【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。  简单来说，Shader可">
 <meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
   
     <link rel="alternative" href="/atom.xml" title="为未来" type="application/atom+xml">
@@ -174,10 +174,12 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
+        <a id="more"></a>
+<blockquote>
 <p>日拱一卒，功不唐捐</p>
 </blockquote>
-<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。<br><a id="more"></a><br><img src="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Telescope"></p>
+<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Telescope"></p>
 <h3 id="二、知识点BitmapShader"><a href="#二、知识点BitmapShader" class="headerlink" title="二、知识点BitmapShader"></a>二、知识点BitmapShader</h3><blockquote>
 <p>【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。</p>
 </blockquote>

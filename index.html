@@ -168,13 +168,46 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
+        <a id="more"></a>
+<blockquote>
 <p> 好记性不如烂笔头，记录发现问题</p>
 </blockquote>
-<h3 id="一、正常情况下的生命周期"><a href="#一、正常情况下的生命周期" class="headerlink" title="一、正常情况下的生命周期"></a>一、正常情况下的生命周期</h3>
-        
-          <a class="article-more-a" href="/2019/03/20/Android艺术开发探索-重点提炼一：Activity/#more">more >></a>
-        
+<h3 id="一、正常情况下的生命周期"><a href="#一、正常情况下的生命周期" class="headerlink" title="一、正常情况下的生命周期"></a>一、正常情况下的生命周期</h3><p><img src="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="activity_lifecycle.png"></p>
+<ul>
+<li>onCreate（）：表示Activity正在被创建</li>
+<li>onRestart（）：表示Activity正在重新启动</li>
+<li>onStart（）：Activity正在被启动，Activity可见却还没出现在前台。</li>
+<li>onResume（）：Activity已经可见，并且出现在前台。</li>
+<li>onPause（）：Activity正在停止。</li>
+<li>onStop（）：Activity即将停止。</li>
+<li>onDestroy（）：Activity即将被销毁。<blockquote>
+<p><strong>问题一：onStart和onResume、onPause和onStop的描述差不多，他们有何区别？</strong><br>onStart和onStop是从Activity是否可见这个角度来回调，onResume和onPause是从Activity是否出现在前台的角度回调的。即onStart表示Activity可见却还没出现在前台，onResume表示已经位于前台，可以和用户交互。onPause则表示Activity不位于前台，但是还可见，onStop表示已经从前台消失，不可见了。</p>
+</blockquote>
+</li>
+</ul>
+<p>上图所示，正常情况下的生命周期如下：<br>1、第一次启动onCreate -&gt; onStart -&gt; onResume.<br>2、用户打开新的Activity或者切换到桌面时：onPause -&gt; onStop。如果新的Activity为透明时不会回调onStop。<br>3、用户回到原来的Activity：onRestart -&gt; onStart -&gt;onResume。<br>4、用户back回退时：onPause -&gt; onStop -&gt; onDestroy。</p>
+<blockquote>
+<p>注：onPause中不能做重量级的操作，如耗时操作，因为在打开新的Activity时，旧的Activity的onPause执行完，新的Activity才能onResume。</p>
+</blockquote>
+<h3 id="二、异常情况下的生命周期"><a href="#二、异常情况下的生命周期" class="headerlink" title="二、异常情况下的生命周期"></a>二、异常情况下的生命周期</h3><h4 id="2-1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）"><a href="#2-1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）" class="headerlink" title="2.1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）"></a>2.1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）</h4><p>Activity在异常情况下被终止，系统会调用onSaveInstanceState方法（onStop被调用之前）来保存当前的状态。保存后，Activity在被重新创建的时候，系统会调用onRestoreInstanceState（onStart被调用之后）把onSaveInstanceState所保存的Bundle对象作为参数传给onRestoreInstanceState和onCreate方法，那么就可以取出之前的数据并恢复。</p>
+<h4 id="2-2、内存不足优先级低的Activity被销毁"><a href="#2-2、内存不足优先级低的Activity被销毁" class="headerlink" title="2.2、内存不足优先级低的Activity被销毁"></a>2.2、内存不足优先级低的Activity被销毁</h4><p>这类异常情况的数据存储和数据恢复与上面2.1相同。Activity优先级排序：<br>前台Activity &gt; 可见但非前台Activity &gt; 后台Activity</p>
+<blockquote>
+<p><strong>问题二：如何保证后台工作不那么容易被杀死？</strong><br> 将后台的工作放到Service中，保证进程有一定的优先级。</p>
+</blockquote>
+<blockquote>
+<p><strong>问题三：如何保证Activity在系统配置发生改变后不重新创建？</strong><br>给Activity指定configChanges属性。如不想Activity在屏幕旋转的时候重建，就可以给configChanges添加orientation属性值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;  &lt;activity android:name=&quot;.MainActivity&quot;</span><br><span class="line">   &gt;         android:configChanges=&quot;orientation&quot;&gt;</span><br><span class="line">    &gt;        &lt;intent-filter&gt;</span><br><span class="line">   &gt;             &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;</span><br><span class="line">    &gt;            &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;</span><br><span class="line">      &gt;      &lt;/intent-filter&gt;</span><br><span class="line">      &gt;  &lt;/activity&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="三、Activity的启动模式"><a href="#三、Activity的启动模式" class="headerlink" title="三、Activity的启动模式"></a>三、Activity的启动模式</h3><h4 id="3-1、LunchMode"><a href="#3-1、LunchMode" class="headerlink" title="3.1、LunchMode"></a>3.1、LunchMode</h4><ul>
+<li><strong>standard</strong>：标准模式，也是系统的默认模式，每次启动Activity都会创建一个实例，不管这个实例是否存在。</li>
+<li><strong>singleTop</strong>：栈顶复用模式，第一种情况如果新的Activity位于栈顶，那么Activity不会被重新创建，<strong>同时他的onNewIntent会被回调</strong>。第二种情况如果Activity的实例已经存在在任务栈中，但不是位于栈顶，那么Activity还是会被重新创建。</li>
+<li><strong>singleTask</strong>：栈内复用，只要Activity在任务栈中，那么不管启动多少次Activity都不会被重建实例，系统也会<strong>回调onNewIntent方法</strong>。如果没有任务栈，就先创建一个栈然后创建Activity的实例并放入栈中。如果存在任务栈，但是Activity的实例不在栈中，则需要创建实例并压入栈中；如果Activity的实例存在，那么就会把实例调到栈顶，并调用他的onNewIntent方法。<br><strong>另外值得注意的是，singleTask模式默认具有clearTop的效果，打个比方，当前任务栈有ABCD四个实例，A在栈底，D在栈顶，如果启动B，会把B调到栈顶并调用onNewIntent方法，同时会导致CD全部出栈。</strong></li>
+<li><strong>singeInstance</strong>：单实例模式，具有singleTask模式的所有特性，另外就是这种模式的Activity只能单独的位于一个任务栈中。<h4 id="3-2、主要的Flags"><a href="#3-2、主要的Flags" class="headerlink" title="3.2、主要的Flags"></a>3.2、主要的Flags</h4></li>
+<li>FLAG_ACTIVITY_NEW_TASK：为Activity指定singleTask模式。</li>
+<li>FLAG_ACTIVITY_SINGLE_TOP：为Activity指定singleTop模式。</li>
+<li>FLAG_ACTIVITY_CLEAR_TOP：具有此标记的Activity，当它启动时，在同一任务栈所有位于它上面的Activity都要出栈。</li>
+<li>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS：具有这个标记的Activity不会出现在历史Activity的列表中。</li>
+</ul>
+
       
 
       
@@ -247,17 +280,40 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
+        <a id="more"></a>
+<blockquote>
 <p>怕什么真理无穷 进一寸有进一寸的欢喜</p>
 </blockquote>
-<p>在实际项目的开发中，View的事件分发机制起到了很重要的作用，尤其是遇到不按常理出牌的产品经理的时候，没事给你一个嵌套，没事再给你加个嵌套，那么事件分发就显得尤为重要。对于经常打交道的滑动冲突，了解了View事件分发的原理，也就可以很容易的解决。实践出真知，我们从一个Demo出发，通过Log的形式分析View是如何将事件分发的，又是如何拦截并作出相应处理的。<br>
-        
-          <a class="article-more-a" href="/2019/03/12/从Log中看View的事件分发机制/#more">more >></a>
-        
+<p>在实际项目的开发中，View的事件分发机制起到了很重要的作用，尤其是遇到不按常理出牌的产品经理的时候，没事给你一个嵌套，没事再给你加个嵌套，那么事件分发就显得尤为重要。对于经常打交道的滑动冲突，了解了View事件分发的原理，也就可以很容易的解决。实践出真知，我们从一个Demo出发，通过Log的形式分析View是如何将事件分发的，又是如何拦截并作出相应处理的。</p>
+<h3 id="一、创建Demo"><a href="#一、创建Demo" class="headerlink" title="一、创建Demo"></a>一、创建Demo</h3><p>首先，创建一个简单的Demo，自定义最外层的ViewGroup，命名为CustomViewGroup1，重写onInterceptTouchEvent，onTouchEvent，dispatchTouchEvent三个方法，并将背景设为红色。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">public class CustomViewGroup1 extends FrameLayout &#123;</span><br><span class="line">    private static final String TAG = &quot;CustomeViewGroup1&quot;;</span><br><span class="line"></span><br><span class="line">    public CustomViewGroup1(Context context) &#123;</span><br><span class="line">        super(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public CustomViewGroup1(Context context, AttributeSet attrs) &#123;</span><br><span class="line">        super(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onInterceptTouchEvent:&quot; );</span><br><span class="line">        return super.onInterceptTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onTouchEvent:&quot;);</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean dispatchTouchEvent(MotionEvent ev) &#123;</span><br><span class="line">        Log.d(TAG, &quot;dispatchTouchEvent:&quot;);</span><br><span class="line">        return super.dispatchTouchEvent(ev);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>和上述代码一样，自定义中间层的CustomViewGroup2，重写拦截和处理的方法，将背景设为蓝色。<br>接着自定义View，重写onTouchEvent和dispatchTouchEvent方法，将背景设置为黄色。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">public class CustomView extends Button &#123;</span><br><span class="line">    private static final String TAG = &quot;CustomView&quot;;</span><br><span class="line"></span><br><span class="line">    public CustomView(Context context) &#123;</span><br><span class="line">        super(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public CustomView(Context context, AttributeSet attrs) &#123;</span><br><span class="line">        super(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onTouchEvent:&quot;);</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public boolean dispatchTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        Log.d(TAG, &quot;dispatchTouchEvent:&quot;);</span><br><span class="line">        return super.dispatchTouchEvent(event);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>最后运行的效果为<img src="https://upload-images.jianshu.io/upload_images/3585491-51b769a94fd22ed9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Custom.png"></p>
+<p>红色为最外层CustomViewGroup1，蓝色为中间层CustomViewGroup2，黄色为CustomView。</p>
+<h3 id="二、分析"><a href="#二、分析" class="headerlink" title="二、分析"></a>二、分析</h3><h4 id="2-1"><a href="#2-1" class="headerlink" title="2.1"></a>2.1</h4><p>从上面自定义ViewGroup的代码可以看出，View的事件分发涉及到了几个重要的方法，磨刀不误砍柴工，下面就先来分析一下这几个方法。</p>
+<ul>
+<li>boolean dispatchTouchEvent(MotionEvent event)：事件分发</li>
+<li>boolean onInterceptTouchEvent(MotionEvent ev)：事件拦截</li>
+<li>boolean onTouchEvent(MotionEvent event)：事件处理</li>
+</ul>
+<p>dispatchTouchEvent为事件分发的第一步，将事件向下分发；onInterceptTouchEvent表示是否拦截当前事件，当返回true时，表示拦截，也就是下面的事件就不会触发；onTouchEvent表示处理事件，返回结果表示是否消耗当前事件。这里不清楚没关系，接着看下面的分析。</p>
+<blockquote>
+<p><strong>上述三种方法默认返回false，不拦截也不消耗事件</strong></p>
+</blockquote>
+<h4 id="2-2"><a href="#2-2" class="headerlink" title="2.2"></a>2.2</h4><p>接下来就通过Log一步一步的看事件分发的过程。当点击黄色界面，也就是最底层的View时，Log如下：<br><img src="https://upload-images.jianshu.io/upload_images/3585491-9e4cd6e21e3930bd.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Log1.png"><br>从上面的Log可以看出，<strong>在默认的情况下，最先触发CustomeViewGroup1（红色界面）的dispatchTouchEvent和onInterceptTouchEvent方法，接着触发CustomViewGroup2（蓝色界面）的dispatchTouchEvent和onInterceptTouchEvent方法，最后才触发CustomView（黄色界面）的dispatchTouchEvent和onTouchEvent</strong>，一级一级向下传递。<br>上述为默认情况，不拦截也不消耗任何事件，事件就会一层一层的向下传递，那么当我们在第一层CustomeViewGroup1的onInterceptTouchEvent中返回true，将点击事件拦截下来，会出现什么情况呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class CustomViewGroup1 extends FrameLayout &#123;</span><br><span class="line">...</span><br><span class="line"> @Override</span><br><span class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onInterceptTouchEvent:&quot; );</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>同样点击黄色区域，再看Log：<br><img src="https://upload-images.jianshu.io/upload_images/3585491-0cc7e53b84d65732.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Log2.png"><br>这时我们发现，Log上只走了CustomeViewGroup1的方法，并且走了onTouchEvent，这就说明CustomeViewGroup1将事件拦截了下来，并没有分发下去，自己就将事件进行了处理。那么我们再试着将CustomeViewGroup2的onInterceptTouchEvent返回true，依据上面的分析我们猜测到CustomeViewGroup2就停止传递，接着会触发onTouchEvent。同样我们修改代码并点击VIew黄色区域。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">public class CustomViewGroup2 extends FrameLayout &#123;</span><br><span class="line">...</span><br><span class="line">    @Override</span><br><span class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onInterceptTouchEvent: &quot;);</span><br><span class="line">        return true;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p><img src="https://upload-images.jianshu.io/upload_images/3585491-5980aedfa10e08a9.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Log3.png"><br>从上述Log可以看出我们的猜测是正确的，在CustomeViewGroup2进行拦截，事件在分发到CustomeViewGroup2就没有继续向下分发了。不过我们又发现Log的最后两行，先触发CustomViewGroup2的onTouchEvent接着触发CustomViewGroup1的 onTouchEvent，这是属于onTouchEvent返回false，CustomViewGroup2没有消耗掉当前事件，导致将事件返回给了他的上一层处理。</p>
+<h4 id="2-3、小结"><a href="#2-3、小结" class="headerlink" title="2.3、小结"></a>2.3、小结</h4><p>从上面的Log分析我们可以得出三种不同情况下的事件分发规则：<br>1、在正常情况下，三个方法的返回值都为false，不拦截也不消耗事件，那么事件就会从ViewGroup1传递到ViewGroup2再传递到最后的View。<br>2、当ViewGroup1的onInterceptTouchEvent方法返回true，那么ViewGroup1就拦截下了这个事件，后面的ViewGroup2和View就接受不到任何事件的信号，并调用ViewGroup1的onTouchEvent方法对事件进行处理。<br>3、当ViewGroup2的onInterceptTouchEvent方法返回true，那么ViewGroup2拦截下当前事件，并调用自己的onTouchEvent方法，若ViewGroup2的onTouchEvent返回false，表示不消耗这个事件，那么就会返回他的上一层，将这个事件交给上一层处理，也就是ViewGroup1的onTouchEvent方法会被调用。相反，ViewGroup2的onTouchEvent返回true，就不会返回给上一层。</p>
+<p>简单的打个比方，ViewGroup1代表校长，ViewGroup2代表老师，View则代表学生<br>1、正常情况下是校长将一个任务首先下发给老师，接着老师下发给学生，学生收到任务，并执行该任务。<br>2、第二种情况，校长发现该任务自己可以处理就不用下发给老师，及校长的onInterceptTouchEvent返回true，将这个任务拦截下来了。后面的老师和学生也就不知道该任务是什么。<br>3、第三种情况，校长将任务下发给老师，老师却将任务拦截了下来，并没有告诉学生，即ViewGroup2的onInterceptTouchEvent方法返回true。当老师准备自己处理的时候发现这个任务太难，自己解决不了，就onTouchEvent方法返回false，将事情又返回给更高一级的校长处理。</p>
+<h3 id="三、onTouchEvent"><a href="#三、onTouchEvent" class="headerlink" title="三、onTouchEvent"></a>三、onTouchEvent</h3><p>接下来分析onTouchEvent中是如何处理动作的，我们在onTouchEvent的方法中加上三种最常见的动作的Case，ACTION_DOWN手指点击，ACTION_MOVE手指滑动,ACTION_UP手指抬起。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line"> public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">     Log.d(TAG, &quot;onTouchEvent:&quot;);</span><br><span class="line">     switch (event.getAction()) &#123;</span><br><span class="line">         case MotionEvent.ACTION_DOWN:</span><br><span class="line">             Log.d(TAG, &quot;onTouchEvent: ACTION_DOWN&quot;);</span><br><span class="line">             break;</span><br><span class="line">         case MotionEvent.ACTION_MOVE:</span><br><span class="line">             Log.d(TAG, &quot;onTouchEvent: ACTION_MOVE&quot;);</span><br><span class="line">             break;</span><br><span class="line">         case MotionEvent.ACTION_UP:</span><br><span class="line">             Log.d(TAG, &quot;onTouchEvent: ACTION_UP&quot;);</span><br><span class="line">             break;</span><br><span class="line">     &#125;</span><br><span class="line">     return super.onTouchEvent(event);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<p>点击画面并滑动，<br><img src="https://upload-images.jianshu.io/upload_images/3585491-d92149f7a46249e4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="return false.png"><br>我们可以看到日志Log上只有ACTION_DOWN事件发生，并没有触发滑动MOVE和手指抬起的UP事件，这是因为ACTION_DOWN事件默认是返回false，表示不消耗DOWN事件，也就是说DOWN动作发生后是不会向下传递，也不会触发MOVE和UP的动作。所以我们需要触发后面的动作时，需要将返回值设为 true，表示消耗当前事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">   @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        Log.d(TAG, &quot;onTouchEvent:&quot;);</span><br><span class="line">        switch (event.getAction()) &#123;</span><br><span class="line">            case MotionEvent.ACTION_DOWN:</span><br><span class="line">                Log.d(TAG, &quot;onTouchEvent: ACTION_DOWN&quot;);</span><br><span class="line">                return true；</span><br><span class="line">            case MotionEvent.ACTION_MOVE:</span><br><span class="line">                Log.d(TAG, &quot;onTouchEvent: ACTION_MOVE&quot;);</span><br><span class="line">                break;</span><br><span class="line">            case MotionEvent.ACTION_UP:</span><br><span class="line">                Log.d(TAG, &quot;onTouchEvent: ACTION_UP&quot;);</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>这时我们同样去点击和滑动画面，<br><img src="https://upload-images.jianshu.io/upload_images/3585491-437141b77e28939b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="return true.png"></p>
+<p>可以从上图看到，MOVE和UP动作都相应触发。</p>
+<h3 id="四、最后"><a href="#四、最后" class="headerlink" title="四、最后"></a>四、最后</h3><p>至此，View的事件分发基本上从头捋了一遍，更多的源码的细节准备好好研究一下，在后面的文章中展示出来。其实将事件分发的文章网络上比比皆是，本没有想法去记录这篇文章，只是因为前几天在做Android测试题的时候，有涉及到事件分发，当时将onInterceptTouchEvent和onTouchEvent的返回值弄反。原本以为自己记得很清楚，到了用的时候却弄混，才发现有些东西需要自己去好好的写上一遍，才会真正明白，也记得更牢。古人云：好记性不如烂笔头，不是没有道理的。</p>
+
       
 
       
-    </p></div>
+    </div>
     <div class="article-info article-info-index">
       
       
@@ -326,12 +382,42 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h4 id="一、类"><a href="#一、类" class="headerlink" title="一、类"></a>一、类</h4><blockquote>
+        <a id="more"></a>
+<h4 id="一、类"><a href="#一、类" class="headerlink" title="一、类"></a>一、类</h4><blockquote>
 <p>创建类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">      pass</span><br></pre></td></tr></table></figure></p>
 </blockquote>
-        
-          <a class="article-more-a" href="/2019/03/09/遇见Python-二-面向对象/#more">more >></a>
-        
+<blockquote>
+<p>创建实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">variable = Person()</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>给实例绑定属性，例如绑定name和age：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self,name,age):</span><br><span class="line">     self.name = name</span><br><span class="line">     self.age = age</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>案例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.age = age</span><br><span class="line">ba = Person(&apos;python&apos;,10)</span><br><span class="line">print(ba.name,ba.age)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>在类中封装方法：<br>添加一个打印的方法printPerson（self）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.age = age</span><br><span class="line">ba = Person(&apos;python&apos;,10)</span><br><span class="line"></span><br><span class="line">def printPerson(self):</span><br><span class="line">    print(self.name,self.age)</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<p>调用该方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printPerson(ba)</span><br></pre></td></tr></table></figure></p>
+<h4 id="二、私有变量"><a href="#二、私有变量" class="headerlink" title="二、私有变量"></a>二、私有变量</h4><blockquote>
+<p>Python中，在变量前加上两个下划线__，即私有变量，相当于Java中private。如下把name设置为私有，age不变，则name外部不可直接访问。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self,name,age):</span><br><span class="line">       self.__name = name</span><br><span class="line">       self.age = age</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>外部如需获取私有变量__name，可在Person类中定义get_name()方法，相当于Java中的get方法如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.__name = name</span><br><span class="line">        self.age = age</span><br><span class="line">#get方法</span><br><span class="line">    def get_name(self):</span><br><span class="line">        return self.__name</span><br><span class="line">ba = Person(&apos;python&apos;,10)</span><br><span class="line">print(ba.get_name())</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>外部如需修改私有变量__name,同样可在类中定义set_name()方法，相当于java中的set方法，可以看到以下代码，初始化变量ba的name = python，将ba.set_name = java，最后打印出的结果name值为”java“，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.__name = name</span><br><span class="line">        self.age = age</span><br><span class="line">#get方法</span><br><span class="line">    def get_name(self):</span><br><span class="line">        return self.__name</span><br><span class="line">#set方法</span><br><span class="line">    def set_name(self,name):</span><br><span class="line">        self.__name = name</span><br><span class="line"></span><br><span class="line">ba = Person(&quot;python&quot;,1)</span><br><span class="line">ba.set_name(&quot;java&quot;)</span><br><span class="line">print(ba.get_name())</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h4 id="三、继承"><a href="#三、继承" class="headerlink" title="三、继承"></a>三、继承</h4><blockquote>
+<p>继承是指子类继承父类的特征和行为，如有 父类Animal，子类Cat，Cat继承Animal：<br>Java版<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class Cat extends Animal&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<blockquote>
+<p>Python版<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Cat(Animal):</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h4 id="四、多态"><a href="#四、多态" class="headerlink" title="四、多态"></a>四、多态</h4><blockquote>
+<p>Python中继承与多态的思想与Java的并无两样。<br>多态是指同一个行为具有多个不同表现形式或形态的能力。</p>
+</blockquote>
+
       
 
       
@@ -404,17 +490,38 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <blockquote>
+        <a id="more"></a>
+<blockquote>
 <p>日拱一卒，功不唐捐</p>
 </blockquote>
-<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。<br>
-        
-          <a class="article-more-a" href="/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/#more">more >></a>
-        
+<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Telescope"></p>
+<h3 id="二、知识点BitmapShader"><a href="#二、知识点BitmapShader" class="headerlink" title="二、知识点BitmapShader"></a>二、知识点BitmapShader</h3><blockquote>
+<p>【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。</p>
+</blockquote>
+<p>简单来说，Shader可以用来实现一些渐变，反转，镜像，重复等效果。本文的效果核心使用的是Shader中的BitmapShader——位图Shader。</p>
+<blockquote>
+<p>BitmapShader(Bitmap bitmap, Shader.TileMode tileX, Shader.TileMode tileY)</p>
+</blockquote>
+<p>从构造方法可以看出，第一个参数为位图bitmap，第二个和第三个参数分别为横方向和纵方向的平铺模式。<br>平铺模式有如下几种模式：</p>
+<ul>
+<li>CLAMP ：拉伸，水平拉伸图片左右方向最后一个像素，，垂直拉伸图片上下方向的最后一个像素。</li>
+<li>MIRROR：镜像，水平和垂直方向重复图像，交替镜像，使相邻的图像始终相连。 </li>
+<li>REPEAT：重复，水平和垂直方向不断重复图片。  <h3 id="三、基本思路"><a href="#三、基本思路" class="headerlink" title="三、基本思路"></a>三、基本思路</h3>1、创建一张图片，将画笔设置为带有图像填充功能；<br>2、根据获取手指所点击位置的坐标，根据获得的坐标绘制圆形或者其他图形。<h3 id="四、实现"><a href="#四、实现" class="headerlink" title="四、实现"></a>四、实现</h3>从上述基本思路来看，步骤还是很简单，那么接下来分析实现的代码。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint = new Paint();</span><br><span class="line">mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.photo2);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先就是初始化画笔和创建一张位图。接下来为核心内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setShader(new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));</span><br><span class="line">canvas.drawCircle(400,400,300,mPaint);</span><br></pre></td></tr></table></figure></p>
+<p>BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)新创建一个BitmapShader，并将水平和垂直方向的平铺模式设置为CLAMP拉伸模式，将BitmapShader属性设置给画笔，使画笔具有图像填充功能，这是后面画笔可以绘制出一个带有图片的圆形的原因。接着利用Canvas在坐标（400,400）处绘制出一个半径为300的圆形。<br>目前基本的绘制已经结束，运行代码可以看出会有圆形图片在界面显示，如下图：<br><img src="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paint.jpeg"><br>从上面的图片来看，是不是发现其实这就是一个圆形的头像，到这里我们可以想到前面有一篇<a href="https://www.jianshu.com/p/612917765568" target="_blank" rel="noopener">Android自定义菱形图片</a>使用PorterDuffXfermode的相关属性绘制菱形的头像，其实这里我们也可以使用BitmapShader进行操作，代码相比较更加简洁。<br>目前实现的是静态的图像，接下来实现随着手指动态移动的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private float mTouchEventY = -1;</span><br><span class="line">private float mTouchEventX = -1;</span><br><span class="line"> ......</span><br><span class="line"></span><br><span class="line"> @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        switch (event.getAction()) &#123;</span><br><span class="line">            case MotionEvent.ACTION_DOWN:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                return true;</span><br><span class="line">            case MotionEvent.ACTION_MOVE:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                postInvalidate();</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        postInvalidate();</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先我们创建两个全局变量mTouchEventX，mTouchEventY。在onTouchEvent事件中，手指MotionEvent.ACTION_DOWN的时候，动态获取手指的位置，在ACTION_DOWN的代码中记得<strong>return true</strong>，这涉及到事件的分发机制，当return false时，代表手指的down事件未完成，那么事件将不会继续向下传递，也就是说ACTION_DOWN动作后的ACTION_MOVE是不会触发的。<br>同样的，我们在MotionEvent.ACTION_MOVE中也动态获取手指的位置，也就是随着手指动态调整圆形的位置。<br>最后在Canvas绘制圆形的时候，将获取到的位置设置进去，随着手指的不断移动，不断获取到位置值，也就实现了动态绘制图像的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawCircle(mTouchEventX,mTouchEventY,300,mPaint);</span><br></pre></td></tr></table></figure></p>
+<h3 id="五、最后"><a href="#五、最后" class="headerlink" title="五、最后"></a>五、最后</h3><p>在上述的过程中，发现BitmapShader可以很容易的实现不规则头像。另外，上述也只使用了BitmapShader的拉伸模式，还有镜像和重复模式可以实现更多的特效，有待发掘。</p>
+<blockquote>
+<p>文章同步个人博客：<a href="https://fuusy.github.io" target="_blank" rel="noopener">https://fuusy.github.io</a><br>项目地址：<a href="https://github.com/fuusy/ShaderTelescope.git" target="_blank" rel="noopener">https://github.com/fuusy/ShaderTelescope.git</a></p>
+</blockquote>
+
       
 
       
-    </p></div>
+    </div>
     <div class="article-info article-info-index">
       
       
@@ -483,10 +590,180 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="一、变量赋值"><a href="#一、变量赋值" class="headerlink" title="一、变量赋值"></a>一、变量赋值</h3><p>Python在<strong>任意数据类型之间都可以相互赋值</strong>，例如字符串和整数型相互赋值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;a = 11</span><br><span class="line">&gt;&gt;&gt;print &apos;a =&apos;,a</span><br><span class="line">&gt;&gt;&gt;a = &quot;python&quot;</span><br><span class="line">&gt;&gt;&gt;print &apos;a =&apos;,a</span><br></pre></td></tr></table></figure></p>
-        
-          <a class="article-more-a" href="/2019/03/05/遇见Python-一-基础语法/#more">more >></a>
-        
+        <a id="more"></a>
+<h3 id="一、变量赋值"><a href="#一、变量赋值" class="headerlink" title="一、变量赋值"></a>一、变量赋值</h3><p>Python在<strong>任意数据类型之间都可以相互赋值</strong>，例如字符串和整数型相互赋值<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;a = 11</span><br><span class="line">&gt;&gt;&gt;print &apos;a =&apos;,a</span><br><span class="line">&gt;&gt;&gt;a = &quot;python&quot;</span><br><span class="line">&gt;&gt;&gt;print &apos;a =&apos;,a</span><br></pre></td></tr></table></figure></p>
+<p>结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">a = 11</span><br><span class="line">a = python</span><br></pre></td></tr></table></figure></p>
+<p>与Python不同的是在Java中，不同的数据类型是不能相互赋值，如<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">int x ；</span><br><span class="line">x = “Python”  //整数型和字符串不能相互赋值。</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、List集合"><a href="#二、List集合" class="headerlink" title="二、List集合"></a>二、List集合</h3><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创建List集合</td>
+<td>List = [123,’java’,’kotlin’,”php”]</td>
+</tr>
+<tr>
+<td>查看List集合</td>
+<td>List   回车</td>
+</tr>
+<tr>
+<td>查看集合中的某个元素</td>
+<td>List[i]， i为集合元素的索引，如查看第一个元素，List[0]</td>
+</tr>
+<tr>
+<td>在集合末尾添加元素</td>
+<td>List.append(name)</td>
+</tr>
+<tr>
+<td>在指定位置添加元素</td>
+<td>List.insert(i,name)，i：索引位置，name：待插入元素名称</td>
+</tr>
+<tr>
+<td>删除集合末尾元素</td>
+<td>List.pop()</td>
+</tr>
+<tr>
+<td>删除指定元素</td>
+<td>List.pop(i)，i：索引位置</td>
+</tr>
+<tr>
+<td>替换指定元素</td>
+<td>List[i] = name，i：索引位置，name：要替换元素名称</td>
+</tr>
+<tr>
+<td>集合包含集合</td>
+<td>List = [‘name1’,[‘name2’,’name3’],’name4’]</td>
+</tr>
+</tbody>
+</table>
+<p>案例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line">#创建</span><br><span class="line">&gt;&gt;&gt; List = [123,&apos;java&apos;,&apos;kotlin&apos;,&quot;php&quot;]</span><br><span class="line">#查询全部</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[123, &apos;java&apos;, &apos;kotlin&apos;, &apos;php&apos;]</span><br><span class="line">#指定查询</span><br><span class="line">&gt;&gt;&gt; List[0]</span><br><span class="line">123</span><br><span class="line">#末尾添加元素</span><br><span class="line">&gt;&gt;&gt; List.append(&apos;python&apos;)</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[123, &apos;java&apos;, &apos;kotlin&apos;, &apos;php&apos;, &apos;python&apos;]</span><br><span class="line">#添加元素到位置1</span><br><span class="line">&gt;&gt;&gt; List.insert(1,&apos;true&apos;)</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[123, &apos;true&apos;, &apos;java&apos;, &apos;kotlin&apos;, &apos;php&apos;, &apos;python&apos;]</span><br><span class="line">#删除末尾元素</span><br><span class="line">&gt;&gt;&gt; List.pop()</span><br><span class="line">&apos;python&apos;</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[123, &apos;true&apos;, &apos;java&apos;, &apos;kotlin&apos;, &apos;php&apos;]</span><br><span class="line">#删除索引为1的元素</span><br><span class="line">&gt;&gt;&gt; List.pop(1)</span><br><span class="line">&apos;true&apos;</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[123, &apos;java&apos;, &apos;kotlin&apos;, &apos;php&apos;]</span><br><span class="line">#替换索引为1的元素</span><br><span class="line">&gt;&gt;&gt; List[1] = &apos;python&apos;</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[123, &apos;python&apos;, &apos;kotlin&apos;, &apos;php&apos;]</span><br><span class="line">&gt;&gt;&gt; </span><br><span class="line">#集合中包含集合</span><br><span class="line">&gt;&gt;&gt; List = [&apos;123&apos;,[&apos;99&apos;,&apos;py&apos;],&apos;java&apos;]</span><br><span class="line">&gt;&gt;&gt; List</span><br><span class="line">[&apos;123&apos;, [&apos;99&apos;, &apos;py&apos;], &apos;java&apos;]</span><br></pre></td></tr></table></figure></p>
+<h3 id="三、Tuple数组"><a href="#三、Tuple数组" class="headerlink" title="三、Tuple数组"></a>三、Tuple数组</h3><p>tuple为元组，与List不同的是tuple一经创建，数组中的元素就不可改变，不能增加和删除，具有稳定性。</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创建tuple</td>
+<td>tuple = (‘python’,’java’,123)，需要注意的是<strong>创建的tuple如果只有一个元素，则需要在元素后加上逗号”,”</strong>，如：tuple = (123,)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="四、循环"><a href="#四、循环" class="headerlink" title="四、循环"></a>四、循环</h3><h5 id="4-1：for…-in…循环"><a href="#4-1：for…-in…循环" class="headerlink" title="4.1：for… in…循环"></a>4.1：for… in…循环</h5><p>相当于Java的增强for循环。如：循环打印List集合<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; List=[123,&apos;python&apos;,&apos;java&apos;]</span><br><span class="line">&gt;&gt;&gt; for i in List:</span><br><span class="line">...     print(i)</span><br><span class="line">... </span><br><span class="line">123</span><br><span class="line">python</span><br><span class="line">java</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
+<h5 id="4-2、while循环"><a href="#4-2、while循环" class="headerlink" title="4.2、while循环"></a>4.2、while循环</h5><p>与Java while循环相似。如：求和运算：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; x=10</span><br><span class="line">&gt;&gt;&gt; sum =0</span><br><span class="line">&gt;&gt;&gt; while x &gt; 0:</span><br><span class="line">     sum = sum + x</span><br><span class="line">     x = x - 1</span><br><span class="line">&gt;&gt;&gt; print sum</span><br><span class="line">55</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="五、Dict"><a href="#五、Dict" class="headerlink" title="五、Dict"></a>五、Dict</h3><p><strong>dict</strong> 为dictionary， 相当于<strong>java中的map</strong>，以键值对的方式存储。<strong>注意的是需要选择不可变对象作为key</strong>，如字符串。 python 中，strings, tuples, 和 numbers 是不可更改的对象，而 list,dict 等则是可以修改的对象。</p>
+<blockquote>
+<ul>
+<li><strong><em>不可变类型</em></strong>：变量赋值 a=5 后再赋值 a=10，这里实际是新生成一个 int 值对象 10，再让 a 指向它，而 5 被丢弃，不是改变a的值，相当于新生成了a。</li>
+<li><strong><em>可变类型</em></strong>：变量赋值 la=[1,2,3,4] 后再赋值 la[2]=5 则是将 list la 的第三个元素值更改，本身la没有动，只是其内部的一部分值被修改了。<br><strong><em>python 函数的参数传递：</em></strong></li>
+<li><strong><em>不可变类型</em></strong>：类似 c++ 的值传递，如 整数、字符串、元组。如fun（a），传递的只是a的值，没有影响a对象本身。比如在 fun（a）内部修改 a 的值，只是修改另一个复制的对象，不会影响 a 本身。</li>
+<li><strong><em>可变类型</em></strong>：类似 c++ 的引用传递，如 列表，字典。如 fun（la），则是将 la 真正的传过去，修改后fun外部的la也会受影响。<br>python 中一切都是对象，严格意义我们不能说值传递还是引用传递，我们应该说传不可变对象和传可变对象。</li>
+</ul>
+</blockquote>
+<h5 id="5-1、存储方式："><a href="#5-1、存储方式：" class="headerlink" title="5.1、存储方式："></a>5.1、存储方式：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; dict = &#123;&apos;python&apos;:1,&apos;java&apos;:2,&apos;php&apos;:3&#125;</span><br></pre></td></tr></table></figure>
+<p>或者指定key存储：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt;dict[100] = &apos;html&apos;</span><br></pre></td></tr></table></figure></p>
+<h5 id="5-2、判断元素是否存在dict中："><a href="#5-2、判断元素是否存在dict中：" class="headerlink" title="5.2、判断元素是否存在dict中："></a>5.2、判断元素是否存在dict中：</h5><p>①：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; &apos;java&apos; in dict</span><br><span class="line">True</span><br><span class="line">&gt;&gt;&gt; &apos;sps&apos; in dict</span><br><span class="line">False</span><br></pre></td></tr></table></figure></p>
+<p>java属于dict中的元素，返回true，不属于则返回false。<br>②：通过dict的get方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; dict.get(&apos;java&apos;)</span><br><span class="line">2</span><br></pre></td></tr></table></figure></p>
+<p>若get元素存在，则返回它的值，若不存在，则返回空</p>
+<h5 id="5-3、删除元素："><a href="#5-3、删除元素：" class="headerlink" title="5.3、删除元素："></a>5.3、删除元素：</h5><p>如删除dict中的java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&gt;&gt;&gt; dict.pop(&apos;java&apos;)</span><br><span class="line">2</span><br><span class="line">&gt;&gt;&gt; dict</span><br><span class="line">&#123;&apos;python&apos;: 1, &apos;php&apos;: 3&#125;</span><br><span class="line">&gt;&gt;&gt;</span><br></pre></td></tr></table></figure></p>
+<h3 id="六、函数"><a href="#六、函数" class="headerlink" title="六、函数"></a>六、函数</h3><h5 id="6-1、定义函数"><a href="#6-1、定义函数" class="headerlink" title="6.1、定义函数"></a>6.1、定义函数</h5><p>def function（参数1，参数2）：<br>        pass<br>return<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#定义函数</span><br><span class="line">def te(str):</span><br><span class="line">    print(str)</span><br><span class="line">    return</span><br><span class="line"></span><br><span class="line">#调用函数</span><br><span class="line">te(&quot;python&quot;)</span><br></pre></td></tr></table></figure></p>
+<h5 id="6-2、pass"><a href="#6-2、pass" class="headerlink" title="6.2、pass"></a>6.2、pass</h5><ul>
+<li>表示不做任何处理；</li>
+<li>表示占位符；<br>当程序不做任何处理时，需要加上pass，缺少会出现程序错误。</li>
+</ul>
+<h5 id="6-3、参数"><a href="#6-3、参数" class="headerlink" title="6.3、参数"></a>6.3、参数</h5><ul>
+<li><strong>必备参数</strong><br>Python中的必备参数和Java类似，在定义了函数包含了参数，那么在调用此函数时不可缺少参数。</li>
+<li><strong>关键字参数</strong><br>Python通过调用关键字函数来传入参数，且传入多个参数时，顺序不需要和函数中的参数顺序一致。如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">#定义函数</span><br><span class="line">def te(str,int):</span><br><span class="line">    print(str,int)</span><br><span class="line">    return</span><br><span class="line">#调用函数</span><br><span class="line">te(int = 1,str = &quot;python&quot;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>结果<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">python 1</span><br></pre></td></tr></table></figure></p>
+<p>定义函数的参数顺序为（str，int），结果表明与顺序无关。</p>
+<ul>
+<li><strong>默认参数</strong><br>如果默认参数的值没有被传入，则会被默认为默认值。如：<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">#定义函数</span><br><span class="line">def te(str,int = 10):</span><br><span class="line">    print(str,int)</span><br><span class="line">    return</span><br><span class="line">#调用函数</span><br><span class="line">te(int=1,str=&quot;python&quot;)</span><br><span class="line">te(str=&quot;java&quot;)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>结果：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">python 1</span><br><span class="line">java 10</span><br></pre></td></tr></table></figure></p>
+<h3 id="七、切片"><a href="#七、切片" class="headerlink" title="七、切片"></a>七、切片</h3><p>所谓切片，就是截取一个片段。例如有一个集合List = [0,1,2,3,4,5,6,7]，包含8个数字，切片可截取0到6,3到6…等随意数字。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-7a91b6e39649674f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="0-7.png"></p>
+<table>
+<thead>
+<tr>
+<th>问题</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>截取2-6中的数据：List[2:6]</td>
+<td>[2, 3, 4, 5]</td>
+</tr>
+<tr>
+<td>截取前5个数据：List[0:5] 或者List[ : 5]，0可以省略</td>
+<td>[0, 1, 2, 3, 4]</td>
+</tr>
+<tr>
+<td>截取最后一个数据：List[-1：]</td>
+<td>[7]</td>
+</tr>
+<tr>
+<td>截取最后三个数据：List[-3：]</td>
+<td>[5, 6, 7]</td>
+</tr>
+<tr>
+<td>前6个数每两个取一个数据：List[ : 6 : 2]</td>
+<td>[0, 2, 4]</td>
+</tr>
+<tr>
+<td>所有数每两个取一个数据：List[ :  : 2]</td>
+<td>[0, 2, 4, 6]</td>
+</tr>
+</tbody>
+</table>
+<p>从问题一的结果可以得知，截取数据索引是从2开始，6结束，但不包括6在内。</p>
+<h3 id="八、迭代"><a href="#八、迭代" class="headerlink" title="八、迭代"></a>八、迭代</h3><p>对容器内的各个元素进行访问。<br>例如有一个Dict集合dict = {‘1’:’python’,’2’:99,’3’ : ‘java’}，对该集合进行不同类型的迭代。</p>
+<h5 id="8-1、迭代key：for-key-in-dict："><a href="#8-1、迭代key：for-key-in-dict：" class="headerlink" title="8.1、迭代key：for key in dict："></a>8.1、迭代key：for key in dict：</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">dict = &#123;&apos;1&apos;:&apos;python&apos;,&apos;2&apos;:99,&apos;3&apos; : &apos;java&apos;&#125;</span><br><span class="line">for key in dict:</span><br><span class="line">    print(key)</span><br></pre></td></tr></table></figure>
+<p>结果：<br>1<br>2<br>3</p>
+<h5 id="8-2、迭代value：for-value-in-dict-values"><a href="#8-2、迭代value：for-value-in-dict-values" class="headerlink" title="8.2、迭代value：for value in dict.values():"></a>8.2、迭代value：for value in dict.values():</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for value in dict.values():</span><br><span class="line">    print(value)</span><br></pre></td></tr></table></figure>
+<p>结果：<br>python<br>99<br>java</p>
+<h5 id="8-3、同时迭代key，value：for-k-v-in-dict-items"><a href="#8-3、同时迭代key，value：for-k-v-in-dict-items" class="headerlink" title="8.3、同时迭代key，value：for k,v in dict.items():"></a>8.3、同时迭代key，value：for k,v in dict.items():</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">for k,v in dict.items():</span><br><span class="line">    print(k,v)</span><br></pre></td></tr></table></figure>
+<p>结果：<br>1 python<br>3 java<br>2 99</p>
+<h4 id="九、内置函数"><a href="#九、内置函数" class="headerlink" title="九、内置函数"></a>九、内置函数</h4><h5 id="9-1、列表生成器range"><a href="#9-1、列表生成器range" class="headerlink" title="9.1、列表生成器range"></a>9.1、列表生成器range</h5><table>
+<thead>
+<tr>
+<th>问题</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>创建0-7的list列表：<code>list(range(0,8))</code></td>
+<td>[0, 1, 2, 3, 4, 5, 6, 7]</td>
+</tr>
+<tr>
+<td>抽取0-7内每隔2个的列表：<code>list(range(0,8,2))</code></td>
+<td>[0, 2, 4, 6]</td>
+</tr>
+<tr>
+<td>列表循环：<code>[x / 2 for x in range(1,8)]</code></td>
+<td>[0.5, 1.0, 1.5, 2.0, 2.5, 3.0, 3.5]</td>
+</tr>
+<tr>
+<td>抽取0-7内每隔2个的列表：<code>list(range(0,8,2))</code></td>
+<td>[0, 2, 4, 6]</td>
+</tr>
+</tbody>
+</table>
+<h3 id="十、写在最后"><a href="#十、写在最后" class="headerlink" title="十、写在最后"></a>十、写在最后</h3><p>刚开始触碰python，和Java编写的格式还是不同，有时会像Java一样顺手补上分号和括号，不过慢慢地就习惯了。语法方面，就目前学习基础语法来看还是大同小异的，虽然有些许的不同，只要稍微注意下，不影响对语法的使用。python学习之路才刚刚踏进门，后续将不断体验Python的美妙之处。</p>
+<blockquote>
+<p>注：初学Python，记录的是Python和Java不同、重点的地方，学习教程：廖雪峰python教程和菜鸟教程。</p>
+</blockquote>
+
       
 
       
@@ -559,14 +836,28 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h3 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h3><p>前段时间被“啥是佩奇”短片感动了一把，在网络上也掀起了一阵热潮，老爷子用自己的焊铁技术为孩子打造了别样的佩奇，今天用我那浅薄的知识打造Android佩奇。<br>
-        
-          <a class="article-more-a" href="/2019/02/24/啥是佩奇？打造Android界佩奇/#more">more >></a>
-        
+        <a id="more"></a>
+<h3 id="一、前言"><a href="#一、前言" class="headerlink" title="一、前言"></a>一、前言</h3><p>前段时间被“啥是佩奇”短片感动了一把，在网络上也掀起了一阵热潮，老爷子用自己的焊铁技术为孩子打造了别样的佩奇，今天用我那浅薄的知识打造Android佩奇。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/3585491-60584fa3717a0ef6.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="pig奇"></p>
+<h3 id="二、思路"><a href="#二、思路" class="headerlink" title="二、思路:"></a>二、思路:</h3><p>1、将佩奇分为鼻子，眼睛，嘴巴等相应的部位；<br>2、根据各个部位判断使用贝塞尔曲线还是运用canvas直接绘制图形。因为后面需要实现绘制的动态效果，则这里绘制图形时使用path绘制。<br>3、使用贝塞尔曲线绘制佩奇整个身体，耳朵和嘴巴，确定曲线的开始点和控制点；<br>4、使用PathMeasure的getLength,getSegment等方法实现每个部位的动态绘制。</p>
+<h3 id="三、知识点PathMeasure"><a href="#三、知识点PathMeasure" class="headerlink" title="三、知识点PathMeasure"></a>三、知识点PathMeasure</h3><p><strong>PathMeasure（Path path，boolean forceClosed）：</strong>表示创建与指定路径对象（已创建和指定）关联的PathMeasure对象。</p>
+<blockquote>
+<p><strong><em>参数</em></strong><br><strong>path：</strong>已绘制路径；<br><strong>forceClosed：</strong>如果为true，表示路径为闭合状态，即使路径未明确关闭，路径也将被视为“已关闭”。<br><strong><em>方法</em></strong><br><strong>getLength（）：</strong>获取path的总长度，如果没有路径就返回0；<br><strong>getSegment（float startD， float stopD，Path dst，boolean startWithMoveTo）：</strong>传入起始位置startD和结束位置stopD，在dst中返回startD和stopD中间的路径。如果startWithMoveTo为true，则使用moveTo开始片段。<br><strong>setPath（Path path， boolean forceClosed）：</strong>将path与PathMeasure 进行关联。</p>
+</blockquote>
+<p>上述为本文所使用的方法，PathMeasure其他详细方法可参照官方文档<a href="https://developer.android.google.cn/reference/android/graphics/PathMeasure" target="_blank" rel="noopener">PathMeasure</a>。</p>
+<h3 id="四、实现"><a href="#四、实现" class="headerlink" title="四、实现"></a>四、实现</h3><p>1、初始化画笔，佩奇出了眼睛和眼珠的颜色不同外，其他部位都用粉红色画笔绘制，这里定义了三种画笔；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">private void initPaint() &#123;</span><br><span class="line">       mPaint = new Paint();</span><br><span class="line">       mPaint.setColor(Color.parseColor(&quot;#FF69B4&quot;));</span><br><span class="line">       mPaint.setStyle(Paint.Style.STROKE);</span><br><span class="line">       mPaint.setStrokeWidth(6);</span><br><span class="line">       mPaint.setAntiAlias(true);</span><br><span class="line"></span><br><span class="line">       mEyePaint = new Paint();</span><br><span class="line">       mEyePaint.setColor(Color.parseColor(&quot;#F0F8FF&quot;));</span><br><span class="line">       mEyePaint.setAntiAlias(true);</span><br><span class="line"></span><br><span class="line">       mEyeBallPaint = new Paint();</span><br><span class="line">       mEyeBallPaint.setColor(Color.BLACK);</span><br><span class="line">       mEyeBallPaint.setAntiAlias(true);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
+<p>2、绘制佩奇外壳，佩奇身体呈弧形状，则需要运用到二阶和三阶贝塞尔曲线，利用贝塞尔曲线的数学公式大致确定出绘制起始位置，控制点和结束点。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">private void drawShell(Canvas canvas) &#123;</span><br><span class="line">        Path shellPath = new Path();</span><br><span class="line">        shellPath.moveTo(200, 100 - mRadius);</span><br><span class="line">//三阶贝塞尔曲线，设置两个控制点。</span><br><span class="line">        shellPath.cubicTo(800, 100 - mRadius, 1000, 600, 600, 700);</span><br><span class="line">        shellPath.cubicTo(300, 700, 300, 280, 350, 250);</span><br><span class="line">//两阶贝塞尔曲线，设置一个控制点。</span><br><span class="line">        shellPath.quadTo(200, 210, 200, 100 + mRadius);</span><br><span class="line"></span><br><span class="line">        drawAll(canvas,shellPath);</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>3、依据各个位置点绘制出曲线后，PathMeasure和曲线路径进行关联，依据PathMeasure的getSegment方法，随着停止位置的不断增加，获取到的路径片段也在不停的增长，也就实现了路径绘制的动态效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> private void drawAll(Canvas canvas, Path path) &#123;</span><br><span class="line">        Path dst = new Path();</span><br><span class="line">//创建新的带有已绘制好的路径的PathMeasure</span><br><span class="line">        mPathMeasure = new PathMeasure(path, false);</span><br><span class="line">//获取路径的总长度</span><br><span class="line">        mLength = mPathMeasure.getLength();</span><br><span class="line">//获取起始位置到停止位置中的片段</span><br><span class="line">        mPathMeasure.getSegment(0, mStop, dst, true);</span><br><span class="line">//开始绘制</span><br><span class="line">        canvas.drawPath(dst, mPaint);</span><br><span class="line">//停止位置不断增加，路径就会不断绘制</span><br><span class="line">        if (mStop &lt; mLength) &#123;</span><br><span class="line">            mStop += mLength / 400;</span><br><span class="line">            invalidate();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>4、使用相同的手法先绘制出耳朵，鼻子和嘴巴的路径，然后按照上述PathMeasure的过程依次获取片段实现，详细代码见六。</p>
+<h3 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h3><p>小猪佩奇的绘制需要耐心，其中身体部分涉及到贝塞尔曲线，需要数学来计算，后期需要加强对公式的了解，PathMeasure的方法有很多，在实现绘制路径的动态效果上层出不穷，例如绘制无规则形状的进度条，随手势滑动绘制出随意的线条等等。后续加强对PathMeasure其他方法的使用。</p>
+<h3 id="六、项目地址"><a href="#六、项目地址" class="headerlink" title="六、项目地址"></a>六、项目地址</h3><p><a href="https://github.com/fuusy/PigDraw" target="_blank" rel="noopener">项目地址：https://github.com/fuusy/PigDraw</a></p>
+<hr>
+<p>欢迎关注我的公众号：小猿说，大家一起交流学习！感谢！<br><img src="https://upload-images.jianshu.io/upload_images/3585491-de19d36846896995.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="公众号"></p>
+
       
 
       
-    </p></div>
+    </div>
     <div class="article-info article-info-index">
       
       
@@ -635,15 +926,26 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <p><img src="https://upload-images.jianshu.io/upload_images/3585491-5b6a8c54d9c86354.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="自定义菱形图片.png"></p>
-<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在实际项目中，用户头像，音乐专辑都有可能用到圆形，菱形等无规则图像，需要自己自定义View实现相应的功能。<br>
-        
-          <a class="article-more-a" href="/2019/02/22/Android自定义View-菱形图片/#more">more >></a>
-        
+        <a id="more"></a>
+<p><img src="https://upload-images.jianshu.io/upload_images/3585491-5b6a8c54d9c86354.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="自定义菱形图片.png"></p>
+<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>在实际项目中，用户头像，音乐专辑都有可能用到圆形，菱形等无规则图像，需要自己自定义View实现相应的功能。</p>
+<h3 id="思路"><a href="#思路" class="headerlink" title="思路"></a>思路</h3><p>需求：制作圆角菱形的图片<br>思路：<br>1、绘制出圆角矩形的遮罩层；<br>2、将矩形旋转45°；<br>3、使用画笔的PorterDuffXfermode的SRC_IN属性；<br>4、将图片绘制遮罩层上。</p>
+<h3 id="PorterDuffXfermode"><a href="#PorterDuffXfermode" class="headerlink" title="PorterDuffXfermode"></a>PorterDuffXfermode</h3><p>PorterDuffXfermode在网上有许多讲解它的文章，这里只讲解最常用的两种模式SRC_IN和DST_IN。<br><strong>SRC_IN</strong>：【本文所用的模式】显示底层图像和上方图像的相交区域，且<strong><em>显示的是上方图像</em></strong>。如图所示，先绘制出黄色的底层图像，再绘制出蓝色的图像，设置的模式为SRC_IN，则显示的是两张图像相交的扇形区域，且为上层蓝色图像。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-89f73bd147a9220f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Picture.png"><img src="https://upload-images.jianshu.io/upload_images/3585491-8f3259998c348c72.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="SRC_IN.png"><br><strong>DST_IN</strong>：显示底层图像和上方图像的相交区域，且<strong><em>显示的是底层图像</em></strong>。如图所示，先绘制出黄色的底层图像，再绘制出蓝色的图像，设置的模式为DST_IN，则显示的是两张图像相交的扇形区域，且为底层黄色图像。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-25d6ac45a33dc23e.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="DST_IN.png"></p>
+<h3 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h3><p>1、根据图片的大小绘制出圆角矩形的遮罩层；<br><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//        创建图片</span></span><br><span class="line">        mImageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture);</span><br><span class="line"><span class="comment">//        获取图片的宽高</span></span><br><span class="line">        mWidth = mImageBitmap.getWidth();</span><br><span class="line">        mHeight = mImageBitmap.getHeight();</span><br><span class="line">        mMaskBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);</span><br><span class="line">        Canvas maskCanvas = <span class="keyword">new</span> Canvas(mMaskBitmap);</span><br><span class="line"></span><br><span class="line">        mPaint = <span class="keyword">new</span> Paint();</span><br><span class="line">        mPaint.setColor(Color.YELLOW);</span><br><span class="line">        mPaint.setAntiAlias(<span class="keyword">true</span>);</span><br><span class="line"><span class="comment">//        画布先平移后旋转</span></span><br><span class="line">        maskCanvas.translate(mWidth / <span class="number">2</span>, <span class="number">0</span>);</span><br><span class="line">        maskCanvas.rotate(<span class="number">45</span>);</span><br><span class="line">        <span class="keyword">int</span> rectSize = (<span class="keyword">int</span>) (mWidth / <span class="number">2</span> / Math.sin(Math.toRadians(<span class="number">45</span>)));</span><br><span class="line"><span class="comment">//        绘制圆角矩形</span></span><br><span class="line">        maskCanvas.drawRoundRect(<span class="number">0</span>, <span class="number">0</span>, rectSize, rectSize, <span class="number">50</span>, <span class="number">50</span>, mPaint);</span><br></pre></td></tr></table></figure></p>
+<p>2、设置两张图像的显示模式为SRC_IN;<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));</span><br></pre></td></tr></table></figure></p>
+<p>3、这里需要注意的是因为使用的是同一个画布Canvas，在绘制圆角矩形时已经将画布旋转45°并且平移，这里就需要将画布旋转平移回到初始状态，不然图片就会跟着旋转，就会如下图所示。<br><img src="https://upload-images.jianshu.io/upload_images/3585491-4f515fffe7c917d0.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="RotatePicture.png"><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">//        画布先旋转后平移，防止图片也跟着旋转</span><br><span class="line">        maskCanvas.rotate(-45);</span><br><span class="line">        maskCanvas.translate(-mWidth / 2, 0);</span><br></pre></td></tr></table></figure></p>
+<p>4、绘制上层图片<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">maskCanvas.drawBitmap(mImageBitmap, 0, 0, mPaint);</span><br></pre></td></tr></table></figure></p>
+<p>5、最后在onDraw方法中绘制出最后的图片；<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;</span><br><span class="line">        canvas.drawBitmap(getBitmap(), 0, 0, null);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>设计无规则图形，方法大同小异，可使用PorterDuffXfermode的不同模式实现不同的效果。需要注意的是由于底层和上层的图像都是同一个Canvas绘制，绘制底层时已经改变了方向，后面绘制上层时需要回复到初始状态。另外也可以另写方法创建新的Canvas绘制上层图像，就不必恢复。</p>
+<hr>
+<p><strong><em>源码</em></strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">public class CustomDiamondImage extends View &#123;</span><br><span class="line">    private Paint mPaint;</span><br><span class="line"></span><br><span class="line">    private int mWidth;</span><br><span class="line">    private int mHeight;</span><br><span class="line">    private Bitmap mMaskBitmap;</span><br><span class="line">    private Bitmap mImageBitmap;</span><br><span class="line"></span><br><span class="line">    public CustomDiamondImage(Context context) &#123;</span><br><span class="line">        super(context);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public CustomDiamondImage(Context context, AttributeSet attrs) &#123;</span><br><span class="line">        super(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    protected void onDraw(Canvas canvas) &#123;</span><br><span class="line">        canvas.drawBitmap(getBitmap(), 0, 0, null);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private Bitmap getBitmap() &#123;</span><br><span class="line">//        创建图片</span><br><span class="line">        mImageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.picture);</span><br><span class="line">//        获取图片的宽高</span><br><span class="line">        mWidth = mImageBitmap.getWidth();</span><br><span class="line">        mHeight = mImageBitmap.getHeight();</span><br><span class="line">        mMaskBitmap = Bitmap.createBitmap(mWidth, mHeight, Bitmap.Config.ARGB_8888);</span><br><span class="line">        Canvas maskCanvas = new Canvas(mMaskBitmap);</span><br><span class="line"></span><br><span class="line">        mPaint = new Paint();</span><br><span class="line">        mPaint.setColor(Color.YELLOW);</span><br><span class="line">        mPaint.setAntiAlias(true);</span><br><span class="line">//        画布先平移后旋转</span><br><span class="line">        maskCanvas.translate(mWidth / 2, 0);</span><br><span class="line">        maskCanvas.rotate(45);</span><br><span class="line">        int rectSize = (int) (mWidth / 2 / Math.sin(Math.toRadians(45)));</span><br><span class="line">//        绘制圆角矩形</span><br><span class="line">        maskCanvas.drawRoundRect(0, 0, rectSize, rectSize, 50, 50, mPaint);</span><br><span class="line">//        设置混合显示模式为SRC_IN</span><br><span class="line">        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));</span><br><span class="line">//        画布先旋转后平移，防止图片也跟着旋转</span><br><span class="line">        maskCanvas.rotate(-45);</span><br><span class="line">        maskCanvas.translate(-mWidth / 2, 0);</span><br><span class="line">        maskCanvas.drawBitmap(mImageBitmap, 0, 0, mPaint);</span><br><span class="line"></span><br><span class="line">        return mMaskBitmap;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<hr>
+<p>欢迎关注我的公众号:小猿说，大家一起学习交流。<br><img src="http://upload-images.jianshu.io/upload_images/3585491-f4311811772c0b30.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="公众号"></p>
+
       
 
       
-    </p></div>
+    </div>
     <div class="article-info article-info-index">
       
       
