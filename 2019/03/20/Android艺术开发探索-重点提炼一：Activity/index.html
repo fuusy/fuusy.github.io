@@ -6,15 +6,22 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <link rel="dns-prefetch" href="http://yoursite.com">
-  <title>Archives: 2019/3 | 为未来</title>
+  <title>Android艺术开发探索|重点提炼一：Activity | 为未来</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="为未来">
-<meta property="og:url" content="http://yoursite.com/archives/2019/03/index.html">
+  <meta name="description" content="好记性不如烂笔头，记录发现问题  一、正常情况下的生命周期">
+<meta name="keywords" content="Android艺术开发探索">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android艺术开发探索|重点提炼一：Activity">
+<meta property="og:url" content="http://yoursite.com/2019/03/20/Android艺术开发探索-重点提炼一：Activity/index.html">
 <meta property="og:site_name" content="为未来">
+<meta property="og:description" content="好记性不如烂笔头，记录发现问题  一、正常情况下的生命周期">
 <meta property="og:locale" content="default">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-03-20T13:15:59.884Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="为未来">
+<meta name="twitter:title" content="Android艺术开发探索|重点提炼一：Activity">
+<meta name="twitter:description" content="好记性不如烂笔头，记录发现问题  一、正常情况下的生命周期">
+<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
   
     <link rel="alternative" href="/atom.xml" title="为未来" type="application/atom+xml">
   
@@ -146,36 +153,94 @@
             <canvas data-colors="#eaeaea" data-sectionHeight="100" data-contentId="js-content" id="myCanvas1" class="anm-canvas"></canvas>
           </div>
           <div id="js-content" class="content-ll">
-            
-  
-  
+            <article id="post-Android艺术开发探索-重点提炼一：Activity" class="article article-type-post " itemscope itemprop="blogPost">
+  <div class="article-inner">
     
-    
-      
-      
-      <section class="archives-wrap">
-        <div class="archive-year-wrap">
-          <a href="/archives/2019" class="archive-year">2019</a>
-        </div>
-        <div class="archives">
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/20/Android艺术开发探索-重点提炼一：Activity/" class="archive-article-date">
-  	<time datetime="2019-03-20T13:12:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-20</time>
-</a>
-        </div>
-    	 
+      <header class="article-header">
+        
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/20/Android艺术开发探索-重点提炼一：Activity/">Android艺术开发探索|重点提炼一：Activity</a>
+    <h1 class="article-title" itemprop="name">
+      Android艺术开发探索|重点提炼一：Activity
     </h1>
   
 
-        <div class="article-info info-on-right">
-          
+        
+        <a href="/2019/03/20/Android艺术开发探索-重点提炼一：Activity/" class="archive-article-date">
+  	<time datetime="2019-03-20T13:12:58.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-20</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <blockquote>
+<p> 好记性不如烂笔头，记录发现问题</p>
+</blockquote>
+<h3 id="一、正常情况下的生命周期"><a href="#一、正常情况下的生命周期" class="headerlink" title="一、正常情况下的生命周期"></a>一、正常情况下的生命周期</h3><a id="more"></a>
+<p><img src="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="activity_lifecycle.png"></p>
+<ul>
+<li>onCreate（）：表示Activity正在被创建</li>
+<li>onRestart（）：表示Activity正在重新启动</li>
+<li>onStart（）：Activity正在被启动，Activity可见却还没出现在前台。</li>
+<li>onResume（）：Activity已经可见，并且出现在前台。</li>
+<li>onPause（）：Activity正在停止。</li>
+<li>onStop（）：Activity即将停止。</li>
+<li>onDestroy（）：Activity即将被销毁。<blockquote>
+<p><strong>问题一：onStart和onResume、onPause和onStop的描述差不多，他们有何区别？</strong><br>onStart和onStop是从Activity是否可见这个角度来回调，onResume和onPause是从Activity是否出现在前台的角度回调的。即onStart表示Activity可见却还没出现在前台，onResume表示已经位于前台，可以和用户交互。onPause则表示Activity不位于前台，但是还可见，onStop表示已经从前台消失，不可见了。</p>
+</blockquote>
+</li>
+</ul>
+<p>上图所示，正常情况下的生命周期如下：<br>1、第一次启动onCreate -&gt; onStart -&gt; onResume.<br>2、用户打开新的Activity或者切换到桌面时：onPause -&gt; onStop。如果新的Activity为透明时不会回调onStop。<br>3、用户回到原来的Activity：onRestart -&gt; onStart -&gt;onResume。<br>4、用户back回退时：onPause -&gt; onStop -&gt; onDestroy。</p>
+<blockquote>
+<p>注：onPause中不能做重量级的操作，如耗时操作，因为在打开新的Activity时，旧的Activity的onPause执行完，新的Activity才能onResume。</p>
+</blockquote>
+<h3 id="二、异常情况下的生命周期"><a href="#二、异常情况下的生命周期" class="headerlink" title="二、异常情况下的生命周期"></a>二、异常情况下的生命周期</h3><h4 id="2-1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）"><a href="#2-1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）" class="headerlink" title="2.1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）"></a>2.1、资源相关的系统配置发生改变时导致Activity被销毁并重建（如屏幕横竖屏）</h4><p>Activity在异常情况下被终止，系统会调用onSaveInstanceState方法（onStop被调用之前）来保存当前的状态。保存后，Activity在被重新创建的时候，系统会调用onRestoreInstanceState（onStart被调用之后）把onSaveInstanceState所保存的Bundle对象作为参数传给onRestoreInstanceState和onCreate方法，那么就可以取出之前的数据并恢复。</p>
+<h4 id="2-2、内存不足优先级低的Activity被销毁"><a href="#2-2、内存不足优先级低的Activity被销毁" class="headerlink" title="2.2、内存不足优先级低的Activity被销毁"></a>2.2、内存不足优先级低的Activity被销毁</h4><p>这类异常情况的数据存储和数据恢复与上面2.1相同。Activity优先级排序：<br>前台Activity &gt; 可见但非前台Activity &gt; 后台Activity</p>
+<blockquote>
+<p><strong>问题二：如何保证后台工作不那么容易被杀死？</strong><br> 将后台的工作放到Service中，保证进程有一定的优先级。</p>
+</blockquote>
+<blockquote>
+<p><strong>问题三：如何保证Activity在系统配置发生改变后不重新创建？</strong><br>给Activity指定configChanges属性。如不想Activity在屏幕旋转的时候重建，就可以给configChanges添加orientation属性值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&gt;  &lt;activity android:name=&quot;.MainActivity&quot;</span><br><span class="line">   &gt;         android:configChanges=&quot;orientation&quot;&gt;</span><br><span class="line">    &gt;        &lt;intent-filter&gt;</span><br><span class="line">   &gt;             &lt;action android:name=&quot;android.intent.action.MAIN&quot; /&gt;</span><br><span class="line">    &gt;            &lt;category android:name=&quot;android.intent.category.LAUNCHER&quot; /&gt;</span><br><span class="line">      &gt;      &lt;/intent-filter&gt;</span><br><span class="line">      &gt;  &lt;/activity&gt;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure></p>
+</blockquote>
+<h3 id="三、Activity的启动模式"><a href="#三、Activity的启动模式" class="headerlink" title="三、Activity的启动模式"></a>三、Activity的启动模式</h3><h4 id="3-1、LunchMode"><a href="#3-1、LunchMode" class="headerlink" title="3.1、LunchMode"></a>3.1、LunchMode</h4><ul>
+<li><strong>standard</strong>：标准模式，也是系统的默认模式，每次启动Activity都会创建一个实例，不管这个实例是否存在。</li>
+<li><strong>singleTop</strong>：栈顶复用模式，第一种情况如果新的Activity位于栈顶，那么Activity不会被重新创建，<strong>同时他的onNewIntent会被回调</strong>。第二种情况如果Activity的实例已经存在在任务栈中，但不是位于栈顶，那么Activity还是会被重新创建。</li>
+<li><strong>singleTask</strong>：栈内复用，只要Activity在任务栈中，那么不管启动多少次Activity都不会被重建实例，系统也会<strong>回调onNewIntent方法</strong>。如果没有任务栈，就先创建一个栈然后创建Activity的实例并放入栈中。如果存在任务栈，但是Activity的实例不在栈中，则需要创建实例并压入栈中；如果Activity的实例存在，那么就会把实例调到栈顶，并调用他的onNewIntent方法。<br><strong>另外值得注意的是，singleTask模式默认具有clearTop的效果，打个比方，当前任务栈有ABCD四个实例，A在栈底，D在栈顶，如果启动B，会把B调到栈顶并调用onNewIntent方法，同时会导致CD全部出栈。</strong></li>
+<li><strong>singeInstance</strong>：单实例模式，具有singleTask模式的所有特性，另外就是这种模式的Activity只能单独的位于一个任务栈中。<h4 id="3-2、主要的Flags"><a href="#3-2、主要的Flags" class="headerlink" title="3.2、主要的Flags"></a>3.2、主要的Flags</h4></li>
+<li>FLAG_ACTIVITY_NEW_TASK：为Activity指定singleTask模式。</li>
+<li>FLAG_ACTIVITY_SINGLE_TOP：为Activity指定singleTop模式。</li>
+<li>FLAG_ACTIVITY_CLEAR_TOP：具有此标记的Activity，当它启动时，在同一任务栈所有位于它上面的Activity都要出栈。</li>
+<li>FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS：具有这个标记的Activity不会出现在历史Activity的列表中。</li>
+</ul>
+
+      
+
+      
+        <div class="page-reward">
+          <a href="javascript:;" class="page-reward-btn tooltip-top">
+            <div class="tooltip tooltip-east">
+            <span class="tooltip-item">
+              赏
+            </span>
+            <span class="tooltip-content">
+              <span class="tooltip-text">
+                <span class="tooltip-inner">
+                  <p class="reward-p"><i class="icon icon-quo-left"></i><i class="icon icon-quo-right"></i></p>
+                  <div class="reward-box">
+                    
+                    
+                  </div>
+                </span>
+              </span>
+            </span>
+          </div>
+          </a>
+        </div>
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
 	<div class="article-tag tagcloud">
 		<i class="icon-price-tags icon"></i>
 		<ul class="article-tag-list">
@@ -187,171 +252,106 @@
 		</ul>
 	</div>
 
-          
+      
 
+      
+
+      
+        
+<div class="share-btn share-icons tooltip-left">
+  <div class="tooltip tooltip-east">
+    <span class="tooltip-item">
+      <a href="javascript:;" class="share-sns share-outer">
+        <i class="icon icon-share"></i>
+      </a>
+    </span>
+    <span class="tooltip-content">
+      <div class="share-wrap">
+        <div class="share-icons">
+          <a class="weibo share-sns" href="javascript:;" data-type="weibo">
+            <i class="icon icon-weibo"></i>
+          </a>
+          <a class="weixin share-sns wxFab" href="javascript:;" data-type="weixin">
+            <i class="icon icon-weixin"></i>
+          </a>
+          <a class="qq share-sns" href="javascript:;" data-type="qq">
+            <i class="icon icon-qq"></i>
+          </a>
+          <a class="douban share-sns" href="javascript:;" data-type="douban">
+            <i class="icon icon-douban"></i>
+          </a>
+          <a class="qzone share-sns" href="javascript:;" data-type="qzone">
+            <i class="icon icon-qzone"></i>
+          </a>
+          <a class="facebook share-sns" href="javascript:;" data-type="facebook">
+            <i class="icon icon-facebook"></i>
+          </a>
+          <a class="twitter share-sns" href="javascript:;" data-type="twitter">
+            <i class="icon icon-twitter"></i>
+          </a>
+          <a class="google share-sns" href="javascript:;" data-type="google">
+            <i class="icon icon-google"></i>
+          </a>
         </div>
-        <div class="clearfix"></div>
-    </header>
+      </div>
+    </span>
+  </div>
+</div>
+
+<div class="page-modal wx-share js-wx-box">
+    <a class="close js-modal-close" href="javascript:;"><i class="icon icon-close"></i></a>
+    <p>扫一扫，分享到微信</p>
+    <div class="wx-qrcode">
+      <img src="//pan.baidu.com/share/qrcode?url=http://yoursite.com/2019/03/20/Android艺术开发探索-重点提炼一：Activity/" alt="微信分享二维码">
+    </div>
+</div>
+
+<div class="mask js-mask"></div>
+      
+      <div class="clearfix"></div>
+    </div>
   </div>
 </article>
+
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/12/从Log中看View的事件分发机制/" class="archive-article-date">
-  	<time datetime="2019-03-12T14:47:10.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-12</time>
-</a>
+<nav id="article-nav">
+  
+  
+    <a href="/2019/03/12/从Log中看View的事件分发机制/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-title">从Log中看View的事件分发机制</div>
+      <i class="icon-circle-right"></i>
+    </a>
+  
+</nav>
+
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
         </div>
-    	 
+        
+        
+    </div>
+</aside>
+
+
+
   
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/12/从Log中看View的事件分发机制/">从Log中看View的事件分发机制</a>
-    </h1>
+  
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">View事件分发</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/09/遇见Python-二-面向对象/" class="archive-article-date">
-  	<time datetime="2019-03-09T02:01:05.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-09</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/09/遇见Python-二-面向对象/">遇见Python(二):面向对象</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/" class="archive-article-date">
-  	<time datetime="2019-03-06T14:32:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-06</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/">Android自定义View_BitmapShader实现望远镜效果</a>
-    </h1>
   
 
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">自定义View</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
   
-    
-    
-    <article class="archive-article archive-type-post">
-  <div class="archive-article-inner">
-    <header class="archive-article-header">
-      	<div class="article-meta">
-	      	<a href="/2019/03/05/遇见Python-一-基础语法/" class="archive-article-date">
-  	<time datetime="2019-03-05T12:56:19.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-05</time>
-</a>
-        </div>
-    	 
-  
-    <h1 itemprop="name">
-      <a class="archive-article-title" href="/2019/03/05/遇见Python-一-基础语法/">遇见Python(一):基础语法</a>
-    </h1>
-  
-
-        <div class="article-info info-on-right">
-          
-	<div class="article-tag tagcloud">
-		<i class="icon-price-tags icon"></i>
-		<ul class="article-tag-list">
-			 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Python</a>
-        		</li>
-      		
-		</ul>
-	</div>
-
-          
-
-        </div>
-        <div class="clearfix"></div>
-    </header>
-  </div>
-</article>
-  
-  
-    </div></section>
-  
-
-    
 
 
           </div>
@@ -374,8 +374,8 @@
 	var yiliaConfig = {
 		mathjax: false,
 		isHome: false,
-		isPost: false,
-		isArchive: true,
+		isPost: true,
+		isArchive: false,
 		isTag: false,
 		isCategory: false,
 		open_in_new: false,
