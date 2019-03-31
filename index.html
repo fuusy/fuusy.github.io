@@ -148,6 +148,158 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-Glide-4解析系列（二）：源码看Glide-4" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/">Glide 4解析系列（二）：源码看Glide 4</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/" class="archive-article-date">
+  	<time datetime="2019-03-31T05:55:54.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章<a href="https://www.jianshu.com/p/d20dd29951ad" target="_blank" rel="noopener">Glide 4解析系列（一）：如何使用Glide</a>，今天这一篇是从源码的角度来分析Glide4。<br>上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。<br>
+        
+          <a class="article-more-a" href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/#more">more >></a>
+        
+      
+
+      
+    </p></div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Glide4</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
+    <article id="post-Glide-4解析系列（一）：如何使用Glide" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">Glide 4解析系列（一）：如何使用Glide</a>
+    </h1>
+  
+
+        
+        <a href="/2019/03/31/Glide-4解析系列（一）：如何使用Glide/" class="archive-article-date">
+  	<time datetime="2019-03-31T05:52:42.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-03-31</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：<br>
+        
+          <a class="article-more-a" href="/2019/03/31/Glide-4解析系列（一）：如何使用Glide/#more">more >></a>
+        
+      
+
+      
+    </p></div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color2">Glide4</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-Android艺术开发探索-重点提炼一：Activity" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -783,6 +935,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color2">Python</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color2">Glide4</a>
               </li>
              
               <li class="article-tag-list-item">
