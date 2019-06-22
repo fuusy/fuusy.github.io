@@ -14,6 +14,13 @@
 
 
 
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
 
 
 
@@ -79,19 +86,19 @@
 
 
 
-<meta name="description" content="好记性不如烂笔头，记录发现问题">
+<meta name="description" content="好记性不如烂笔头，记录发现问题  一、正常情况下的生命周期  onCreate（）：表示Activity正在被创建 onRestart（）：表示Activity正在重新启动 onStart（）：Activity正在被启动，Activity可见却还没出现在前台。 onResume（）：Activity已经可见，并且出现在前台。">
 <meta name="keywords" content="Android艺术开发探索">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android艺术开发探索|重点提炼一：Activity">
-<meta property="og:url" content="http://yoursite.com/2019/03/20/Android艺术开发探索-重点提炼一：Activity/index.html">
-<meta property="og:site_name" content="为未来">
-<meta property="og:description" content="好记性不如烂笔头，记录发现问题">
+<meta property="og:url" content="http://fuusy.github.io/2019/03/20/Android艺术开发探索-重点提炼一：Activity/index.html">
+<meta property="og:site_name" content="Gooify">
+<meta property="og:description" content="好记性不如烂笔头，记录发现问题  一、正常情况下的生命周期  onCreate（）：表示Activity正在被创建 onRestart（）：表示Activity正在重新启动 onStart（）：Activity正在被启动，Activity可见却还没出现在前台。 onResume（）：Activity已经可见，并且出现在前台。">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-03-20T14:28:38.301Z">
+<meta property="og:updated_time" content="2019-06-22T04:07:39.920Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android艺术开发探索|重点提炼一：Activity">
-<meta name="twitter:description" content="好记性不如烂笔头，记录发现问题">
+<meta name="twitter:description" content="好记性不如烂笔头，记录发现问题  一、正常情况下的生命周期  onCreate（）：表示Activity正在被创建 onRestart（）：表示Activity正在重新启动 onStart（）：Activity正在被启动，Activity可见却还没出现在前台。 onResume（）：Activity已经可见，并且出现在前台。">
 <meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
 
 
@@ -102,13 +109,13 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: '二气乖张'
+      author: 'goofy'
     },
     algolia: {
       applicationID: '',
@@ -122,13 +129,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/20/Android艺术开发探索-重点提炼一：Activity/">
+  <link rel="canonical" href="http://fuusy.github.io/2019/03/20/Android艺术开发探索-重点提炼一：Activity/">
 
 
 
 
 
-  <title>Android艺术开发探索|重点提炼一：Activity | 为未来</title>
+  <title>Android艺术开发探索|重点提炼一：Activity | Gooify</title>
   
 
 
@@ -147,7 +154,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -158,7 +165,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">为未来</span>
+        <span class="site-title">Gooify</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -189,6 +196,26 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
           </a>
         </li>
       
@@ -235,16 +262,16 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/20/Android艺术开发探索-重点提炼一：Activity/">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/03/20/Android艺术开发探索-重点提炼一：Activity/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="二气乖张">
+      <meta itemprop="name" content="gooify">
       <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/image.jpeg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="为未来">
+      <meta itemprop="name" content="Gooify">
     </span>
 
     
@@ -303,14 +330,14 @@
 
       
         <blockquote>
-<p> 好记性不如烂笔头，记录发现问题<br><a id="more"></a></p>
+<p> 好记性不如烂笔头，记录发现问题</p>
 </blockquote>
 <h3 id="一、正常情况下的生命周期"><a href="#一、正常情况下的生命周期" class="headerlink" title="一、正常情况下的生命周期"></a>一、正常情况下的生命周期</h3><p><img src="https://upload-images.jianshu.io/upload_images/3585491-11fed823ee9806f1.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="activity_lifecycle.png"></p>
 <ul>
 <li>onCreate（）：表示Activity正在被创建</li>
 <li>onRestart（）：表示Activity正在重新启动</li>
 <li>onStart（）：Activity正在被启动，Activity可见却还没出现在前台。</li>
-<li>onResume（）：Activity已经可见，并且出现在前台。</li>
+<li>onResume（）：Activity已经可见，并且出现在前台。<a id="more"></a></li>
 <li>onPause（）：Activity正在停止。</li>
 <li>onStop（）：Activity即将停止。</li>
 <li>onDestroy（）：Activity即将被销毁。<blockquote>
@@ -448,8 +475,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">二气乖张</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="gooify">
+            
+              <p class="site-author-name" itemprop="name">gooify</p>
+              <p class="site-description motion-element" itemprop="description">想我所想，做我所做，记录美好生活！</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -482,6 +511,16 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/4391081a28f0" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-globe"></i>简书</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -525,11 +564,11 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">二气乖张</span>
+  <span class="author" itemprop="copyrightHolder">gooify</span>
 
   
 </div>

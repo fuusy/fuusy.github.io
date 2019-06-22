@@ -14,6 +14,13 @@
 
 
 
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
 
 
 
@@ -79,21 +86,21 @@
 
 
 
-<meta name="description" content="日拱一卒，功不唐捐">
+<meta name="description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
 <meta name="keywords" content="自定义View">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android自定义View_BitmapShader实现望远镜效果">
-<meta property="og:url" content="http://yoursite.com/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/index.html">
-<meta property="og:site_name" content="为未来">
-<meta property="og:description" content="日拱一卒，功不唐捐">
+<meta property="og:url" content="http://fuusy.github.io/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/index.html">
+<meta property="og:site_name" content="Gooify">
+<meta property="og:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-54c456cca2ac0756.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
-<meta property="og:updated_time" content="2019-03-20T14:29:13.069Z">
+<meta property="og:updated_time" content="2019-06-22T04:13:23.528Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android自定义View_BitmapShader实现望远镜效果">
-<meta name="twitter:description" content="日拱一卒，功不唐捐">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta name="twitter:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3585491-54c456cca2ac0756.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 
 
 
@@ -103,13 +110,13 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: '二气乖张'
+      author: 'goofy'
     },
     algolia: {
       applicationID: '',
@@ -123,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/">
+  <link rel="canonical" href="http://fuusy.github.io/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/">
 
 
 
 
 
-  <title>Android自定义View_BitmapShader实现望远镜效果 | 为未来</title>
+  <title>Android自定义View_BitmapShader实现望远镜效果 | Gooify</title>
   
 
 
@@ -148,7 +155,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -159,7 +166,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">为未来</span>
+        <span class="site-title">Gooify</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -190,6 +197,26 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
           </a>
         </li>
       
@@ -236,16 +263,16 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/03/06/Android自定义View-BitmapShader实现望远镜效果/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="二气乖张">
+      <meta itemprop="name" content="gooify">
       <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/image.jpeg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="为未来">
+      <meta itemprop="name" content="Gooify">
     </span>
 
     
@@ -304,10 +331,9 @@
 
       
         <blockquote>
-<p>日拱一卒，功不唐捐<br><a id="more"></a></p>
+<p>日拱一卒，功不唐捐</p>
 </blockquote>
-<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。</p>
-<p><img src="http://upload-images.jianshu.io/upload_images/3585491-fc67dcc4398e5f1a.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Telescope"></p>
+<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。<br><a id="more"></a><br><img src="http://upload-images.jianshu.io/upload_images/3585491-54c456cca2ac0756.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Telescope"></p>
 <h3 id="二、知识点BitmapShader"><a href="#二、知识点BitmapShader" class="headerlink" title="二、知识点BitmapShader"></a>二、知识点BitmapShader</h3><blockquote>
 <p>【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。</p>
 </blockquote>
@@ -323,11 +349,12 @@
 </li>
 </ul>
 <p>首先就是初始化画笔和创建一张位图。接下来为核心内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setShader(new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));</span><br><span class="line">canvas.drawCircle(400,400,300,mPaint);</span><br></pre></td></tr></table></figure></p>
-<p>BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)新创建一个BitmapShader，并将水平和垂直方向的平铺模式设置为CLAMP拉伸模式，将BitmapShader属性设置给画笔，使画笔具有图像填充功能，这是后面画笔可以绘制出一个带有图片的圆形的原因。接着利用Canvas在坐标（400,400）处绘制出一个半径为300的圆形。<br>目前基本的绘制已经结束，运行代码可以看出会有圆形图片在界面显示，如下图：<br><img src="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paint.jpeg"><br>从上面的图片来看，是不是发现其实这就是一个圆形的头像，到这里我们可以想到前面有一篇<a href="https://www.jianshu.com/p/612917765568" target="_blank" rel="noopener">Android自定义菱形图片</a>使用PorterDuffXfermode的相关属性绘制菱形的头像，其实这里我们也可以使用BitmapShader进行操作，代码相比较更加简洁。<br>目前实现的是静态的图像，接下来实现随着手指动态移动的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private float mTouchEventY = -1;</span><br><span class="line">private float mTouchEventX = -1;</span><br><span class="line"> ......</span><br><span class="line"></span><br><span class="line"> @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        switch (event.getAction()) &#123;</span><br><span class="line">            case MotionEvent.ACTION_DOWN:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                return true;</span><br><span class="line">            case MotionEvent.ACTION_MOVE:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                postInvalidate();</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        postInvalidate();</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)新创建一个BitmapShader，并将水平和垂直方向的平铺模式设置为CLAMP拉伸模式，将BitmapShader属性设置给画笔，使画笔具有图像填充功能，这是后面画笔可以绘制出一个带有图片的圆形的原因。接着利用Canvas在坐标（400,400）处绘制出一个半径为300的圆形。<br>目前基本的绘制已经结束，运行代码可以看出会有圆形图片在界面显示，如下图：<br><img src="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paint.jpeg"></p>
+<p>从上面的图片来看，是不是发现其实这就是一个圆形的头像，到这里我们可以想到前面有一篇<a href="https://www.jianshu.com/p/612917765568" target="_blank" rel="noopener">Android自定义菱形图片</a>使用PorterDuffXfermode的相关属性绘制菱形的头像，其实这里我们也可以使用BitmapShader进行操作，代码相比较更加简洁。<br>目前实现的是静态的图像，接下来实现随着手指动态移动的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private float mTouchEventY = -1;</span><br><span class="line">private float mTouchEventX = -1;</span><br><span class="line"> ......</span><br><span class="line"></span><br><span class="line"> @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        switch (event.getAction()) &#123;</span><br><span class="line">            case MotionEvent.ACTION_DOWN:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                return true;</span><br><span class="line">            case MotionEvent.ACTION_MOVE:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                postInvalidate();</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        postInvalidate();</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <p>首先我们创建两个全局变量mTouchEventX，mTouchEventY。在onTouchEvent事件中，手指MotionEvent.ACTION_DOWN的时候，动态获取手指的位置，在ACTION_DOWN的代码中记得<strong>return true</strong>，这涉及到事件的分发机制，当return false时，代表手指的down事件未完成，那么事件将不会继续向下传递，也就是说ACTION_DOWN动作后的ACTION_MOVE是不会触发的。<br>同样的，我们在MotionEvent.ACTION_MOVE中也动态获取手指的位置，也就是随着手指动态调整圆形的位置。<br>最后在Canvas绘制圆形的时候，将获取到的位置设置进去，随着手指的不断移动，不断获取到位置值，也就实现了动态绘制图像的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawCircle(mTouchEventX,mTouchEventY,300,mPaint);</span><br></pre></td></tr></table></figure></p>
 <h3 id="五、最后"><a href="#五、最后" class="headerlink" title="五、最后"></a>五、最后</h3><p>在上述的过程中，发现BitmapShader可以很容易的实现不规则头像。另外，上述也只使用了BitmapShader的拉伸模式，还有镜像和重复模式可以实现更多的特效，有待发掘。</p>
 <blockquote>
-<p>文章同步个人博客：<a href="https://fuusy.github.io" target="_blank" rel="noopener">https://fuusy.github.io</a><br>项目地址：<a href="https://github.com/fuusy/ShaderTelescope.git" target="_blank" rel="noopener">https://github.com/fuusy/ShaderTelescope.git</a></p>
+<p>项目地址：<a href="https://github.com/fuusy/ShaderTelescope.git" target="_blank" rel="noopener">https://github.com/fuusy/ShaderTelescope.git</a></p>
 </blockquote>
 
       
@@ -369,8 +396,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/03/09/遇见Python-二-面向对象/" rel="prev" title="遇见Python(二):面向对象">
-                遇见Python(二):面向对象 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/03/09/遇见Python-二-面向对象/" rel="prev" title="遇见Python(二):面向对象">
+                遇见Python(二):面向对象 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -437,8 +464,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">二气乖张</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="gooify">
+            
+              <p class="site-author-name" itemprop="name">gooify</p>
+              <p class="site-description motion-element" itemprop="description">想我所想，做我所做，记录美好生活！</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -471,6 +500,16 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/4391081a28f0" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-globe"></i>简书</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -514,11 +553,11 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">二气乖张</span>
+  <span class="author" itemprop="copyrightHolder">gooify</span>
 
   
 </div>

@@ -14,6 +14,13 @@
 
 
 
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
 
 
 
@@ -83,13 +90,13 @@
 <meta name="keywords" content="Glide4">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Glide 4解析系列（一）：如何使用Glide">
-<meta property="og:url" content="http://yoursite.com/2019/03/31/Glide-4解析系列（一）：如何使用Glide/index.html">
-<meta property="og:site_name" content="为未来">
+<meta property="og:url" content="http://fuusy.github.io/2019/03/31/Glide-4解析系列（一）：如何使用Glide/index.html">
+<meta property="og:site_name" content="Gooify">
 <meta property="og:description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-9a5ecd63b3dd0377.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
 <meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-aeebebb018d71f21.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
-<meta property="og:updated_time" content="2019-03-31T05:54:54.261Z">
+<meta property="og:updated_time" content="2019-06-22T04:33:30.255Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Glide 4解析系列（一）：如何使用Glide">
 <meta name="twitter:description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
@@ -103,13 +110,13 @@
     root: '/',
     scheme: 'Gemini',
     version: '5.1.4',
-    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
     fancybox: true,
     tabs: true,
     motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
     duoshuo: {
       userId: '0',
-      author: '二气乖张'
+      author: 'goofy'
     },
     algolia: {
       applicationID: '',
@@ -123,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">
+  <link rel="canonical" href="http://fuusy.github.io/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">
 
 
 
 
 
-  <title>Glide 4解析系列（一）：如何使用Glide | 为未来</title>
+  <title>Glide 4解析系列（一）：如何使用Glide | Gooify</title>
   
 
 
@@ -148,7 +155,7 @@
     
   
 
-  <div class="container sidebar-position-left page-post-detail">
+  <div class="container sidebar-position-right page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -159,7 +166,7 @@
     <div class="custom-logo-site-title">
       <a href="/" class="brand" rel="start">
         <span class="logo-line-before"><i></i></span>
-        <span class="site-title">为未来</span>
+        <span class="site-title">Gooify</span>
         <span class="logo-line-after"><i></i></span>
       </a>
     </div>
@@ -190,6 +197,26 @@
               <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
             
             Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
           </a>
         </li>
       
@@ -236,16 +263,16 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="二气乖张">
+      <meta itemprop="name" content="gooify">
       <meta itemprop="description" content>
-      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="image" content="/images/image.jpeg">
     </span>
 
     <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="为未来">
+      <meta itemprop="name" content="Gooify">
     </span>
 
     
@@ -310,12 +337,12 @@
 <p>如果你需要从SD卡等外部设备读取图片，那么同样需要添加读写的权限请求。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
 <h3 id="二、基本使用"><a href="#二、基本使用" class="headerlink" title="二、基本使用"></a>二、基本使用</h3><p>以加载网络图片为例，在布局中加入一个按钮和ImageView用来存放图片。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button</span><br><span class="line">        android:id=&quot;@+id/beginLoad&quot;</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;开始&quot;/&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:id=&quot;@+id/imageView&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_gravity=&quot;center&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>接着在MainActivity中开始进行加载图片的操作，如第一段的描述，Glide基本加载图片就一句话，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private String mUrl = &quot;https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3222301344,3464718829&amp;fm=27&amp;gp=0.jpg&quot;;</span><br><span class="line">...</span><br><span class="line">private void loadGlide() &#123;</span><br><span class="line">         Glide.with(this)</span><br><span class="line">                .load(mUrl)</span><br><span class="line">                .into(mImageView);</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>从loadGlide（）方法中可以看到，Glide从所给的Url中先把图片下载好，接着将图片放置布局所设置的ImageView中，也就完成了图片的加载。我们来看看效果：<br><img src="http://upload-images.jianshu.io/upload_images/3585491-9a5ecd63b3dd0377.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"></p>
+<p>从loadGlide（）方法中可以看到，Glide从所给的Url中先把图片下载好，接着将图片放置布局所设置的ImageView中，也就完成了图片的加载。我们来看看效果：<br><img src="http://upload-images.jianshu.io/upload_images/3585491-9a5ecd63b3dd0377.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Glide"></p>
 <h3 id="三、占位符"><a href="#三、占位符" class="headerlink" title="三、占位符"></a>三、占位符</h3><p>在官方的文档中，Glide给出了三种不同类型的占位符，分别为占位符（placeholder）、错误符（error）、后备回调符（fallback）。</p>
 <h4 id="3-1、Placeholder"><a href="#3-1、Placeholder" class="headerlink" title="3.1、Placeholder"></a>3.1、Placeholder</h4><p>占位符Placeholder指在图片还未加载好时，放置在ImageView上的一个替换图片，等图片加载完成，就将这个占位图片替换掉。添加占位符也很简单.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .placeholder(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
 <p>在上面基本使用的代码上加上RequestOptions，利用placeholder获取到要占位的图片，然后在Glide中加入apply方法，应用刚创建的RequestOptions。</p>
 <h4 id="3-2、Error"><a href="#3-2、Error" class="headerlink" title="3.2、Error"></a>3.2、Error</h4><p>所谓的Error错误符，是在请求永久性失败的时候展示，同样也在请求的url/model为 null ，且并没有设置 fallback Drawable 时展示。<br>添加错误符只需要将placeholder替换掉。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .error(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>因为错误符是在请求永久性失败的时候展示的，为了展示效果，就将网络关闭，这样就请求不到图片资源，error图片就会展示，如下：<br><img src="http://upload-images.jianshu.io/upload_images/3585491-aeebebb018d71f21.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="图片发自简书App"></p>
+<p>因为错误符是在请求永久性失败的时候展示的，为了展示效果，就将网络关闭，这样就请求不到图片资源，error图片就会展示，如下：<br><img src="http://upload-images.jianshu.io/upload_images/3585491-aeebebb018d71f21.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Glide"></p>
 <h4 id="3-3、Fallback"><a href="#3-3、Fallback" class="headerlink" title="3.3、Fallback"></a>3.3、Fallback</h4><p>fallback Drawable 在请求的url/model为 null 时展示。设计 fallback Drawable 的主要目的是允许用户指示 null 是否为可接受的正常情况。例如，一个 null 的个人资料 url 可能暗示这个用户没有设置头像，因此应该使用默认头像。然而，null 也可能表明这个元数据根本就是不合法的，或者取不到。 默认情况下Glide将 null 作为错误处理，所以可以接受 null 的应用应当显式地设置一个 fallback Drawable 。代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .fallback(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="四、缓存机制"><a href="#四、缓存机制" class="headerlink" title="四、缓存机制"></a>四、缓存机制</h3><p>Glide的缓存主要分为内存缓存和磁盘缓存两部分，默认情况下，Glide 会在开始一个新的图片请求之前检查以下多级的缓存：<br>活动资源 (Active Resources) - 现在是否有另一个 View 正在展示这张图片？<br>内存缓存 (Memory cache) - 该图片是否最近被加载过并仍存在于内存中？<br>资源类型（Resource） - 该图片是否之前曾被解码、转换并写入过磁盘缓存？<br>数据来源 (Data) - 构建这个图片的资源是否之前曾被写入过文件缓存？<br>前两步检查图片是否在内存中，如果是则直接返回图片。后两步则检查图片是否在磁盘上，以便快速但异步地返回图片。<br>如果四个步骤都未能找到图片，则Glide会返回到原始资源以取回数据（原始文件，Uri, Url等）。<br>接下来我们从内存缓存和磁盘缓存两个方面解析Glide的缓存机制。</p>
 <h4 id="4-1、磁盘缓存DiskCacheStrategy"><a href="#4-1、磁盘缓存DiskCacheStrategy" class="headerlink" title="4.1、磁盘缓存DiskCacheStrategy"></a>4.1、磁盘缓存DiskCacheStrategy</h4><p>磁盘缓存DiskCacheStrategy可以被diskCacheStrategy方法应用到每一个单独的请求，比如我们通过diskCacheStrategy将缓存策略设置为DiskCacheStrategy.NONE,<br>那么就表示加载图片不使用磁盘缓存。另外还有其他几种策略，如下：<br>| 策略| 解释 |<br>|—–|—–|<br>| DiskCacheStrategy.ALL |  表示原始数据，本地数据，转换后的数据都缓存 |<br>| DiskCacheStrategy.AUTOMATIC |  表示智能的选取最好的一种缓存策略 |<br>| DiskCacheStrategy.NONE |  表示不缓存 |<br>| DiskCacheStrategy.DATA |  在检索之前将检索到的数据直接写入磁盘缓存 |<br>| DiskCacheStrategy.RESOURCE |  表示缓存转换后（压缩、做过处理）的图片 |</p>
@@ -436,8 +463,10 @@
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
-              <p class="site-author-name" itemprop="name">二气乖张</p>
-              <p class="site-description motion-element" itemprop="description"></p>
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="gooify">
+            
+              <p class="site-author-name" itemprop="name">gooify</p>
+              <p class="site-description motion-element" itemprop="description">想我所想，做我所做，记录美好生活！</p>
           </div>
 
           <nav class="site-state motion-element">
@@ -470,6 +499,16 @@
 
           
 
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/4391081a28f0" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-globe"></i>简书</a>
+                  </span>
+                
+            </div>
           
 
           
@@ -513,11 +552,11 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">二气乖张</span>
+  <span class="author" itemprop="copyrightHolder">gooify</span>
 
   
 </div>
