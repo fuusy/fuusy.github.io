@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="自定义View,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+<meta name="keywords" content="自定义View">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android自定义View_BitmapShader实现望远镜效果">
+<meta property="og:url" content="http://fuusy.github.io/2019/03/06/自定义控件-BitmapShader绘图/index.html">
+<meta property="og:site_name" content="Fuusy">
+<meta property="og:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-54c456cca2ac0756.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240">
+<meta property="og:updated_time" content="2019-06-22T04:13:23.528Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android自定义View_BitmapShader实现望远镜效果">
+<meta name="twitter:description" content="日拱一卒，功不唐捐  一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
+<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3585491-54c456cca2ac0756.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'goofy'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fuusy.github.io/2019/03/06/自定义控件-BitmapShader绘图/">
+
+
+
+
+
+  <title>Android自定义View_BitmapShader实现望远镜效果 | Fuusy</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fuusy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/03/06/自定义控件-BitmapShader绘图/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fuusy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/image.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fuusy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android自定义View_BitmapShader实现望远镜效果</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-06T22:32:07+08:00">
+                2019-03-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <blockquote>
+<p>日拱一卒，功不唐捐</p>
+</blockquote>
+<h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。<br><a id="more"></a><br><img src="http://upload-images.jianshu.io/upload_images/3585491-54c456cca2ac0756.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Telescope"></p>
+<h3 id="二、知识点BitmapShader"><a href="#二、知识点BitmapShader" class="headerlink" title="二、知识点BitmapShader"></a>二、知识点BitmapShader</h3><blockquote>
+<p>【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。</p>
+</blockquote>
+<p>简单来说，Shader可以用来实现一些渐变，反转，镜像，重复等效果。本文的效果核心使用的是Shader中的BitmapShader——位图Shader。</p>
+<blockquote>
+<p>BitmapShader(Bitmap bitmap, Shader.TileMode tileX, Shader.TileMode tileY)</p>
+</blockquote>
+<p>从构造方法可以看出，第一个参数为位图bitmap，第二个和第三个参数分别为横方向和纵方向的平铺模式。<br>平铺模式有如下几种模式：</p>
+<ul>
+<li>CLAMP ：拉伸，水平拉伸图片左右方向最后一个像素，，垂直拉伸图片上下方向的最后一个像素。</li>
+<li>MIRROR：镜像，水平和垂直方向重复图像，交替镜像，使相邻的图像始终相连。 </li>
+<li>REPEAT：重复，水平和垂直方向不断重复图片。  <h3 id="三、基本思路"><a href="#三、基本思路" class="headerlink" title="三、基本思路"></a>三、基本思路</h3>1、创建一张图片，将画笔设置为带有图像填充功能；<br>2、根据获取手指所点击位置的坐标，根据获得的坐标绘制圆形或者其他图形。<h3 id="四、实现"><a href="#四、实现" class="headerlink" title="四、实现"></a>四、实现</h3>从上述基本思路来看，步骤还是很简单，那么接下来分析实现的代码。<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint = new Paint();</span><br><span class="line">mBitmap = BitmapFactory.decodeResource(getResources(),R.drawable.photo2);</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先就是初始化画笔和创建一张位图。接下来为核心内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setShader(new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));</span><br><span class="line">canvas.drawCircle(400,400,300,mPaint);</span><br></pre></td></tr></table></figure></p>
+<p>BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)新创建一个BitmapShader，并将水平和垂直方向的平铺模式设置为CLAMP拉伸模式，将BitmapShader属性设置给画笔，使画笔具有图像填充功能，这是后面画笔可以绘制出一个带有图片的圆形的原因。接着利用Canvas在坐标（400,400）处绘制出一个半径为300的圆形。<br>目前基本的绘制已经结束，运行代码可以看出会有圆形图片在界面显示，如下图：<br><img src="https://upload-images.jianshu.io/upload_images/3585491-0e95241e5c208d1a.jpeg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Paint.jpeg"></p>
+<p>从上面的图片来看，是不是发现其实这就是一个圆形的头像，到这里我们可以想到前面有一篇<a href="https://www.jianshu.com/p/612917765568" target="_blank" rel="noopener">Android自定义菱形图片</a>使用PorterDuffXfermode的相关属性绘制菱形的头像，其实这里我们也可以使用BitmapShader进行操作，代码相比较更加简洁。<br>目前实现的是静态的图像，接下来实现随着手指动态移动的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private float mTouchEventY = -1;</span><br><span class="line">private float mTouchEventX = -1;</span><br><span class="line"> ......</span><br><span class="line"></span><br><span class="line"> @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        switch (event.getAction()) &#123;</span><br><span class="line">            case MotionEvent.ACTION_DOWN:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                return true;</span><br><span class="line">            case MotionEvent.ACTION_MOVE:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                postInvalidate();</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        postInvalidate();</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>首先我们创建两个全局变量mTouchEventX，mTouchEventY。在onTouchEvent事件中，手指MotionEvent.ACTION_DOWN的时候，动态获取手指的位置，在ACTION_DOWN的代码中记得<strong>return true</strong>，这涉及到事件的分发机制，当return false时，代表手指的down事件未完成，那么事件将不会继续向下传递，也就是说ACTION_DOWN动作后的ACTION_MOVE是不会触发的。<br>同样的，我们在MotionEvent.ACTION_MOVE中也动态获取手指的位置，也就是随着手指动态调整圆形的位置。<br>最后在Canvas绘制圆形的时候，将获取到的位置设置进去，随着手指的不断移动，不断获取到位置值，也就实现了动态绘制图像的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawCircle(mTouchEventX,mTouchEventY,300,mPaint);</span><br></pre></td></tr></table></figure></p>
+<h3 id="五、最后"><a href="#五、最后" class="headerlink" title="五、最后"></a>五、最后</h3><p>在上述的过程中，发现BitmapShader可以很容易的实现不规则头像。另外，上述也只使用了BitmapShader的拉伸模式，还有镜像和重复模式可以实现更多的特效，有待发掘。</p>
+<blockquote>
+<p>项目地址：<a href="https://github.com/fuusy/ShaderTelescope.git" target="_blank" rel="noopener">https://github.com/fuusy/ShaderTelescope.git</a></p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/自定义View/" rel="tag"># 自定义View</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/05/遇见Python-一-基础语法/" rel="next" title="遇见Python(一):基础语法">
+                <i class="fa fa-chevron-left"></i> 遇见Python(一):基础语法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/03/09/遇见Python-二-面向对象/" rel="prev" title="遇见Python(二):面向对象">
+                遇见Python(二):面向对象 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="fuusy">
+            
+              <p class="site-author-name" itemprop="name">fuusy</p>
+              <p class="site-description motion-element" itemprop="description">想我所想，做我所做，记录美好生活！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">9</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">5</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/4391081a28f0" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-globe"></i>简书</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、背景"><span class="nav-number">1.</span> <span class="nav-text">一、背景</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、知识点BitmapShader"><span class="nav-number">2.</span> <span class="nav-text">二、知识点BitmapShader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、基本思路"><span class="nav-number">3.</span> <span class="nav-text">三、基本思路</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、实现"><span class="nav-number">4.</span> <span class="nav-text">四、实现</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、最后"><span class="nav-number">5.</span> <span class="nav-text">五、最后</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fuusy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
