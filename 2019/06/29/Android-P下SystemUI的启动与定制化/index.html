@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Framework SystemUI,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="众所周知SystemUI包含基本的StatusBar、VolumeBar、NavigationBar等部分，在手机开机时就已经为我们加载好，但是有时候会出现对StatusBar，DropList等进行定制化的任务，那么就需要了解SystemUI的启动流程，了解StatusBar，DropList等view是如何加载在系统界面上，下文是从SystemUI启动入口、SystemUI的加载机制以及以St">
+<meta name="keywords" content="Framework SystemUI">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android P下SystemUI的启动与定制化">
+<meta property="og:url" content="http://fuusy.github.io/2019/06/29/Android-P下SystemUI的启动与定制化/index.html">
+<meta property="og:site_name" content="Fuusy">
+<meta property="og:description" content="众所周知SystemUI包含基本的StatusBar、VolumeBar、NavigationBar等部分，在手机开机时就已经为我们加载好，但是有时候会出现对StatusBar，DropList等进行定制化的任务，那么就需要了解SystemUI的启动流程，了解StatusBar，DropList等view是如何加载在系统界面上，下文是从SystemUI启动入口、SystemUI的加载机制以及以St">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/27/16b98cd16812430b?w=2466&h=1045&f=png&s=75939">
+<meta property="og:updated_time" content="2019-06-29T03:56:20.260Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android P下SystemUI的启动与定制化">
+<meta name="twitter:description" content="众所周知SystemUI包含基本的StatusBar、VolumeBar、NavigationBar等部分，在手机开机时就已经为我们加载好，但是有时候会出现对StatusBar，DropList等进行定制化的任务，那么就需要了解SystemUI的启动流程，了解StatusBar，DropList等view是如何加载在系统界面上，下文是从SystemUI启动入口、SystemUI的加载机制以及以St">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/6/27/16b98cd16812430b?w=2466&h=1045&f=png&s=75939">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'goofy'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fuusy.github.io/2019/06/29/Android-P下SystemUI的启动与定制化/">
+
+
+
+
+
+  <title>Android P下SystemUI的启动与定制化 | Fuusy</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">Fuusy</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-tags"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-categories">
+          <a href="/categories/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-th"></i> <br>
+            
+            Categories
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/06/29/Android-P下SystemUI的启动与定制化/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fuusy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/image.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Fuusy">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android P下SystemUI的启动与定制化</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-06-29T22:46:04+08:00">
+                2019-06-29
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>众所周知SystemUI包含基本的StatusBar、VolumeBar、NavigationBar等部分，在手机开机时就已经为我们加载好，但是有时候会出现对StatusBar，DropList等进行定制化的任务，那么就需要了解SystemUI的启动流程，了解StatusBar，DropList等view是如何加载在系统界面上，下文是从SystemUI启动入口、SystemUI的加载机制以及以StatusBar为例来分析整个流程。下图为SystemUI启动的整个时序图：<br><img src="https://user-gold-cdn.xitu.io/2019/6/27/16b98cd16812430b?w=2466&amp;h=1045&amp;f=png&amp;s=75939" alt></p>
+<h3 id="一、SystemUI的启动入口"><a href="#一、SystemUI的启动入口" class="headerlink" title="一、SystemUI的启动入口"></a>一、SystemUI的启动入口</h3><p>SystemUI的加载是在Android系统启动的时候，那么我们可以知道SystemUI的入口可能是在系统启动的流程中。通过调查，发现在SyetemServer进程中开始启动系统服务，如AMS，PMS，蓝牙，窗口管理服务等，其中就包括SystemUI，那么就来看看代码中是如何实现的。</p>
+<p>/frameworks/base/services/java/com/android/server/SystemServer.java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line">public final class SystemServer &#123;</span><br><span class="line">   ...</span><br><span class="line">   </span><br><span class="line">    /**</span><br><span class="line">     * The main entry point from zygote.</span><br><span class="line">     */</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        new SystemServer().run();</span><br><span class="line">    &#125;</span><br><span class="line">        ...</span><br><span class="line">        </span><br><span class="line">    private void run() &#123;</span><br><span class="line">             ...</span><br><span class="line">    </span><br><span class="line">        // Initialize native services.</span><br><span class="line">        System.loadLibrary(&quot;android_servers&quot;);</span><br><span class="line"></span><br><span class="line">        // Check whether we failed to shut down last time we tried.</span><br><span class="line">        // This call may not return.</span><br><span class="line">        performPendingShutdown();</span><br><span class="line"></span><br><span class="line">        // Initialize the system context.</span><br><span class="line">        createSystemContext();</span><br><span class="line"></span><br><span class="line">        // Create the system service manager.</span><br><span class="line">        mSystemServiceManager = new SystemServiceManager(mSystemContext);</span><br><span class="line">        mSystemServiceManager.setStartInfo(mRuntimeRestart,</span><br><span class="line">                mRuntimeStartElapsedTime, mRuntimeStartUptime);</span><br><span class="line">        LocalServices.addService(SystemServiceManager.class, mSystemServiceManager);</span><br><span class="line">        // Prepare the thread pool for init tasks that can be parallelized</span><br><span class="line">        SystemServerInitThreadPool.get();</span><br><span class="line"></span><br><span class="line">        // Start services.</span><br><span class="line">        try &#123;</span><br><span class="line">            traceBeginAndSlog(&quot;StartServices&quot;);</span><br><span class="line">            startBootstrapServices();</span><br><span class="line">            startCoreServices();</span><br><span class="line">            startOtherServices();</span><br><span class="line">            SystemServerInitThreadPool.shutdown();</span><br><span class="line">        &#125; catch (Throwable ex) &#123;</span><br><span class="line">            Slog.e(&quot;System&quot;, &quot;******************************************&quot;);</span><br><span class="line">            Slog.e(&quot;System&quot;, &quot;************ Failure starting system services&quot;, ex);</span><br><span class="line">            throw ex;</span><br><span class="line">        &#125; finally &#123;</span><br><span class="line">            traceEnd();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p>在SystemServer中可以发现启动SystemServer的是zygote进程，这个不属于本文范畴先不做探讨。在SystemServer的Main函数中，调用了run()，那么跟进到run方法中（上述代码省略了一部分，只保留主线），首先初始化了native services和system context，接着创建一个SystemServiceManager对象用于后续系统服务的启动和管理。初始化完成，接下来就开始系统服务的启动，这里调用了startBootstrapServices()、startCoreServices()、startOtherServices()三个方法，从名字来看，分别是启动引导service、启动中心service、启动其他的services，这三个方法就是开启不同的系统服务的入口，那就分别进入到三个方法中。</p>
+<ul>
+<li>startBootstrapServices()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private void startBootstrapServices() &#123;</span><br><span class="line">        ...</span><br><span class="line">     </span><br><span class="line">        Installer installer = mSystemServiceManager.startService(Installer.class);</span><br><span class="line"></span><br><span class="line">        mSystemServiceManager.startService(DeviceIdentifiersPolicyService.class);</span><br><span class="line">      </span><br><span class="line">        mActivityManagerService = mSystemServiceManager.startService(</span><br><span class="line">                ActivityManagerService.Lifecycle.class).getService();</span><br><span class="line">        mActivityManagerService.setSystemServiceManager(mSystemServiceManager);</span><br><span class="line">        mActivityManagerService.setInstaller(installer);</span><br><span class="line"></span><br><span class="line">        mPowerManagerService = mSystemServiceManager.startService(PowerManagerService.class);</span><br><span class="line">        </span><br><span class="line">        mSystemServiceManager.startService(LightsService.class);</span><br><span class="line">        </span><br><span class="line">        mSystemServiceManager.startService(new OverlayManagerService(mSystemContext, installer));</span><br><span class="line">        ...</span><br><span class="line"></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在startBootstrapServices()方法中，可以发现mSystemServiceManager.startServic()为核心所在，方法中传入不同的service作为参数，以实现不同services的开启，包括AMS，PMS，LightsService等系统所需的一些小的关键服务；</p>
+<ul>
+<li>startCoreServices()</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">    * Starts some essential services that are not tangled up in the bootstrap process.</span><br><span class="line">    */</span><br><span class="line">   private void startCoreServices() &#123;</span><br><span class="line">       traceBeginAndSlog(&quot;StartBatteryService&quot;);</span><br><span class="line">       // Tracks the battery level.  Requires LightService.</span><br><span class="line">       mSystemServiceManager.startService(BatteryService.class);</span><br><span class="line">       traceEnd();</span><br><span class="line"></span><br><span class="line">       // Tracks application usage stats.</span><br><span class="line">       traceBeginAndSlog(&quot;StartUsageService&quot;);</span><br><span class="line">       mSystemServiceManager.startService(UsageStatsService.class);</span><br><span class="line">       mActivityManagerService.setUsageStatsManager(</span><br><span class="line">               LocalServices.getService(UsageStatsManagerInternal.class));</span><br><span class="line">       traceEnd();</span><br><span class="line"></span><br><span class="line">       // Tracks whether the updatable WebView is in a ready state and watches for update installs.</span><br><span class="line">       if (mPackageManager.hasSystemFeature(PackageManager.FEATURE_WEBVIEW)) &#123;</span><br><span class="line">           traceBeginAndSlog(&quot;StartWebViewUpdateService&quot;);</span><br><span class="line">           mWebViewUpdateService = mSystemServiceManager.startService(WebViewUpdateService.class);</span><br><span class="line">           traceEnd();</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">       ...</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>同样的，代码中以mSystemServiceManager.startService()来开启服务，只不过里面的参数不同，就不做详细的探讨，继续看第三个方法；</p>
+<ul>
+<li>startOtherServices()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private void startOtherServices() &#123;</span><br><span class="line">        ...</span><br><span class="line">        traceBeginAndSlog(&quot;StartSystemUI&quot;);</span><br><span class="line">            try &#123;</span><br><span class="line">                startSystemUi(context, windowManagerF);</span><br><span class="line">            &#125; catch (Throwable e) &#123;</span><br><span class="line">                reportWtf(&quot;starting System UI&quot;, e);</span><br><span class="line">            &#125;</span><br><span class="line">    </span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在第三个startOtherServices()方法中，除掉开启一些系统所需的服务外，最主要的核心在于startSystemUi()方法，里面传入systemContext和WindowManagerService两个参数，也就是说我们已经找到systemUI启动的入口，那么就继续进入到startSystemUi()方法中。</p>
+<ul>
+<li>startSystemUi()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">static final void startSystemUi(Context context, WindowManagerService windowManager) &#123;</span><br><span class="line">        Intent intent = new Intent();</span><br><span class="line">        intent.setComponent(new ComponentName(&quot;com.android.systemui&quot;,</span><br><span class="line">                    &quot;com.android.systemui.SystemUIService&quot;));</span><br><span class="line">        intent.addFlags(Intent.FLAG_DEBUG_TRIAGED_MISSING);</span><br><span class="line">        //Slog.d(TAG, &quot;Starting service: &quot; + intent);</span><br><span class="line">        context.startServiceAsUser(intent, UserHandle.SYSTEM);</span><br><span class="line">        windowManager.onSystemUiStarted();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>在上面代码中可以看见创建了一个Intent，然后通过设置组件名称来开启SystemUIService，至此，SystemUI才只是找到启动的入口，对于系统启动完全完成，需要进入到SystemUIService中查看详细的启动流程。</p>
+<h3 id="二、SystemUI开始加载"><a href="#二、SystemUI开始加载" class="headerlink" title="二、SystemUI开始加载"></a>二、SystemUI开始加载</h3><p>第一部分找到了SystemUIService的启动，那么就先进入到SystemUIService类中。如下所示：<br>/frameworks/base/packages/SystemUI/src/com/android/systemui/SystemUIService.java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">public class SystemUIService extends Service &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void onCreate() &#123;</span><br><span class="line">        super.onCreate();</span><br><span class="line">        ((SystemUIApplication) getApplication()).startServicesIfNeeded();</span><br><span class="line">    ...</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>在onCreate()中获取了SystemUIApplication并且调用了它的startServicesIfNeeded()方法，那么接着就进入到SystemUIApplication类中，在SystemUIApplication类中找到startServicesIfNeeded方法，如下。</p>
+<ul>
+<li>startServicesIfNeeded()<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">public class SystemUIApplication extends Application implements SysUiServiceProvider &#123;</span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    public void startServicesIfNeeded() &#123;</span><br><span class="line">        String[] names = getResources().getStringArray(R.array.config_systemUIServiceComponents);</span><br><span class="line">        startServicesIfNeeded(names);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>startServicesIfNeeded()方法中，首先创建了一个包含services的名字的数组，接着将获取的数组作为参数调用startServicesIfNeeded(String[] services)方法，这里先不看这个方法内部的构造，先来看看上面数组获取的都有哪些services，根据代码中提供的id R.array.config_systemUIServiceComponents我们在xml中找到config.xml这个文件，其中发现了一些数据，如下：<br>/frameworks/base/packages/SystemUI/res/values/config.xml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;string-array name=&quot;config_systemUIServiceComponents&quot; translatable=&quot;false&quot;&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.Dependency&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.util.NotificationChannels&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.statusbar.CommandQueue$CommandQueueStart&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.keyguard.KeyguardViewMediator&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.recents.Recents&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.volume.VolumeUI&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.stackdivider.Divider&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.SystemBars&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.usb.StorageNotification&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.power.PowerUI&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.media.RingtonePlayer&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.keyboard.KeyboardUI&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.pip.PipUI&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.shortcut.ShortcutKeyDispatcher&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;@string/config_systemUIVendorServiceComponent&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.util.leak.GarbageMonitor$Service&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.LatencyTester&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.globalactions.GlobalActionsComponent&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.ScreenDecorations&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.fingerprint.FingerprintDialogImpl&lt;/item&gt;</span><br><span class="line">       &lt;item&gt;com.android.systemui.SliceBroadcastRelayHandler&lt;/item&gt;</span><br><span class="line">   &lt;/string-array&gt;</span><br></pre></td></tr></table></figure></p>
+<p>在上面这些item中，可以发现都是一些我们所熟悉的类，例如VolumeUI、SystemBars、PowerUI、KeyboardUI等，也就是我们手机界面常看见的系统音量，锁屏，状态栏等，而这些UI正是SystemUI的构造部分。</p>
+<p>在startServicesIfNeeded()方法中先将这些小部件集合在一起，然后调用startServicesIfNeeded(String[] services)，那么我们可以猜测接下来是不是就要开始分别加载这些小部件并且将他们放置在相应的位置上。</p>
+<ul>
+<li>startServicesIfNeeded(String[] services)；<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line"> private void startServicesIfNeeded(String[] services) &#123;</span><br><span class="line">        private SystemUI[] mServices;</span><br><span class="line">        ...</span><br><span class="line">        mServices = new SystemUI[services.length];</span><br><span class="line"></span><br><span class="line">        ...</span><br><span class="line">        final int N = services.length;</span><br><span class="line">        for (int i = 0; i &lt; N; i++) &#123;</span><br><span class="line">            String clsName = services[i];</span><br><span class="line">            </span><br><span class="line">            Class cls;</span><br><span class="line">            try &#123;</span><br><span class="line">                cls = Class.forName(clsName);</span><br><span class="line">                mServices[i] = (SystemUI) cls.newInstance();</span><br><span class="line">            &#125; catch(ClassNotFoundException ex)&#123;</span><br><span class="line">                throw new RuntimeException(ex);</span><br><span class="line">            &#125; catch (IllegalAccessException ex) &#123;</span><br><span class="line">                throw new RuntimeException(ex);</span><br><span class="line">            &#125; catch (InstantiationException ex) &#123;</span><br><span class="line">                throw new RuntimeException(ex);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            mServices[i].mContext = this;</span><br><span class="line">            mServices[i].mComponents = mComponents;</span><br><span class="line">            if (DEBUG) Log.d(TAG, &quot;running: &quot; + mServices[i]);</span><br><span class="line">            mServices[i].start();</span><br><span class="line">            ...</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<p>首先创建了一个SystemUI数组，这个是用来装载systemUI上各个小部件，接着遍历了在startServicesIfNeeded()方法中获取的services数组，通过反射的方式，获取各个不同的systemUI的对象，最后分别调用他们的start()方法。例如循环第六次获取到的是VolumeUI的对象，最后便调用的是VolumeUI的start()方法。</p>
+<p>到这里，正如上面的猜测，SystemUI开始加载不同位置的UI，而每个UI内部是如何加载，如何将view放置在不同的位置上的，我们继续往下看。</p>
+<h3 id="三、StatusBar的加载与定制化"><a href="#三、StatusBar的加载与定制化" class="headerlink" title="三、StatusBar的加载与定制化"></a>三、StatusBar的加载与定制化</h3><p>由于SystemUI所包含的部分很多，这里就以加载状态栏StatusBar为例。上述遍历获取到了SystemBar对象，并开始调用它的start()，那么我们就进入到SystemBar类中查看它的start()。</p>
+<p> /frameworks/base/packages/SystemUI/src/com/android/systemui/SystemBars.java<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">public class SystemBars extends SystemUI &#123;</span><br><span class="line">...</span><br><span class="line">    @Override</span><br><span class="line">    public void start() &#123;</span><br><span class="line">        if (DEBUG) Log.d(TAG, &quot;start&quot;);</span><br><span class="line">        createStatusBarFromConfig();</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">     private void createStatusBarFromConfig() &#123;</span><br><span class="line">        final String clsName = mContext.getString(R.string.config_statusBarComponent);</span><br><span class="line">       </span><br><span class="line">        Class&lt;?&gt; cls = null;</span><br><span class="line">        try &#123;</span><br><span class="line">            cls = mContext.getClassLoader().loadClass(clsName);</span><br><span class="line">        &#125; catch (Throwable t) &#123;</span><br><span class="line">            throw andLog(&quot;Error loading status bar component: &quot; + clsName, t);</span><br><span class="line">        &#125;</span><br><span class="line">        try &#123;</span><br><span class="line">            mStatusBar = (SystemUI) cls.newInstance();</span><br><span class="line">        &#125; catch (Throwable t) &#123;</span><br><span class="line">            throw andLog(&quot;Error creating status bar component: &quot; + clsName, t);</span><br><span class="line">        &#125;</span><br><span class="line">        mStatusBar.mContext = mContext;</span><br><span class="line">        mStatusBar.mComponents = mComponents;</span><br><span class="line">        mStatusBar.start();</span><br><span class="line">        if (DEBUG) Log.d(TAG, &quot;started &quot; + mStatusBar.getClass().getSimpleName());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>start方法中调用了createStatusBarFromConfig()，接着进入到createStatusBarFromConfig中，在这里，第一眼感觉代码有点熟悉，回想一下和上面SystemUIApplication类中startServicesIfNeeded(String[] services)加载不同systemUI的方法很像，都是使用了反射的手法，同样的首先通过id 查找到config.xml文件里的name，如下：<br>/frameworks/base/packages/SystemUI/res/values/config.xml<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;string name=&quot;config_statusBarComponent&quot; translatable=&quot;false&quot;&gt;com.android.systemui.statusbar.phone.StatusBar&lt;/string&gt;</span><br></pre></td></tr></table></figure></p>
+<p>从这个string name可以发现最后启动的是StatusBar，也就是调用StatusBar的start()方法。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">public class StatusBar extends SystemUI&#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void start() &#123;</span><br><span class="line">	...</span><br><span class="line">	//第一步</span><br><span class="line">	createAndAddWindows();</span><br><span class="line">	...</span><br><span class="line">    &#125;</span><br><span class="line">	</span><br><span class="line">    public void createAndAddWindows() &#123;</span><br><span class="line">	//第二步</span><br><span class="line">        addStatusBarWindow();</span><br><span class="line">    &#125;</span><br><span class="line">	...</span><br><span class="line">    private void addStatusBarWindow() &#123;</span><br><span class="line">	//第三步</span><br><span class="line">        makeStatusBarView();</span><br><span class="line">        mStatusBarWindowManager = Dependency.get(StatusBarWindowManager.class);</span><br><span class="line">        ...</span><br><span class="line">	//第五步</span><br><span class="line">        mStatusBarWindowManager.add(mStatusBarWindow, getStatusBarHeight());</span><br><span class="line">    &#125;</span><br><span class="line">	...</span><br><span class="line">    protected void makeStatusBarView() &#123;</span><br><span class="line">        final Context context = mContext;</span><br><span class="line">        ...</span><br><span class="line">	//第四步</span><br><span class="line">        inflateStatusBarWindow(context);</span><br><span class="line">    &#125;</span><br><span class="line">     	...</span><br><span class="line">    //加载Layout，初始化StatusBarWindow</span><br><span class="line">    protected void inflateStatusBarWindow(Context context) &#123;</span><br><span class="line">        mStatusBarWindow = (StatusBarWindowView) View.inflate(context,</span><br><span class="line">                R.layout.super_status_bar, null);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在StatusBar类中省略了大量代码，只保留了StatusBar加载的主要流程，从Start()方法中调用createAndAddWindows()接着再调用addStatusBarWindow()，紧接着在makeStatusBarView()方法中通过inflate加载layout的方式初始化StatusBarWindow，将super_status_bar.xml里所设计的样式加载到StatusBar界面上。</p>
+<p>也就是说，当我们碰到需要定制化SystemUI的情况下，可以自己自定义一个layout.xml，然后在这里替换掉源文件。到了第5步是在初始化StatusBarWindow后，通过StatusBarWindowManager的add()方法，将statusBarView加载到系统界面上，并设置了statusBar的高度。那么我们就进入StatusBarWindowManager类的add()方法，如下所示：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">public class StatusBarWindowManager&#123;</span><br><span class="line">	...</span><br><span class="line">/**</span><br><span class="line">     * Adds the status bar view to the window manager.</span><br><span class="line">     *</span><br><span class="line">     * @param statusBarView The view to add.</span><br><span class="line">     * @param barHeight The height of the status bar in collapsed state.</span><br><span class="line">     */</span><br><span class="line">    public void add(View statusBarView, int barHeight) &#123;</span><br><span class="line"></span><br><span class="line">        // Now that the status bar window encompasses the sliding panel and its</span><br><span class="line">        // translucent backdrop, the entire thing is made TRANSLUCENT and is</span><br><span class="line">        // hardware-accelerated.</span><br><span class="line">        mLp = new WindowManager.LayoutParams(</span><br><span class="line">                ViewGroup.LayoutParams.MATCH_PARENT,</span><br><span class="line">                barHeight,</span><br><span class="line">                WindowManager.LayoutParams.TYPE_STATUS_BAR,</span><br><span class="line">                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE</span><br><span class="line">                        | WindowManager.LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING</span><br><span class="line">                        | WindowManager.LayoutParams.FLAG_SPLIT_TOUCH</span><br><span class="line">                        | WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH</span><br><span class="line">                        | WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS,</span><br><span class="line">                PixelFormat.TRANSLUCENT);</span><br><span class="line">        mLp.token = new Binder();</span><br><span class="line">        mLp.gravity = Gravity.TOP;</span><br><span class="line">        mLp.softInputMode = WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;</span><br><span class="line">        mLp.setTitle(&quot;StatusBar&quot;);</span><br><span class="line">        mLp.packageName = mContext.getPackageName();</span><br><span class="line">        mLp.layoutInDisplayCutoutMode = LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;</span><br><span class="line">        mStatusBarView = statusBarView;</span><br><span class="line">        mBarHeight = barHeight;</span><br><span class="line">        mWindowManager.addView(mStatusBarView, mLp);</span><br><span class="line">        mLpChanged = new WindowManager.LayoutParams();</span><br><span class="line">        mLpChanged.copyFrom(mLp);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>可以发现StatusBar的加载真正在于WindowManager的处理，先设置好WindowManager.LayoutParams的宽高，层级TYPE，Flag等参数，然后将设置好的LayoutParams和上面传进来的mStatusBarView作为参数，调用addView()方法使View加载到相应的位置上。那么我们反过来思考下，如果将mStatusBarView换成我们自定义的View，那么结果会是什么样？</p>
+<p>至此，StatusBar在SystemUI上的加载也就结束了，同样的道理，VolumeBar，NavigationBar等SystemUI其他部分的加载也和StatusBar的加载基本一致，这里就不再做分析。理清了上述代码，再回到文章开头看那张时序图，就可以清楚的知道SystemUI的启动流程，在此基础上，对SystemUI的定制化任务也就变得明朗起来。    </p>
+<p>参考资料：</p>
+<p><a href="https://user-gold-cdn.xitu.io/2019/6/27/16b99a03b4149f9d" target="_blank" rel="noopener">Android系统启动流程（三）解析SyetemServer进程启动过程</a></p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/Framework-SystemUI/" rel="tag"># Framework SystemUI</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/" rel="next" title="Glide 4解析系列（二）：源码看Glide 4">
+                <i class="fa fa-chevron-left"></i> Glide 4解析系列（二）：源码看Glide 4
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="fuusy">
+            
+              <p class="site-author-name" itemprop="name">fuusy</p>
+              <p class="site-description motion-element" itemprop="description">想我所想，做我所做，记录美好生活！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                
+                  <span class="site-state-item-count">6</span>
+                  <span class="site-state-item-name">tags</span>
+                
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://www.jianshu.com/u/4391081a28f0" target="_blank" title="简书">
+                      
+                        <i class="fa fa-fw fa-globe"></i>简书</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、SystemUI的启动入口"><span class="nav-number">1.</span> <span class="nav-text">一、SystemUI的启动入口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、SystemUI开始加载"><span class="nav-number">2.</span> <span class="nav-text">二、SystemUI开始加载</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、StatusBar的加载与定制化"><span class="nav-number">3.</span> <span class="nav-text">三、StatusBar的加载与定制化</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fuusy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
