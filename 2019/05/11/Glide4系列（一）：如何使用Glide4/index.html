@@ -89,18 +89,18 @@
 <meta name="description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
 <meta name="keywords" content="Glide4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Glide 4解析系列（一）：如何使用Glide">
-<meta property="og:url" content="http://fuusy.github.io/2019/03/31/Glide-4解析系列（一）：如何使用Glide/index.html">
+<meta property="og:title" content="Glide4系列（一）：如何使用Glide4">
+<meta property="og:url" content="http://fuusy.github.io/2019/05/11/Glide4系列（一）：如何使用Glide4/index.html">
 <meta property="og:site_name" content="Fuusy">
 <meta property="og:description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-9a5ecd63b3dd0377.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
-<meta property="og:image" content="http://upload-images.jianshu.io/upload_images/3585491-aeebebb018d71f21.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
-<meta property="og:updated_time" content="2019-06-22T04:33:30.255Z">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba11ec64766f54?w=320&h=569&f=gif&s=106157">
+<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba11f52337d246?w=320&h=569&f=gif&s=31303">
+<meta property="og:updated_time" content="2019-06-29T04:21:39.374Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Glide 4解析系列（一）：如何使用Glide">
+<meta name="twitter:title" content="Glide4系列（一）：如何使用Glide4">
 <meta name="twitter:description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
-<meta name="twitter:image" content="http://upload-images.jianshu.io/upload_images/3585491-9a5ecd63b3dd0377.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50">
+<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba11ec64766f54?w=320&h=569&f=gif&s=106157">
 
 
 
@@ -130,13 +130,13 @@
 
 
 
-  <link rel="canonical" href="http://fuusy.github.io/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">
+  <link rel="canonical" href="http://fuusy.github.io/2019/05/11/Glide4系列（一）：如何使用Glide4/">
 
 
 
 
 
-  <title>Glide 4解析系列（一）：如何使用Glide | Fuusy</title>
+  <title>Glide4系列（一）：如何使用Glide4 | Fuusy</title>
   
 
 
@@ -263,7 +263,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/03/31/Glide-4解析系列（一）：如何使用Glide/">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/05/11/Glide4系列（一）：如何使用Glide4/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="fuusy">
@@ -280,7 +280,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Glide 4解析系列（一）：如何使用Glide</h1>
+          <h1 class="post-title" itemprop="name headline">Glide4系列（一）：如何使用Glide4</h1>
         
 
         <div class="post-meta">
@@ -292,8 +292,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-03-31T13:52:42+08:00">
-                2019-03-31
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-05-11T12:14:36+08:00">
+                2019-05-11
               </time>
             
 
@@ -330,21 +330,24 @@
       
 
       
-        <p>Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Glide.with(fragment)</span><br><span class="line">    .load(url)</span><br><span class="line">    .into(imageView);</span><br></pre></td></tr></table></figure></p>
-<p>这也只是Glide其中的一种调用方法，另外还包括占位符，缓存，监听等功能。</p>
+        <p>Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：<br><a id="more"></a></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Glide.with(fragment)</span><br><span class="line">    .load(url)</span><br><span class="line">    .into(imageView);</span><br></pre></td></tr></table></figure>
+<p>这也只是Glide其中的一种调用方法，另外下面也介绍占位符，缓存，监听等其他的功能。</p>
 <h3 id="一、添加依赖"><a href="#一、添加依赖" class="headerlink" title="一、添加依赖"></a>一、添加依赖</h3><p>首先在build.gradle中添加依赖<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">repositories &#123;</span><br><span class="line">        mavenCentral()</span><br><span class="line">        maven &#123; url &apos;https://maven.google.com&apos; &#125;</span><br><span class="line">    &#125;</span><br><span class="line">....</span><br><span class="line">implementation &apos;com.github.bumptech.glide:glide:4.8.0&apos;</span><br><span class="line">annotationProcessor &apos;com.github.bumptech.glide:compiler:4.8.0&apos;</span><br></pre></td></tr></table></figure></p>
 <p>如果你需要从网络上下载图片，那么就要在AndroidManifest.xml中添加Internet权限请求。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>如果你需要从SD卡等外部设备读取图片，那么同样需要添加读写的权限请求。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;/&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.READ_EXTERNAL_STORAGE&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
 <h3 id="二、基本使用"><a href="#二、基本使用" class="headerlink" title="二、基本使用"></a>二、基本使用</h3><p>以加载网络图片为例，在布局中加入一个按钮和ImageView用来存放图片。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button</span><br><span class="line">        android:id=&quot;@+id/beginLoad&quot;</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;开始&quot;/&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:id=&quot;@+id/imageView&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_gravity=&quot;center&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>接着在MainActivity中开始进行加载图片的操作，如第一段的描述，Glide基本加载图片就一句话，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private String mUrl = &quot;https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3222301344,3464718829&amp;fm=27&amp;gp=0.jpg&quot;;</span><br><span class="line">...</span><br><span class="line">private void loadGlide() &#123;</span><br><span class="line">         Glide.with(this)</span><br><span class="line">                .load(mUrl)</span><br><span class="line">                .into(mImageView);</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
-<p>从loadGlide（）方法中可以看到，Glide从所给的Url中先把图片下载好，接着将图片放置布局所设置的ImageView中，也就完成了图片的加载。我们来看看效果：<br><img src="http://upload-images.jianshu.io/upload_images/3585491-9a5ecd63b3dd0377.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Glide"></p>
+<p>从loadGlide（）方法中可以看到，Glide从所给的Url中先把图片下载好，接着将图片放置布局所设置的ImageView中，也就完成了图片的加载。我们来看看效果：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/6/29/16ba11ec64766f54?w=320&amp;h=569&amp;f=gif&amp;s=106157" alt></p>
 <h3 id="三、占位符"><a href="#三、占位符" class="headerlink" title="三、占位符"></a>三、占位符</h3><p>在官方的文档中，Glide给出了三种不同类型的占位符，分别为占位符（placeholder）、错误符（error）、后备回调符（fallback）。</p>
 <h4 id="3-1、Placeholder"><a href="#3-1、Placeholder" class="headerlink" title="3.1、Placeholder"></a>3.1、Placeholder</h4><p>占位符Placeholder指在图片还未加载好时，放置在ImageView上的一个替换图片，等图片加载完成，就将这个占位图片替换掉。添加占位符也很简单.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .placeholder(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
 <p>在上面基本使用的代码上加上RequestOptions，利用placeholder获取到要占位的图片，然后在Glide中加入apply方法，应用刚创建的RequestOptions。</p>
 <h4 id="3-2、Error"><a href="#3-2、Error" class="headerlink" title="3.2、Error"></a>3.2、Error</h4><p>所谓的Error错误符，是在请求永久性失败的时候展示，同样也在请求的url/model为 null ，且并没有设置 fallback Drawable 时展示。<br>添加错误符只需要将placeholder替换掉。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .error(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<p>因为错误符是在请求永久性失败的时候展示的，为了展示效果，就将网络关闭，这样就请求不到图片资源，error图片就会展示，如下：<br><img src="http://upload-images.jianshu.io/upload_images/3585491-aeebebb018d71f21.gif?imageMogr2/auto-orient/strip%7CimageView2/2/w/1080/q/50" alt="Glide"></p>
+<p>因为错误符是在请求永久性失败的时候展示的，为了展示效果，就将网络关闭，这样就请求不到图片资源，error图片就会展示，如下：</p>
+<p><img src="https://user-gold-cdn.xitu.io/2019/6/29/16ba11f52337d246?w=320&amp;h=569&amp;f=gif&amp;s=31303" alt></p>
 <h4 id="3-3、Fallback"><a href="#3-3、Fallback" class="headerlink" title="3.3、Fallback"></a>3.3、Fallback</h4><p>fallback Drawable 在请求的url/model为 null 时展示。设计 fallback Drawable 的主要目的是允许用户指示 null 是否为可接受的正常情况。例如，一个 null 的个人资料 url 可能暗示这个用户没有设置头像，因此应该使用默认头像。然而，null 也可能表明这个元数据根本就是不合法的，或者取不到。 默认情况下Glide将 null 作为错误处理，所以可以接受 null 的应用应当显式地设置一个 fallback Drawable 。代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .fallback(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
-<h3 id="四、缓存机制"><a href="#四、缓存机制" class="headerlink" title="四、缓存机制"></a>四、缓存机制</h3><p>Glide的缓存主要分为内存缓存和磁盘缓存两部分，默认情况下，Glide 会在开始一个新的图片请求之前检查以下多级的缓存：<br>活动资源 (Active Resources) - 现在是否有另一个 View 正在展示这张图片？<br>内存缓存 (Memory cache) - 该图片是否最近被加载过并仍存在于内存中？<br>资源类型（Resource） - 该图片是否之前曾被解码、转换并写入过磁盘缓存？<br>数据来源 (Data) - 构建这个图片的资源是否之前曾被写入过文件缓存？<br>前两步检查图片是否在内存中，如果是则直接返回图片。后两步则检查图片是否在磁盘上，以便快速但异步地返回图片。<br>如果四个步骤都未能找到图片，则Glide会返回到原始资源以取回数据（原始文件，Uri, Url等）。<br>接下来我们从内存缓存和磁盘缓存两个方面解析Glide的缓存机制。</p>
+<h3 id="四、缓存机制的使用"><a href="#四、缓存机制的使用" class="headerlink" title="四、缓存机制的使用"></a>四、缓存机制的使用</h3><p>Glide的缓存主要分为内存缓存和磁盘缓存两部分，默认情况下，Glide 会在开始一个新的图片请求之前检查以下多级的缓存：<br>活动资源 (Active Resources) - 现在是否有另一个 View 正在展示这张图片？<br>内存缓存 (Memory cache) - 该图片是否最近被加载过并仍存在于内存中？<br>资源类型（Resource） - 该图片是否之前曾被解码、转换并写入过磁盘缓存？<br>数据来源 (Data) - 构建这个图片的资源是否之前曾被写入过文件缓存？<br>前两步检查图片是否在内存中，如果是则直接返回图片。后两步则检查图片是否在磁盘上，以便快速但异步地返回图片。<br>如果四个步骤都未能找到图片，则Glide会返回到原始资源以取回数据（原始文件，Uri, Url等）。<br>接下来我们从内存缓存和磁盘缓存两个方面解析Glide的缓存机制。</p>
 <h4 id="4-1、磁盘缓存DiskCacheStrategy"><a href="#4-1、磁盘缓存DiskCacheStrategy" class="headerlink" title="4.1、磁盘缓存DiskCacheStrategy"></a>4.1、磁盘缓存DiskCacheStrategy</h4><p>磁盘缓存DiskCacheStrategy可以被diskCacheStrategy方法应用到每一个单独的请求，比如我们通过diskCacheStrategy将缓存策略设置为DiskCacheStrategy.NONE,<br>那么就表示加载图片不使用磁盘缓存。另外还有其他几种策略，如下：<br>| 策略| 解释 |<br>|—–|—–|<br>| DiskCacheStrategy.ALL |  表示原始数据，本地数据，转换后的数据都缓存 |<br>| DiskCacheStrategy.AUTOMATIC |  表示智能的选取最好的一种缓存策略 |<br>| DiskCacheStrategy.NONE |  表示不缓存 |<br>| DiskCacheStrategy.DATA |  在检索之前将检索到的数据直接写入磁盘缓存 |<br>| DiskCacheStrategy.RESOURCE |  表示缓存转换后（压缩、做过处理）的图片 |</p>
 <p>磁盘缓存在代码中的使用也很简单。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">       RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">               .placeholder(R.drawable.place)</span><br><span class="line">               .diskCacheStrategy(DiskCacheStrategy.AUTOMATIC);</span><br><span class="line">       Glide.with(this)</span><br><span class="line">               .load(mUrl)</span><br><span class="line">               .apply(requestOptions)</span><br><span class="line">               .into(mImageView);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure></p>
 <h4 id="4-2、内存缓存"><a href="#4-2、内存缓存" class="headerlink" title="4.2、内存缓存"></a>4.2、内存缓存</h4><p>Glide在加载图片时是默认开启内存缓存，在第一次从原始资源加载图片时，Glide会将图片也加载到内存缓存中，只要资源不被消除，那么第二次加载图片时就直接从内存中读取图片。内存缓存的存在极大的提升了加载图片的速度，比如从网上获取图片，只需要第一次进行下载，第二次就不会因为网络断开或者网络不好而加载不出图片，大大提升了用户的使用体验。</p>
@@ -353,8 +356,7 @@
 <h5 id="4-4-1、仅关闭内存缓存"><a href="#4-4-1、仅关闭内存缓存" class="headerlink" title="4.4.1、仅关闭内存缓存"></a>4.4.1、仅关闭内存缓存</h5><p>关闭内存缓存，调用skipMemoryCache方法即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">        RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">                .skipMemoryCache(true);</span><br><span class="line"></span><br><span class="line">        Glide.with(this)</span><br><span class="line">                .load(mUrl)</span><br><span class="line">                .apply(requestOptions)</span><br><span class="line">                .into(mImageView);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <h5 id="4-4-2、仅关闭磁盘缓存"><a href="#4-4-2、仅关闭磁盘缓存" class="headerlink" title="4.4.2、仅关闭磁盘缓存"></a>4.4.2、仅关闭磁盘缓存</h5><p>关闭磁盘缓存在上面也已经说过，设置DiskCacheStrategy.NONE策略即可。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">        RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">                .diskCacheStrategy(DiskCacheStrategy.NONE);</span><br><span class="line"></span><br><span class="line">        Glide.with(this)</span><br><span class="line">                .load(mUrl)</span><br><span class="line">                .apply(requestOptions)</span><br><span class="line">                .into(mImageView);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <h5 id="4-4-3、内存-磁盘缓存都关闭"><a href="#4-4-3、内存-磁盘缓存都关闭" class="headerlink" title="4.4.3、内存/磁盘缓存都关闭"></a>4.4.3、内存/磁盘缓存都关闭</h5><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .diskCacheStrategy(DiskCacheStrategy.NONE)</span><br><span class="line">              .skipMemoryCache(true);</span><br><span class="line"></span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
-<p>The End.</p>
-<p>推荐阅读：<br><a href="https://mp.weixin.qq.com/s?__biz=MzU5Mzc5OTg3NQ==&amp;mid=2247483697&amp;idx=1&amp;sn=43c9ff6f81d41644dd6d57689cfc577f&amp;chksm=fe0bbe9dc97c378b177f403bd61efad5aafec9e83d5cd020a4c90c911a5263c940167f9ed559&amp;token=1156704200&amp;lang=zh_CN#rd" target="_blank" rel="noopener">Android自定义View_BitmapShader实现望远镜效果</a><br><a href="https://mp.weixin.qq.com/s?__biz=MzU5Mzc5OTg3NQ==&amp;mid=2247483705&amp;idx=1&amp;sn=1ea4424c81ae7790b73abbb11ac136dc&amp;chksm=fe0bbe95c97c3783b3464f07ef16b22cbee57db89394bfdd4b482a951cb4fa467497eefe84dc&amp;token=1156704200&amp;lang=zh_CN#rd" target="_blank" rel="noopener">从Log中看View的事件分发机制</a></p>
+<h3 id="五、最后"><a href="#五、最后" class="headerlink" title="五、最后"></a>五、最后</h3><p>上文包括了Glide的基本使用，当然对于不同的开发需求也有其他细节的调用，这需要根据实际情况不断的去探索。掌握了Glide的基本使用，就得去看看Glide内部的实现手法，下一步将分析Glide是如何将这么大能量汇成with、load、into简单的一句话。</p>
 
       
     </div>
@@ -385,8 +387,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/03/20/Android艺术开发探索-重点提炼一：Activity/" rel="next" title="Android艺术开发探索|重点提炼一：Activity">
-                <i class="fa fa-chevron-left"></i> Android艺术开发探索|重点提炼一：Activity
+              <a href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/" rel="next" title="Glide 4解析系列（二）：源码看Glide 4">
+                <i class="fa fa-chevron-left"></i> Glide 4解析系列（二）：源码看Glide 4
               </a>
             
           </div>
@@ -395,8 +397,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/03/31/Glide-4解析系列（二）：源码看Glide-4/" rel="prev" title="Glide 4解析系列（二）：源码看Glide 4">
-                Glide 4解析系列（二）：源码看Glide 4 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/01/Glide4系列（二）：Glide4的内部源码解析/" rel="prev" title="Glide4系列（二）：Glide4的内部源码解析">
+                Glide4系列（二）：Glide4的内部源码解析 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -532,7 +534,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、添加依赖"><span class="nav-number">1.</span> <span class="nav-text">一、添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、基本使用"><span class="nav-number">2.</span> <span class="nav-text">二、基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、占位符"><span class="nav-number">3.</span> <span class="nav-text">三、占位符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1、Placeholder"><span class="nav-number">3.1.</span> <span class="nav-text">3.1、Placeholder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2、Error"><span class="nav-number">3.2.</span> <span class="nav-text">3.2、Error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3、Fallback"><span class="nav-number">3.3.</span> <span class="nav-text">3.3、Fallback</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、缓存机制"><span class="nav-number">4.</span> <span class="nav-text">四、缓存机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1、磁盘缓存DiskCacheStrategy"><span class="nav-number">4.1.</span> <span class="nav-text">4.1、磁盘缓存DiskCacheStrategy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2、内存缓存"><span class="nav-number">4.2.</span> <span class="nav-text">4.2、内存缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3、仅从缓存加载图片"><span class="nav-number">4.3.</span> <span class="nav-text">4.3、仅从缓存加载图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4、跳过缓存"><span class="nav-number">4.4.</span> <span class="nav-text">4.4、跳过缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-1、仅关闭内存缓存"><span class="nav-number">4.4.1.</span> <span class="nav-text">4.4.1、仅关闭内存缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-2、仅关闭磁盘缓存"><span class="nav-number">4.4.2.</span> <span class="nav-text">4.4.2、仅关闭磁盘缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-3、内存-磁盘缓存都关闭"><span class="nav-number">4.4.3.</span> <span class="nav-text">4.4.3、内存/磁盘缓存都关闭</span></a></li></ol></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、添加依赖"><span class="nav-number">1.</span> <span class="nav-text">一、添加依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、基本使用"><span class="nav-number">2.</span> <span class="nav-text">二、基本使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、占位符"><span class="nav-number">3.</span> <span class="nav-text">三、占位符</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-1、Placeholder"><span class="nav-number">3.1.</span> <span class="nav-text">3.1、Placeholder</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-2、Error"><span class="nav-number">3.2.</span> <span class="nav-text">3.2、Error</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-3、Fallback"><span class="nav-number">3.3.</span> <span class="nav-text">3.3、Fallback</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#四、缓存机制的使用"><span class="nav-number">4.</span> <span class="nav-text">四、缓存机制的使用</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1、磁盘缓存DiskCacheStrategy"><span class="nav-number">4.1.</span> <span class="nav-text">4.1、磁盘缓存DiskCacheStrategy</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2、内存缓存"><span class="nav-number">4.2.</span> <span class="nav-text">4.2、内存缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-3、仅从缓存加载图片"><span class="nav-number">4.3.</span> <span class="nav-text">4.3、仅从缓存加载图片</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-4、跳过缓存"><span class="nav-number">4.4.</span> <span class="nav-text">4.4、跳过缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-1、仅关闭内存缓存"><span class="nav-number">4.4.1.</span> <span class="nav-text">4.4.1、仅关闭内存缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-2、仅关闭磁盘缓存"><span class="nav-number">4.4.2.</span> <span class="nav-text">4.4.2、仅关闭磁盘缓存</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#4-4-3、内存-磁盘缓存都关闭"><span class="nav-number">4.4.3.</span> <span class="nav-text">4.4.3、内存/磁盘缓存都关闭</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#五、最后"><span class="nav-number">5.</span> <span class="nav-text">五、最后</span></a></li></ol></div>
             
 
           </div>
