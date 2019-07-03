@@ -94,13 +94,13 @@
 <meta property="og:site_name" content="Fuusy">
 <meta property="og:description" content="一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba1d3e543164ab?w=320&h=569&f=gif&s=607963">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba1d3e629ca92b?w=1069&h=1126&f=jpeg&s=40573">
-<meta property="og:updated_time" content="2019-06-29T06:07:01.375Z">
+<meta property="og:image" content="http://fuusy.github.io/2019/03/06/Android自定义View-BitmapShader实现无规则图形/shape.gif">
+<meta property="og:image" content="http://fuusy.github.io/2019/03/06/Android自定义View-BitmapShader实现无规则图形/shape2.jpg">
+<meta property="og:updated_time" content="2019-07-03T12:22:16.045Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Android自定义View-BitmapShader实现无规则图形">
 <meta name="twitter:description" content="一、背景这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。">
-<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba1d3e543164ab?w=320&h=569&f=gif&s=607963">
+<meta name="twitter:image" content="http://fuusy.github.io/2019/03/06/Android自定义View-BitmapShader实现无规则图形/shape.gif">
 
 
 
@@ -325,7 +325,7 @@
       
 
       
-        <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。<br><a id="more"></a><br><img src="https://user-gold-cdn.xitu.io/2019/6/29/16ba1d3e543164ab?w=320&amp;h=569&amp;f=gif&amp;s=607963" alt="Telescope"></p>
+        <h3 id="一、背景"><a href="#一、背景" class="headerlink" title="一、背景"></a>一、背景</h3><p>这个特效来源于有一天逛网站的时候，一家网站实现了这样的一个效果：在你向下滚动页面的时候，他的背景的图片随着你的滑动，以窗口的方式展示着图片的某一部分。浏览完就想着以Android的方式能不能实现，也就演变成了以下的效果。<br><a id="more"></a><br><img src="/2019/03/06/Android自定义View-BitmapShader实现无规则图形/shape.gif"></p>
 <h3 id="二、知识点BitmapShader"><a href="#二、知识点BitmapShader" class="headerlink" title="二、知识点BitmapShader"></a>二、知识点BitmapShader</h3><blockquote>
 <p>【官方】Shader用于绘制位图作为纹理。位图可以设置模式为重复或镜像或平铺。</p>
 </blockquote>
@@ -341,7 +341,7 @@
 </li>
 </ul>
 <p>首先就是初始化画笔和创建一张位图。接下来为核心内容。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mPaint.setShader(new BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP));</span><br><span class="line">canvas.drawCircle(400,400,300,mPaint);</span><br></pre></td></tr></table></figure></p>
-<p>BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)新创建一个BitmapShader，并将水平和垂直方向的平铺模式设置为CLAMP拉伸模式，将BitmapShader属性设置给画笔，使画笔具有图像填充功能，这是后面画笔可以绘制出一个带有图片的圆形的原因。接着利用Canvas在坐标（400,400）处绘制出一个半径为300的圆形。<br>目前基本的绘制已经结束，运行代码可以看出会有圆形图片在界面显示，如下图：<br><img src="https://user-gold-cdn.xitu.io/2019/6/29/16ba1d3e629ca92b?w=1069&amp;h=1126&amp;f=jpeg&amp;s=40573" alt="Paint.jpeg"></p>
+<p>BitmapShader(mBitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP)新创建一个BitmapShader，并将水平和垂直方向的平铺模式设置为CLAMP拉伸模式，将BitmapShader属性设置给画笔，使画笔具有图像填充功能，这是后面画笔可以绘制出一个带有图片的圆形的原因。接着利用Canvas在坐标（400,400）处绘制出一个半径为300的圆形。<br>目前基本的绘制已经结束，运行代码可以看出会有圆形图片在界面显示，如下图：<br><img src="/2019/03/06/Android自定义View-BitmapShader实现无规则图形/shape2.jpg"></p>
 <p>从上面的图片来看，是不是发现其实这就是一个圆形的头像，到这里我们可以想到前面有一篇<a href="https://www.jianshu.com/p/612917765568" target="_blank" rel="noopener">Android自定义菱形图片</a>使用PorterDuffXfermode的相关属性绘制菱形的头像，其实这里我们也可以使用BitmapShader进行操作，代码相比较更加简洁。<br>目前实现的是静态的图像，接下来实现随着手指动态移动的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">private float mTouchEventY = -1;</span><br><span class="line">private float mTouchEventX = -1;</span><br><span class="line"> ......</span><br><span class="line"></span><br><span class="line"> @Override</span><br><span class="line">    public boolean onTouchEvent(MotionEvent event) &#123;</span><br><span class="line">        switch (event.getAction()) &#123;</span><br><span class="line">            case MotionEvent.ACTION_DOWN:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                return true;</span><br><span class="line">            case MotionEvent.ACTION_MOVE:</span><br><span class="line">                mTouchEventX = event.getX();</span><br><span class="line">                mTouchEventY = event.getY();</span><br><span class="line">                postInvalidate();</span><br><span class="line">                break;</span><br><span class="line">        &#125;</span><br><span class="line">        postInvalidate();</span><br><span class="line">        return super.onTouchEvent(event);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
 <p>首先我们创建两个全局变量mTouchEventX，mTouchEventY。在onTouchEvent事件中，手指MotionEvent.ACTION_DOWN的时候，动态获取手指的位置，在ACTION_DOWN的代码中记得<strong>return true</strong>，这涉及到事件的分发机制，当return false时，代表手指的down事件未完成，那么事件将不会继续向下传递，也就是说ACTION_DOWN动作后的ACTION_MOVE是不会触发的。<br>同样的，我们在MotionEvent.ACTION_MOVE中也动态获取手指的位置，也就是随着手指动态调整圆形的位置。<br>最后在Canvas绘制圆形的时候，将获取到的位置设置进去，随着手指的不断移动，不断获取到位置值，也就实现了动态绘制图像的效果。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">canvas.drawCircle(mTouchEventX,mTouchEventY,300,mPaint);</span><br></pre></td></tr></table></figure></p>
 <h3 id="五、最后"><a href="#五、最后" class="headerlink" title="五、最后"></a>五、最后</h3><p>在上述的过程中，发现BitmapShader可以很容易的实现不规则头像。另外，上述也只使用了BitmapShader的拉伸模式，还有镜像和重复模式可以实现更多的特效，有待发掘。</p>
