@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="WindowManager LayoutParams,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="在上一篇《AndroidP下SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.L">
+<meta name="keywords" content="WindowManager LayoutParams">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android P下WindowManager与LayoutParams的详解">
+<meta property="og:url" content="http://fuusy.github.io/2019/07/06/Android-P下WindowManager与LayoutParams的详解/index.html">
+<meta property="og:site_name" content="What&#39;s in it for me">
+<meta property="og:description" content="在上一篇《AndroidP下SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.L">
+<meta property="og:locale" content="default">
+<meta property="og:updated_time" content="2019-07-06T10:14:26.271Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android P下WindowManager与LayoutParams的详解">
+<meta name="twitter:description" content="在上一篇《AndroidP下SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.L">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'goofy'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fuusy.github.io/2019/07/06/Android-P下WindowManager与LayoutParams的详解/">
+
+
+
+
+
+  <title>Android P下WindowManager与LayoutParams的详解 | What's in it for me</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">What's in it for me</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/07/06/Android-P下WindowManager与LayoutParams的详解/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="fuusy">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/image.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="What's in it for me">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android P下WindowManager与LayoutParams的详解</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-07-06T18:12:32+08:00">
+                2019-07-06
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 本文阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>在上一篇<a href="https://juejin.im/post/5d143993f265da1b695d7003" target="_blank" rel="noopener">《AndroidP下SystemUI的启动与定制化》</a>中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.LayoutParams的参数又有什么特点？下文就将从这两个方面来分析WindowManager。<br><a id="more"></a></p>
+<h2 id="一、WindowManager是什么？"><a href="#一、WindowManager是什么？" class="headerlink" title="一、WindowManager是什么？"></a>一、WindowManager是什么？</h2><h3 id="1-1-WindowManager与window的关系"><a href="#1-1-WindowManager与window的关系" class="headerlink" title="1.1 WindowManager与window的关系"></a>1.1 WindowManager与window的关系</h3><p>WindowManager是什么？官方对于它的解释只有这么一句话</p>
+<blockquote>
+<p>The interface that apps use to talk to the window manager.</p>
+</blockquote>
+<p>翻译过来就是app与window通信的一个接口。从语义上看WindowManager是用来管理window的一个接口，那么window又是什么？其实我们常见的Dialog、Popup、StatusBar等本质就是window，window是一个抽象类，相当于一个联盟，Dialog、Popup等view只有依附在window这个联盟才能发挥功能，而WindowManager就像是联盟的会长，负责与子view等会员通信，并且能够对他们进行增加、更新和删除(WindowManager是一个接口，具体的操作是在WindowManagerImpl实现类中)。</p>
+<p>WindowManager继承自ViewManager，ViewManager是用于向Activity添加和删除子视图的接口，在官方文档上显示ViewManager中有三个抽象方法：</p>
+<ul>
+<li>abstract void addView(<a href="https://developer.android.google.cn/reference/android/view/View.html" target="_blank" rel="noopener">View</a> view, <a href="https://developer.android.google.cn/reference/android/view/ViewGroup.LayoutParams.html" target="_blank" rel="noopener">ViewGroup.LayoutParams</a> params)</li>
+<li>abstract void removeView(<a href="https://developer.android.google.cn/reference/android/view/View.html" target="_blank" rel="noopener">View</a> view)</li>
+<li>abstract void updateViewLayout(<a href="https://developer.android.google.cn/reference/android/view/View.html" target="_blank" rel="noopener">View</a> view, <a href="https://developer.android.google.cn/reference/android/view/ViewGroup.LayoutParams.html" target="_blank" rel="noopener">ViewGroup.LayoutParams</a> params)</li>
+</ul>
+<p>第一个addView()：表示通过LayoutParams将参数传递给view，然后将view添加到window上。也就是我们平常在系统界面上添加自定义Popup、Dialog、菜单等。</p>
+<p>第二个removeView()：表示将window上的view删除。</p>
+<p>第三个updateViewLayout()：表示将view进行更新。</p>
+<h3 id="1-2-WindowManager对象的获取"><a href="#1-2-WindowManager对象的获取" class="headerlink" title="1.2 WindowManager对象的获取"></a>1.2 WindowManager对象的获取</h3><p>当我们想要在界面上添加一个子view就需要调用WindowManager的addView()，那么如何获取WindowManager的实例呢？文档中给出了这样一个方法：</p>
+<ul>
+<li><a href="https://developer.android.google.cn/reference/android/content/Context.html#getSystemService(java.lang.String" target="_blank" rel="noopener">Context.getSystemService(String name)</a>)</li>
+</ul>
+<p>可以知道方法中参数name的不同，将获取不同的对象。name为<a href="https://developer.android.google.cn/reference/android/content/Context.html#WINDOW_SERVICE" target="_blank" rel="noopener">WINDOW_SERVICE</a>时，即<strong>Context.getSystemService(Context.WINDOW_SERVICE)</strong> 返回WindowManager对象。除此之外以下列举出比较常见的name所对应的对象。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">name</th>
+<th style="text-align:center">object</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">POWER_SERVICE</td>
+<td style="text-align:center">PowerManager</td>
+</tr>
+<tr>
+<td style="text-align:center">ALARM_SERVICE</td>
+<td style="text-align:center">AlarmManager</td>
+</tr>
+<tr>
+<td style="text-align:center">NOTIFICATION_SERVICE</td>
+<td style="text-align:center">NotificationManager</td>
+</tr>
+<tr>
+<td style="text-align:center">ACTIVITY_SERVICE</td>
+<td style="text-align:center">ActivityManager</td>
+</tr>
+<tr>
+<td style="text-align:center">LAYOUT_INFLATER_SERVICE</td>
+<td style="text-align:center">LayoutInflater</td>
+</tr>
+<tr>
+<td style="text-align:center">LOCATION_SERVICE</td>
+<td style="text-align:center">LocationManager</td>
+</tr>
+<tr>
+<td style="text-align:center">WIFI_SERVICE</td>
+<td style="text-align:center">WifiManager</td>
+</tr>
+<tr>
+<td style="text-align:center">…</td>
+<td style="text-align:center">…</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+<h2 id="二、WindowManager-LayoutParams参数解析"><a href="#二、WindowManager-LayoutParams参数解析" class="headerlink" title="二、WindowManager.LayoutParams参数解析"></a>二、WindowManager.LayoutParams参数解析</h2><h3 id="2-1-构造函数"><a href="#2-1-构造函数" class="headerlink" title="2.1 构造函数"></a>2.1 构造函数</h3><p>在第一节里面提到过addView(View view, ViewGroup.LayoutParams params)是通过LayoutParams将参数传递给view，然后将view添加到window上。LayoutParams表示包含了layout宽高，位置，类型等信息，通过设置这些信息，生成不同的view。</p>
+<p>addView()中的第二个参数ViewGroup.LayoutParams是WindowManager.LayoutParams的父类，我们具体来看看WindowManager.LayoutParams。</p>
+<p>WindowManager.LayoutParams有下面7种构造函数：</p>
+<table>
+<thead>
+<tr>
+<th>Public constructors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1.<code>WindowManager.LayoutParams()</code></td>
+</tr>
+<tr>
+<td>2.<code>WindowManager.LayoutParams(int _type)</code></td>
+</tr>
+<tr>
+<td>3.<code>WindowManager.LayoutParams(int _type, int _flags)</code></td>
+</tr>
+<tr>
+<td>4.<code>WindowManager.LayoutParams(int _type, int _flags, int _format)</code></td>
+</tr>
+<tr>
+<td>5.<code>WindowManager.LayoutParams(int w, int h, int _type, int _flags, int _format)</code></td>
+</tr>
+<tr>
+<td>6.<code>WindowManager.LayoutParams(int w, int h, int xpos, int ypos, int _type, int _flags, int _format)</code></td>
+</tr>
+<tr>
+<td>7.<code>WindowManager.LayoutParams(Parcel in)</code></td>
+</tr>
+</tbody>
+</table>
+<p>对于具体的参数详情在下面一一介绍。</p>
+<h3 id="2-2-Type"><a href="#2-2-Type" class="headerlink" title="2.2 Type"></a>2.2 Type</h3><p>第二个构造函数里包含了一个int 型的type，而type代表的是不同类型的window，window分为三种类型：</p>
+<ul>
+<li><p><strong>Application windows（应用程序window）</strong></p>
+<p>层级范围为1-99，是属于正常的顶级应用程序window，例如我们所见到的Activity。</p>
+</li>
+<li><p><strong>Sub-windows（子window）</strong></p>
+<p>层级范围为1000-1999，例如部分Dialog。</p>
+</li>
+<li><p><strong>System windows （系统window）</strong></p>
+<p>层级范围为2000-2999，是属于最高层级，例如StatusBar，NavigationBar，覆盖在所有window之上。</p>
+</li>
+</ul>
+<p>而在这三种类型下又分为了很多不同的状态，官方文档上介绍了多种type，这里就介绍几种常见且重要的type。</p>
+<ul>
+<li><p><strong>TYPE_APPLICATION_OVERLAY</strong> </p>
+<p>覆盖于所有activity window之上，但低于关键系统window（如状态栏，IME等），系统可以随时改变这些窗口的位置，大小或可见性，并且需要申请Manifest.permission.SYSTEM_ALERT_WINDOW权限。</p>
+</li>
+<li><p><strong>TYPE_STATUS_BAR</strong></p>
+<p>表示状态栏，系统只有一个状态栏窗口，它位于屏幕的顶部，所有其他窗口都向下移动，当我们想要替换成自己自定义的StatusBar时，可设置type为它。</p>
+</li>
+<li><p><strong>TYPE_SEARCH_BAR</strong></p>
+<p>搜索栏，系统只有一个搜索栏窗口并且位于屏幕顶部。</p>
+</li>
+<li><p><strong>TYPE_KEYGUARD_DIALOG</strong></p>
+<p>键盘锁显示的对话框。</p>
+</li>
+</ul>
+<blockquote>
+<p><strong>注意</strong> ：TYPE_TOAST、TYPE_SYSTEM_OVERLAY、TYPE_SYSTEM_ERROR、TYPE_SYSTEM_ALERT、TYPE_PRIORITY_PHONE、TYPE_PHONE这几个type在<strong>API 26</strong>中已经废弃，由<strong>TYPE_APPLICATION_OVERLAY</strong>替代。</p>
+</blockquote>
+<h3 id="2-3-Flags"><a href="#2-3-Flags" class="headerlink" title="2.3 Flags"></a>2.3 Flags</h3><p>第三个构造函数中参数多了一个int型的Flags，其表示window的属性，下面就介绍几种常见的Flag。</p>
+<ul>
+<li><p><strong>默认状态不设置Flag</strong><br>在默认不设置Flag的状态下，在新window层级下的window将接受不到任何touch事件，即使是在新window的范围外。</p>
+</li>
+<li><p><strong>FLAG_NOT_FOCUSABLE</strong><br>表示此窗口范围内的事件自己处理，范围外的事件依旧为原窗口处理；例如点击该窗口外的view，依然会有响应。另外只要设置了此Flag，都将会启用FLAG_NOT_TOUCH_MODAL，最后，设置了该Flag就表示window不会与输入方法交互，例如该window上有EditView，点击EditView是不会弹出软键盘的。</p>
+</li>
+<li><p><strong>FLAG_NOT_TOUCH_MODAL</strong><br>表示即使window是处于上面的默认状态下，设置了该Flag，新window范围外的view也是可以响应touch事件。</p>
+</li>
+<li><p><strong>FLAG_NOT_TOUCHABLE</strong><br>表示该window将不会接受任何touch事件，例如点击该window，不会有响应，只会传给下面有聚焦的窗口。</p>
+</li>
+<li><p><strong>FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS</strong></p>
+<p>表示负责绘制系统栏背景。如果设置，系统栏将以透明背景绘制，此窗口中的相应区域将填充Window＃getStatusBarColor（）和Window＃getNavigationBarColor（）中指定的颜色。</p>
+</li>
+<li><p><strong>FLAG_FULLSCREEN</strong></p>
+<p>表示显示此window时隐藏所有屏幕装饰（包括状态栏）</p>
+</li>
+<li><p><strong>FLAG_FORCE_NOT_FULLSCREEN</strong></p>
+<p>表示比FLAG_FULLSCREEN低一级，会显示状态栏</p>
+</li>
+<li><p><strong>FLAG_SHOW_WALLPAPER</strong></p>
+<p>表示要求系统壁纸显示在该window后面，window表面必须是半透明的，才能真正看到它背后的壁纸</p>
+</li>
+<li><p><strong>FLAG_SHOW_WHEN_LOCKED</strong></p>
+<p>表示window显示在锁屏的的界面上。此标志在API27中已废弃，使用R.attr.showWhenLocked或Activity.setShowWhenLocked（boolean）代替。</p>
+</li>
+</ul>
+<h3 id="2-4-Format"><a href="#2-4-Format" class="headerlink" title="2.4 Format"></a>2.4 Format</h3><p>在第四个构造函数中多了一个int型format参数，这个参数则表示window所需的位图格式，默认为OPAQUE，也有可能是PixelFormat中的一种，另外setColorMode(int)的使用可能会覆盖格式的选择。</p>
+<h3 id="2-5-w、h"><a href="#2-5-w、h" class="headerlink" title="2.5 w、h"></a>2.5 w、h</h3><p>第五个构造函数中多了两个int型的w，h，w就是表示该window的width，h则是height，可以是具体数值，也可以是LayoutParams.MATCH_PARENT，LayoutParams.WRAP_CONTENT。</p>
+<h3 id="2-6-xpos、ypos"><a href="#2-6-xpos、ypos" class="headerlink" title="2.6 xpos、ypos"></a>2.6 xpos、ypos</h3><p>在第六个构造函数中多了两个int型xpos和ypos，其中xpos表示该window的横坐标位置，ypos为纵坐标位置。</p>
+<p>也就是我们常见的 LayoutParams.x 和LayoutParams.y。</p>
+<h3 id="2-7-Gravity"><a href="#2-7-Gravity" class="headerlink" title="2.7 Gravity"></a>2.7 Gravity</h3><p>根据Gravity设置window在屏幕中的位置，例如Gravity.BOTTOM表示放置在容器的底部，Gravity.CENTER_HORIZONTAL表示放置在容器的水平中心，Gravity.CENTER则表示放置在容器的中心，当然还有其他的类型，可以根据自己的需求，设置Gravity的位置。</p>
+<h3 id="2-8-token"><a href="#2-8-token" class="headerlink" title="2.8 token"></a>2.8 token</h3><p>token是一个Binder代理对象，表示window的一个令牌，WMS会检测传入的token是否可以添加到系统上，一般来说，系统会为我们自动添加token。</p>
+<h3 id="2-9-softInputMode"><a href="#2-9-softInputMode" class="headerlink" title="2.9 softInputMode"></a>2.9 softInputMode</h3><p>该属性是表示设置window软键盘输入区域的显示模式，例如我们有时候会发现window的软键盘打开会占据整个屏幕，遮挡了后面的视图，这时候就可以设置这个属性，调整软键盘合适的样式。</p>
+<p>例如以下几种：</p>
+<ul>
+<li><p><strong>SOFT_INPUT_ADJUST_NOTHING</strong></p>
+<p>将不会调整大小，直接覆盖在window上。</p>
+</li>
+<li><p><strong>SOFT_INPUT_ADJUST_PAN</strong></p>
+<p>具有输入方法的window可以平移，例如有两个EditView的输入框，一个为Ev1，一个为Ev2，当你点击Ev1想要输入数据时，当前的Ev1的输入框会移到软键盘上方，软件盘是跟在Ev1的下面，保证Ev1是可见的,Ev2则不一定可见。</p>
+<p>另外该模式不能与SOFT_INPUT_ADJUST_RESIZE结合使用。</p>
+</li>
+<li><p><strong>SOFT_INPUT_ADJUST_RESIZE</strong></p>
+<p>整个window会平移调整大小，例如点击一个EditView，整个layout都将平移可见且处于软件盘的上方。</p>
+<p>同样的该模式不能与SOFT_INPUT_ADJUST_PAN结合使用；另外如果窗口的布局参数标志包含FLAG_FULLSCREEN，则将忽略这个值，窗口不会调整大小，但会保持全屏。</p>
+</li>
+<li><p><strong>SOFT_INPUT_ADJUST_UNSPECIFIED</strong></p>
+<p>不指明，系统根据内容自动设置该模式和还是其他模式。</p>
+</li>
+<li><p><strong>SOFT_INPUT_MASK_ADJUST</strong></p>
+<p>window会调整大小以适应软键盘窗口。</p>
+</li>
+<li><p><strong>SOFT_INPUT_STATE_ALWAYS_HIDDEN</strong></p>
+<p>当此window获得焦点时，始终隐藏任何软输入区域。</p>
+</li>
+<li><p><strong>SOFT_INPUT_STATE_ALWAYS_VISIBLE</strong></p>
+<p>当此window获得焦点时，始终显示任何软输入区域。</p>
+</li>
+</ul>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>以上为WindowManager和LayoutParams 的介绍，官方文档中对于他们的介绍有点晦涩难懂，上面一部分就转换为了日常说法。在实际项目开发中，我们有时候需要自定义一个window，那么就要设置该window的显示模式和类型，这就需要理清楚LayoutParams 每个属性的含义，以应用至多变的需求当中。上面所述大都包含了日常开发中所用到的设置，其它可参照<a href="https://developer.android.google.cn/reference/android/view/WindowManager.LayoutParams.html?hl=en#summary" target="_blank" rel="noopener">官方文档</a> 。</p>
+<p>参考资料：</p>
+<p><a href="https://developer.android.google.cn/reference/android/view/WindowManager.LayoutParams.html?hl=en#summary" target="_blank" rel="noopener">官方文档</a> </p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/WindowManager-LayoutParams/" rel="tag"># WindowManager LayoutParams</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/06/29/Android-P下SystemUI的启动与定制化/" rel="next" title="Android P下SystemUI的启动与定制化">
+                <i class="fa fa-chevron-left"></i> Android P下SystemUI的启动与定制化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="fuusy">
+            
+              <p class="site-author-name" itemprop="name">fuusy</p>
+              <p class="site-description motion-element" itemprop="description">想我所想，做我所做，记录美好生活！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5c7f243a5188251bdd53e9c4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-globe"></i>掘金</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、WindowManager是什么？"><span class="nav-number">1.</span> <span class="nav-text">一、WindowManager是什么？</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-WindowManager与window的关系"><span class="nav-number">1.1.</span> <span class="nav-text">1.1 WindowManager与window的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-WindowManager对象的获取"><span class="nav-number">1.2.</span> <span class="nav-text">1.2 WindowManager对象的获取</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、WindowManager-LayoutParams参数解析"><span class="nav-number">2.</span> <span class="nav-text">二、WindowManager.LayoutParams参数解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-构造函数"><span class="nav-number">2.1.</span> <span class="nav-text">2.1 构造函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Type"><span class="nav-number">2.2.</span> <span class="nav-text">2.2 Type</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Flags"><span class="nav-number">2.3.</span> <span class="nav-text">2.3 Flags</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-Format"><span class="nav-number">2.4.</span> <span class="nav-text">2.4 Format</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-5-w、h"><span class="nav-number">2.5.</span> <span class="nav-text">2.5 w、h</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-6-xpos、ypos"><span class="nav-number">2.6.</span> <span class="nav-text">2.6 xpos、ypos</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-7-Gravity"><span class="nav-number">2.7.</span> <span class="nav-text">2.7 Gravity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-8-token"><span class="nav-number">2.8.</span> <span class="nav-text">2.8 token</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-9-softInputMode"><span class="nav-number">2.9.</span> <span class="nav-text">2.9 softInputMode</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">fuusy</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
