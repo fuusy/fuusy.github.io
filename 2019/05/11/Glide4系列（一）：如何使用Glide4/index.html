@@ -94,13 +94,13 @@
 <meta property="og:site_name" content="What&#39;s in it for me">
 <meta property="og:description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba11ec64766f54?w=320&h=569&f=gif&s=106157">
-<meta property="og:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba11f52337d246?w=320&h=569&f=gif&s=31303">
-<meta property="og:updated_time" content="2019-06-29T04:21:39.374Z">
+<meta property="og:image" content="http://fuusy.github.io/2019/05/11/Glide4系列（一）：如何使用Glide4/glide1.gif">
+<meta property="og:image" content="http://fuusy.github.io/2019/05/11/Glide4系列（一）：如何使用Glide4/glide2.gif">
+<meta property="og:updated_time" content="2019-07-13T00:43:37.345Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Glide4系列（一）：如何使用Glide4">
 <meta name="twitter:description" content="Glide，一个快速高效的Android图片加载库，是最常用的一个第三方框架。它不仅带来了极快的图片解码速度而且很好的解决了内存资源的压力。比如加载内存比较大的图片时，系统往往会报内存泄露的错误，这时候Glide的使用缩小了图片所占资源，大大减少了内存的压力。另外，Glide的使用也极其简单，在大部分的情况下一句话就可以搞定：">
-<meta name="twitter:image" content="https://user-gold-cdn.xitu.io/2019/6/29/16ba11ec64766f54?w=320&h=569&f=gif&s=106157">
+<meta name="twitter:image" content="http://fuusy.github.io/2019/05/11/Glide4系列（一）：如何使用Glide4/glide1.gif">
 
 
 
@@ -334,13 +334,13 @@
 <h3 id="二、基本使用"><a href="#二、基本使用" class="headerlink" title="二、基本使用"></a>二、基本使用</h3><p>以加载网络图片为例，在布局中加入一个按钮和ImageView用来存放图片。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;Button</span><br><span class="line">        android:id=&quot;@+id/beginLoad&quot;</span><br><span class="line">        android:layout_width=&quot;match_parent&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:text=&quot;开始&quot;/&gt;</span><br><span class="line"></span><br><span class="line">    &lt;ImageView</span><br><span class="line">        android:id=&quot;@+id/imageView&quot;</span><br><span class="line">        android:layout_width=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_height=&quot;wrap_content&quot;</span><br><span class="line">        android:layout_gravity=&quot;center&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
 <p>接着在MainActivity中开始进行加载图片的操作，如第一段的描述，Glide基本加载图片就一句话，<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private String mUrl = &quot;https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=3222301344,3464718829&amp;fm=27&amp;gp=0.jpg&quot;;</span><br><span class="line">...</span><br><span class="line">private void loadGlide() &#123;</span><br><span class="line">         Glide.with(this)</span><br><span class="line">                .load(mUrl)</span><br><span class="line">                .into(mImageView);</span><br><span class="line">    &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure></p>
 <p>从loadGlide（）方法中可以看到，Glide从所给的Url中先把图片下载好，接着将图片放置布局所设置的ImageView中，也就完成了图片的加载。我们来看看效果：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/6/29/16ba11ec64766f54?w=320&amp;h=569&amp;f=gif&amp;s=106157" alt></p>
+<img src="/2019/05/11/Glide4系列（一）：如何使用Glide4/glide1.gif">
 <h3 id="三、占位符"><a href="#三、占位符" class="headerlink" title="三、占位符"></a>三、占位符</h3><p>在官方的文档中，Glide给出了三种不同类型的占位符，分别为占位符（placeholder）、错误符（error）、后备回调符（fallback）。</p>
 <h4 id="3-1、Placeholder"><a href="#3-1、Placeholder" class="headerlink" title="3.1、Placeholder"></a>3.1、Placeholder</h4><p>占位符Placeholder指在图片还未加载好时，放置在ImageView上的一个替换图片，等图片加载完成，就将这个占位图片替换掉。添加占位符也很简单.<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .placeholder(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
 <p>在上面基本使用的代码上加上RequestOptions，利用placeholder获取到要占位的图片，然后在Glide中加入apply方法，应用刚创建的RequestOptions。</p>
 <h4 id="3-2、Error"><a href="#3-2、Error" class="headerlink" title="3.2、Error"></a>3.2、Error</h4><p>所谓的Error错误符，是在请求永久性失败的时候展示，同样也在请求的url/model为 null ，且并没有设置 fallback Drawable 时展示。<br>添加错误符只需要将placeholder替换掉。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .error(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
 <p>因为错误符是在请求永久性失败的时候展示的，为了展示效果，就将网络关闭，这样就请求不到图片资源，error图片就会展示，如下：</p>
-<p><img src="https://user-gold-cdn.xitu.io/2019/6/29/16ba11f52337d246?w=320&amp;h=569&amp;f=gif&amp;s=31303" alt></p>
+<img src="/2019/05/11/Glide4系列（一）：如何使用Glide4/glide2.gif">
 <h4 id="3-3、Fallback"><a href="#3-3、Fallback" class="headerlink" title="3.3、Fallback"></a>3.3、Fallback</h4><p>fallback Drawable 在请求的url/model为 null 时展示。设计 fallback Drawable 的主要目的是允许用户指示 null 是否为可接受的正常情况。例如，一个 null 的个人资料 url 可能暗示这个用户没有设置头像，因此应该使用默认头像。然而，null 也可能表明这个元数据根本就是不合法的，或者取不到。 默认情况下Glide将 null 作为错误处理，所以可以接受 null 的应用应当显式地设置一个 fallback Drawable 。代码如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">private void loadGlide() &#123;</span><br><span class="line">      RequestOptions requestOptions = new RequestOptions()</span><br><span class="line">              .fallback(R.drawable.place);</span><br><span class="line">      Glide.with(this)</span><br><span class="line">              .load(mUrl)</span><br><span class="line">              .apply(requestOptions)</span><br><span class="line">              .into(mImageView);</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
 <h3 id="四、缓存机制的使用"><a href="#四、缓存机制的使用" class="headerlink" title="四、缓存机制的使用"></a>四、缓存机制的使用</h3><p>Glide的缓存主要分为内存缓存和磁盘缓存两部分，默认情况下，Glide 会在开始一个新的图片请求之前检查以下多级的缓存：<br>活动资源 (Active Resources) - 现在是否有另一个 View 正在展示这张图片？<br>内存缓存 (Memory cache) - 该图片是否最近被加载过并仍存在于内存中？<br>资源类型（Resource） - 该图片是否之前曾被解码、转换并写入过磁盘缓存？<br>数据来源 (Data) - 构建这个图片的资源是否之前曾被写入过文件缓存？<br>前两步检查图片是否在内存中，如果是则直接返回图片。后两步则检查图片是否在磁盘上，以便快速但异步地返回图片。<br>如果四个步骤都未能找到图片，则Glide会返回到原始资源以取回数据（原始文件，Uri, Url等）。<br>接下来我们从内存缓存和磁盘缓存两个方面解析Glide的缓存机制。</p>
 <h4 id="4-1、磁盘缓存DiskCacheStrategy"><a href="#4-1、磁盘缓存DiskCacheStrategy" class="headerlink" title="4.1、磁盘缓存DiskCacheStrategy"></a>4.1、磁盘缓存DiskCacheStrategy</h4><p>磁盘缓存DiskCacheStrategy可以被diskCacheStrategy方法应用到每一个单独的请求，比如我们通过diskCacheStrategy将缓存策略设置为DiskCacheStrategy.NONE,<br>那么就表示加载图片不使用磁盘缓存。另外还有其他几种策略，如下：<br>| 策略| 解释 |<br>|—–|—–|<br>| DiskCacheStrategy.ALL |  表示原始数据，本地数据，转换后的数据都缓存 |<br>| DiskCacheStrategy.AUTOMATIC |  表示智能的选取最好的一种缓存策略 |<br>| DiskCacheStrategy.NONE |  表示不缓存 |<br>| DiskCacheStrategy.DATA |  在检索之前将检索到的数据直接写入磁盘缓存 |<br>| DiskCacheStrategy.RESOURCE |  表示缓存转换后（压缩、做过处理）的图片 |</p>
@@ -473,7 +473,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-count">12</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
@@ -486,7 +486,7 @@
               
               <div class="site-state-item site-state-tags">
                 <a href="/tags/index.html">
-                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-count">8</span>
                   <span class="site-state-item-name">tags</span>
                 </a>
               </div>
