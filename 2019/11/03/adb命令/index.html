@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Python,">
+  <meta name="keywords" content="adb,">
 
 
 
@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="一、类 创建类：12class Person():      pass">
-<meta name="keywords" content="Python">
+<meta name="description" content="1.查看当前连接设备adb devices">
+<meta name="keywords" content="adb">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python系列（二）：面向对象">
-<meta property="og:url" content="http://fuusy.github.io/2019/04/21/Python系列（二）：面向对象/index.html">
+<meta property="og:title" content="adb命令">
+<meta property="og:url" content="http://fuusy.github.io/2019/11/03/adb命令/index.html">
 <meta property="og:site_name" content="What&#39;s in it for me">
-<meta property="og:description" content="一、类 创建类：12class Person():      pass">
+<meta property="og:description" content="1.查看当前连接设备adb devices">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-06-29T05:13:35.293Z">
+<meta property="og:updated_time" content="2019-11-07T12:41:07.788Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Python系列（二）：面向对象">
-<meta name="twitter:description" content="一、类 创建类：12class Person():      pass">
+<meta name="twitter:title" content="adb命令">
+<meta name="twitter:description" content="1.查看当前连接设备adb devices">
 
 
 
@@ -127,13 +127,13 @@
 
 
 
-  <link rel="canonical" href="http://fuusy.github.io/2019/04/21/Python系列（二）：面向对象/">
+  <link rel="canonical" href="http://fuusy.github.io/2019/11/03/adb命令/">
 
 
 
 
 
-  <title>Python系列（二）：面向对象 | What's in it for me</title>
+  <title>adb命令 | What's in it for me</title>
   
 
 
@@ -250,7 +250,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/04/21/Python系列（二）：面向对象/">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2019/11/03/adb命令/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="fuusy">
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Python系列（二）：面向对象</h1>
+          <h1 class="post-title" itemprop="name headline">adb命令</h1>
         
 
         <div class="post-meta">
@@ -279,8 +279,8 @@
               
                 <span class="post-meta-item-text">Posted on</span>
               
-              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-04-21T21:12:30+08:00">
-                2019-04-21
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2019-11-03T20:38:21+08:00">
+                2019-11-03
               </time>
             
 
@@ -322,41 +322,22 @@
       
 
       
-        <h4 id="一、类"><a href="#一、类" class="headerlink" title="一、类"></a>一、类</h4><blockquote>
-<p>创建类：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">      pass</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<a id="more"></a>
-<blockquote>
-<p>创建实例：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">variable = Person()</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>给实例绑定属性，例如绑定name和age：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self,name,age):</span><br><span class="line">     self.name = name</span><br><span class="line">     self.age = age</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>案例<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.age = age</span><br><span class="line">ba = Person(&apos;python&apos;,10)</span><br><span class="line">print(ba.name,ba.age)</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>在类中封装方法：<br>添加一个打印的方法printPerson（self）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.name = name</span><br><span class="line">        self.age = age</span><br><span class="line">ba = Person(&apos;python&apos;,10)</span><br><span class="line"></span><br><span class="line">def printPerson(self):</span><br><span class="line">    print(self.name,self.age)</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<p>调用该方法<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">printPerson(ba)</span><br></pre></td></tr></table></figure></p>
-<h4 id="二、私有变量"><a href="#二、私有变量" class="headerlink" title="二、私有变量"></a>二、私有变量</h4><blockquote>
-<p>Python中，在变量前加上两个下划线__，即私有变量，相当于Java中private。如下把name设置为私有，age不变，则name外部不可直接访问。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">def __init__(self,name,age):</span><br><span class="line">       self.__name = name</span><br><span class="line">       self.age = age</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>外部如需获取私有变量__name，可在Person类中定义get_name()方法，相当于Java中的get方法如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.__name = name</span><br><span class="line">        self.age = age</span><br><span class="line">#get方法</span><br><span class="line">    def get_name(self):</span><br><span class="line">        return self.__name</span><br><span class="line">ba = Person(&apos;python&apos;,10)</span><br><span class="line">print(ba.get_name())</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>外部如需修改私有变量__name,同样可在类中定义set_name()方法，相当于java中的set方法，可以看到以下代码，初始化变量ba的name = python，将ba.set_name = java，最后打印出的结果name值为”java“，如：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">class Person():</span><br><span class="line">    def __init__(self,name,age):</span><br><span class="line">        self.__name = name</span><br><span class="line">        self.age = age</span><br><span class="line">#get方法</span><br><span class="line">    def get_name(self):</span><br><span class="line">        return self.__name</span><br><span class="line">#set方法</span><br><span class="line">    def set_name(self,name):</span><br><span class="line">        self.__name = name</span><br><span class="line"></span><br><span class="line">ba = Person(&quot;python&quot;,1)</span><br><span class="line">ba.set_name(&quot;java&quot;)</span><br><span class="line">print(ba.get_name())</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h4 id="三、继承"><a href="#三、继承" class="headerlink" title="三、继承"></a>三、继承</h4><blockquote>
-<p>继承是指子类继承父类的特征和行为，如有 父类Animal，子类Cat，Cat继承Animal：<br>Java版<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">class Cat extends Animal&#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<blockquote>
-<p>Python版<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">class Cat(Animal):</span><br></pre></td></tr></table></figure></p>
-</blockquote>
-<h4 id="四、多态"><a href="#四、多态" class="headerlink" title="四、多态"></a>四、多态</h4><blockquote>
-<p>Python中继承与多态的思想与Java的并无两样。<br>多态是指同一个行为具有多个不同表现形式或形态的能力。</p>
-</blockquote>
+        <h6 id="1-查看当前连接设备"><a href="#1-查看当前连接设备" class="headerlink" title="1.查看当前连接设备"></a>1.查看当前连接设备</h6><p>adb devices<br><a id="more"></a></p>
+<h6 id="2-安装apk"><a href="#2-安装apk" class="headerlink" title="2.安装apk"></a>2.安装apk</h6><p>adb install -r app.apk<br>adb push app.apk 路径</p>
+<h6 id="3-获取文件"><a href="#3-获取文件" class="headerlink" title="3.获取文件"></a>3.获取文件</h6><p>adb pull 文件路径  存储位置</p>
+<h6 id="4-查看log"><a href="#4-查看log" class="headerlink" title="4.查看log"></a>4.查看log</h6><p>adb shell<br>logcat | grep “TAG”</p>
+<h6 id="5-重新挂载分区"><a href="#5-重新挂载分区" class="headerlink" title="5.重新挂载分区"></a>5.重新挂载分区</h6><p>adb remount</p>
+<h6 id="6-删除apk"><a href="#6-删除apk" class="headerlink" title="6.删除apk"></a>6.删除apk</h6><p>adb remount<br>adb shell<br>cd apk路径<br>rm app.apk</p>
+<h6 id="7-删除AS直接编译的apk"><a href="#7-删除AS直接编译的apk" class="headerlink" title="7.删除AS直接编译的apk"></a>7.删除AS直接编译的apk</h6><p>adb remount<br>adb shell<br>cd data/app<br>rm *.apk</p>
+<h6 id="8-启动app-activity"><a href="#8-启动app-activity" class="headerlink" title="8.启动app/activity"></a>8.启动app/activity</h6><p>adb shell am start -n 包名/类名</p>
+<h6 id="9-关闭Activity"><a href="#9-关闭Activity" class="headerlink" title="9.关闭Activity"></a>9.关闭Activity</h6><p>adb shell am force-stop 包名</p>
+<h6 id="10-发送广播"><a href="#10-发送广播" class="headerlink" title="10.发送广播"></a>10.发送广播</h6><p>adb shell am broadcast -a “action”</p>
+<h6 id="11-启动service"><a href="#11-启动service" class="headerlink" title="11.启动service"></a>11.启动service</h6><p>adb shell am startservice -n 包名/类名 -a action</p>
+<h6 id="12-查看全部进程"><a href="#12-查看全部进程" class="headerlink" title="12.查看全部进程"></a>12.查看全部进程</h6><p>adb shell ps<br>ps -A</p>
+<h6 id="13-查看指定包名进程"><a href="#13-查看指定包名进程" class="headerlink" title="13.查看指定包名进程"></a>13.查看指定包名进程</h6><p>adb shell ps | grep “包名”</p>
+<h6 id="14-杀死指定进程"><a href="#14-杀死指定进程" class="headerlink" title="14.杀死指定进程"></a>14.杀死指定进程</h6><p>adb shell kill [pid]</p>
+<h6 id="15-模拟按键"><a href="#15-模拟按键" class="headerlink" title="15.模拟按键"></a>15.模拟按键</h6><p>adb shell input keyevent 3 </p>
+<h6 id="16-录制屏幕"><a href="#16-录制屏幕" class="headerlink" title="16.录制屏幕"></a>16.录制屏幕</h6><p>adb shell screenrecord /sdcard/*.mp4</p>
 
       
     </div>
@@ -374,7 +355,7 @@
       
         <div class="post-tags">
           
-            <a href="/tags/Python/" rel="tag"># Python</a>
+            <a href="/tags/adb/" rel="tag"># adb</a>
           
         </div>
       
@@ -387,8 +368,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/04/14/Python系列（一）：基础语法/" rel="next" title="Python系列（一）：基础语法">
-                <i class="fa fa-chevron-left"></i> Python系列（一）：基础语法
+              <a href="/2019/08/10/默认状态下，ViewGroup为什么不走onDraw()/" rel="next" title="默认状态下，ViewGroup为什么不走onDraw()?">
+                <i class="fa fa-chevron-left"></i> 默认状态下，ViewGroup为什么不走onDraw()?
               </a>
             
           </div>
@@ -396,10 +377,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2019/05/03/Log中分析View的事件分发/" rel="prev" title="Log中分析View的事件分发">
-                Log中分析View的事件分发 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -534,7 +511,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#一、类"><span class="nav-number">1.</span> <span class="nav-text">一、类</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#二、私有变量"><span class="nav-number">2.</span> <span class="nav-text">二、私有变量</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#三、继承"><span class="nav-number">3.</span> <span class="nav-text">三、继承</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#四、多态"><span class="nav-number">4.</span> <span class="nav-text">四、多态</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#1-查看当前连接设备"><span class="nav-number">1.</span> <span class="nav-text">1.查看当前连接设备</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#2-安装apk"><span class="nav-number">2.</span> <span class="nav-text">2.安装apk</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#3-获取文件"><span class="nav-number">3.</span> <span class="nav-text">3.获取文件</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#4-查看log"><span class="nav-number">4.</span> <span class="nav-text">4.查看log</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#5-重新挂载分区"><span class="nav-number">5.</span> <span class="nav-text">5.重新挂载分区</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#6-删除apk"><span class="nav-number">6.</span> <span class="nav-text">6.删除apk</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#7-删除AS直接编译的apk"><span class="nav-number">7.</span> <span class="nav-text">7.删除AS直接编译的apk</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#8-启动app-activity"><span class="nav-number">8.</span> <span class="nav-text">8.启动app/activity</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#9-关闭Activity"><span class="nav-number">9.</span> <span class="nav-text">9.关闭Activity</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#10-发送广播"><span class="nav-number">10.</span> <span class="nav-text">10.发送广播</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#11-启动service"><span class="nav-number">11.</span> <span class="nav-text">11.启动service</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#12-查看全部进程"><span class="nav-number">12.</span> <span class="nav-text">12.查看全部进程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#13-查看指定包名进程"><span class="nav-number">13.</span> <span class="nav-text">13.查看指定包名进程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#14-杀死指定进程"><span class="nav-number">14.</span> <span class="nav-text">14.杀死指定进程</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#15-模拟按键"><span class="nav-number">15.</span> <span class="nav-text">15.模拟按键</span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#16-录制屏幕"><span class="nav-number">16.</span> <span class="nav-text">16.录制屏幕</span></a></li></ol></div>
             
 
           </div>
