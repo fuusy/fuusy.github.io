@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="在上一篇《AndroidP下SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.L">
+<meta name="description" content="在上一篇《SystemUI（一）基于Android9.0SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？W">
 <meta name="keywords" content="WindowManager LayoutParams">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SystemUI|Android9.0 WindowManager与LayoutParams的解析">
+<meta property="og:title" content="SystemUI（二）WindowManager与LayoutParams的解析">
 <meta property="og:url" content="http://fuusy.github.io/2019/07/06/Android-P下WindowManager与LayoutParams的详解/index.html">
 <meta property="og:site_name" content="What&#39;s in it for me">
-<meta property="og:description" content="在上一篇《AndroidP下SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.L">
+<meta property="og:description" content="在上一篇《SystemUI（一）基于Android9.0SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？W">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-11-30T13:01:04.605Z">
+<meta property="og:updated_time" content="2019-11-30T13:14:23.925Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="SystemUI|Android9.0 WindowManager与LayoutParams的解析">
-<meta name="twitter:description" content="在上一篇《AndroidP下SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.L">
+<meta name="twitter:title" content="SystemUI（二）WindowManager与LayoutParams的解析">
+<meta name="twitter:description" content="在上一篇《SystemUI（一）基于Android9.0SystemUI的启动与定制化》中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？W">
 
 
 
@@ -133,7 +133,7 @@
 
 
 
-  <title>SystemUI|Android9.0 WindowManager与LayoutParams的解析 | What's in it for me</title>
+  <title>SystemUI（二）WindowManager与LayoutParams的解析 | What's in it for me</title>
   
 
 
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">SystemUI|Android9.0 WindowManager与LayoutParams的解析</h1>
+          <h1 class="post-title" itemprop="name headline">SystemUI（二）WindowManager与LayoutParams的解析</h1>
         
 
         <div class="post-meta">
@@ -322,7 +322,7 @@
       
 
       
-        <p>在上一篇<a href="https://juejin.im/post/5d143993f265da1b695d7003" target="_blank" rel="noopener">《AndroidP下SystemUI的启动与定制化》</a>中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.LayoutParams的参数又有什么特点？下文就将从这两个方面来分析WindowManager。<br><a id="more"></a></p>
+        <p>在上一篇<a href="https://juejin.im/post/5d143993f265da1b695d7003" target="_blank" rel="noopener">《SystemUI（一）基于Android9.0SystemUI的启动与定制化》</a>中，了解了SystemUI的启动流程，同时也知道流程的最后主要是StatusBar通过WindowManager的addView()将view装载在系统的界面上，在此之前都要利用WindowManager.LayoutParams来设置该window的显示，那么在源码里出现的WindowManager是什么？WindowManager.LayoutParams的参数又有什么特点？下文就将从这两个方面来分析WindowManager。<br><a id="more"></a></p>
 <h2 id="一、WindowManager是什么？"><a href="#一、WindowManager是什么？" class="headerlink" title="一、WindowManager是什么？"></a>一、WindowManager是什么？</h2><h3 id="1-1-WindowManager与window的关系"><a href="#1-1-WindowManager与window的关系" class="headerlink" title="1.1 WindowManager与window的关系"></a>1.1 WindowManager与window的关系</h3><p>WindowManager是什么？官方对于它的解释只有这么一句话</p>
 <blockquote>
 <p>The interface that apps use to talk to the window manager.</p>
@@ -543,8 +543,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/06/29/Android-P下SystemUI的启动与定制化/" rel="next" title="SystemUI|Android9.0下SystemUI的启动与定制化">
-                <i class="fa fa-chevron-left"></i> SystemUI|Android9.0下SystemUI的启动与定制化
+              <a href="/2019/06/29/Android-P下SystemUI的启动与定制化/" rel="next" title="SystemUI（一）基于Android9.0SystemUI的启动与定制化">
+                <i class="fa fa-chevron-left"></i> SystemUI（一）基于Android9.0SystemUI的启动与定制化
               </a>
             
           </div>

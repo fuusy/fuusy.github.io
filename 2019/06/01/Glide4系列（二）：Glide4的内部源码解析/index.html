@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章Glide 4解析系列（一）：如何使用Glide，今天这一篇是从源码的角度来分析Glide4。上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。">
+<meta name="description" content="上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章Glide4（一）基本使用，今天这一篇是从源码的角度来分析Glide4。上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。">
 <meta name="keywords" content="Glide4">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Glide4|内部源码解析">
+<meta property="og:title" content="Glide4（二）内部源码解析">
 <meta property="og:url" content="http://fuusy.github.io/2019/06/01/Glide4系列（二）：Glide4的内部源码解析/index.html">
 <meta property="og:site_name" content="What&#39;s in it for me">
-<meta property="og:description" content="上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章Glide 4解析系列（一）：如何使用Glide，今天这一篇是从源码的角度来分析Glide4。上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。">
+<meta property="og:description" content="上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章Glide4（一）基本使用，今天这一篇是从源码的角度来分析Glide4。上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-11-30T13:03:27.166Z">
+<meta property="og:updated_time" content="2019-11-30T13:16:03.313Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Glide4|内部源码解析">
-<meta name="twitter:description" content="上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章Glide 4解析系列（一）：如何使用Glide，今天这一篇是从源码的角度来分析Glide4。上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。">
+<meta name="twitter:title" content="Glide4（二）内部源码解析">
+<meta name="twitter:description" content="上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章Glide4（一）基本使用，今天这一篇是从源码的角度来分析Glide4。上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。">
 
 
 
@@ -133,7 +133,7 @@
 
 
 
-  <title>Glide4|内部源码解析 | What's in it for me</title>
+  <title>Glide4（二）内部源码解析 | What's in it for me</title>
   
 
 
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">Glide4|内部源码解析</h1>
+          <h1 class="post-title" itemprop="name headline">Glide4（二）内部源码解析</h1>
         
 
         <div class="post-meta">
@@ -322,7 +322,7 @@
       
 
       
-        <p>上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章<a href="https://www.jianshu.com/p/d20dd29951ad" target="_blank" rel="noopener">Glide 4解析系列（一）：如何使用Glide</a>，今天这一篇是从源码的角度来分析Glide4。<br>上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。<br><a id="more"></a></p>
+        <p>上一篇讲到了Glide4.x 的基本功能和使用，如有不了解Glide4的可以查看上一篇文章<a href="https://www.jianshu.com/p/d20dd29951ad" target="_blank" rel="noopener">Glide4（一）基本使用</a>，今天这一篇是从源码的角度来分析Glide4。<br>上一篇讲到Glide的基本使用核心就只用到一句话 Glide.with(this).load(mUrl).into(mImageView);代码很简单，那么我们就从这句话出发一步一步向前深入。<br><a id="more"></a></p>
 <h3 id="一、with"><a href="#一、with" class="headerlink" title="一、with()"></a>一、with()</h3><p>首先我们先看Glide.with（）源码里面做了哪些操作。点击with我们首先会进入到Glide这个类中，看源码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">/**</span><br><span class="line">  * Begin a load with Glide by passing in a context.</span><br><span class="line">  * @param context Any context, will not be retained.</span><br><span class="line">  * @return A RequestManager for the top level application that can be used to start a load.</span><br><span class="line">  * @see #with(android.app.Activity)</span><br><span class="line">  * @see #with(android.app.Fragment)</span><br><span class="line">  * @see #with(android.support.v4.app.Fragment)</span><br><span class="line">  * @see #with(android.support.v4.app.FragmentActivity)</span><br><span class="line">  */</span><br><span class="line"> @NonNull</span><br><span class="line"> public static RequestManager with(@NonNull Context context) &#123;</span><br><span class="line">   return getRetriever(context).get(context);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> @NonNull</span><br><span class="line"> public static RequestManager with(@NonNull Activity activity) &#123;</span><br><span class="line">   return getRetriever(activity).get(activity);</span><br><span class="line"> &#125;</span><br><span class="line"> ...</span><br><span class="line"> @NonNull</span><br><span class="line"> public static RequestManager with(@NonNull FragmentActivity activity) &#123;</span><br><span class="line">   return getRetriever(activity).get(activity);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> ...</span><br><span class="line"> </span><br><span class="line"> @NonNull</span><br><span class="line"> public static RequestManager with(@NonNull View view) &#123;</span><br><span class="line">   return getRetriever(view.getContext()).get(view);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
 <p>可以看到在代码中，有很多with方法，并且带有不同的参数，参数也就是Context，Acyivity，Fragment等，这里就不展开讨论。虽然参数不同，但是with方法的目的是一样的，都是为了返回一个RequestManager对象。那么RequestManager是用来做什么的呢？<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">* @return A RequestManager that can be used to start a load.</span><br></pre></td></tr></table></figure></p>
 <p>我们从上面的注释中可以了解到，RequestManager对象是为下一步load做准备，做开始加载数据之用。那么RequestManager对象是如何获取到的呢？在with方法中，最主要的一句话是getRetriever(activity).get(activity);我们跟进到getRetriever方法中可以看到以下代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">@NonNull</span><br><span class="line">private static RequestManagerRetriever getRetriever(@Nullable Context context) &#123;</span><br><span class="line">  // Context could be null for other reasons (ie the user passes in null), but in practice it will</span><br><span class="line">  // only occur due to errors with the Fragment lifecycle.</span><br><span class="line">  Preconditions.checkNotNull(</span><br><span class="line">      context,</span><br><span class="line">      &quot;You cannot start a load on a not yet attached View or a Fragment where getActivity() &quot;</span><br><span class="line">          + &quot;returns null (which usually occurs when getActivity() is called before the Fragment &quot;</span><br><span class="line">          + &quot;is attached or after the Fragment is destroyed).&quot;);</span><br><span class="line">  return Glide.get(context).getRequestManagerRetriever();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
@@ -389,8 +389,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2019/05/11/Glide4系列（一）：如何使用Glide4/" rel="next" title="Glide4|基本使用">
-                <i class="fa fa-chevron-left"></i> Glide4|基本使用
+              <a href="/2019/05/11/Glide4系列（一）：如何使用Glide4/" rel="next" title="Glide4（一）基本使用">
+                <i class="fa fa-chevron-left"></i> Glide4（一）基本使用
               </a>
             
           </div>
@@ -399,8 +399,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2019/06/29/Android-P下SystemUI的启动与定制化/" rel="prev" title="SystemUI|Android9.0下SystemUI的启动与定制化">
-                SystemUI|Android9.0下SystemUI的启动与定制化 <i class="fa fa-chevron-right"></i>
+              <a href="/2019/06/29/Android-P下SystemUI的启动与定制化/" rel="prev" title="SystemUI（一）基于Android9.0SystemUI的启动与定制化">
+                SystemUI（一）基于Android9.0SystemUI的启动与定制化 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
