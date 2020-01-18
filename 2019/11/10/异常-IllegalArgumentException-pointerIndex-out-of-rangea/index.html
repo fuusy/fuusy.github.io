@@ -86,18 +86,18 @@
 
 
 
-<meta name="description" content="想我所想，做我所做，记录美好生活！">
+<meta name="description" content="背景: API28,PhotoView+Viewpager 场景: 对图片进行双指缩放操作.">
 <meta name="keywords" content="异常">
 <meta property="og:type" content="article">
-<meta property="og:title" content="异常 | IllegalArgumentException: pointerIndex out of range">
+<meta property="og:title" content="Crash治理：图片缩放pointerIndex out of range.">
 <meta property="og:url" content="http://fuusy.github.io/2019/11/10/异常-IllegalArgumentException-pointerIndex-out-of-rangea/index.html">
 <meta property="og:site_name" content="What&#39;s in it for me">
-<meta property="og:description" content="想我所想，做我所做，记录美好生活！">
+<meta property="og:description" content="背景: API28,PhotoView+Viewpager 场景: 对图片进行双指缩放操作.">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-12-01T09:56:02.115Z">
+<meta property="og:updated_time" content="2020-01-18T14:02:40.901Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="异常 | IllegalArgumentException: pointerIndex out of range">
-<meta name="twitter:description" content="想我所想，做我所做，记录美好生活！">
+<meta name="twitter:title" content="Crash治理：图片缩放pointerIndex out of range.">
+<meta name="twitter:description" content="背景: API28,PhotoView+Viewpager 场景: 对图片进行双指缩放操作.">
 
 
 
@@ -133,7 +133,7 @@
 
 
 
-  <title>异常 | IllegalArgumentException: pointerIndex out of range | What's in it for me</title>
+  <title>Crash治理：图片缩放pointerIndex out of range. | What's in it for me</title>
   
 
 
@@ -267,7 +267,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">异常 | IllegalArgumentException: pointerIndex out of range</h1>
+          <h1 class="post-title" itemprop="name headline">Crash治理：图片缩放pointerIndex out of range.</h1>
         
 
         <div class="post-meta">
@@ -322,7 +322,17 @@
       
 
       
-        
+        <p><strong>背景:</strong> API28,PhotoView+Viewpager</p>
+<p><strong>场景:</strong> 对图片进行双指缩放操作.<br><a id="more"></a></p>
+<p><strong>异常:</strong> </p>
+<blockquote>
+<p> E AndroidRuntime: java.lang.IllegalArgumentException: pointerIndex out of range<br> E AndroidRuntime:        at android.view.MotionEvent.nativeGetAxisValue(Native Method)<br> E AndroidRuntime:        at android.view.MotionEvent.getX(MotionEvent.java:2205)<br> E AndroidRuntime:        at androidx.viewpager.widget.ViewPager.onInterceptTouchEvent(ViewPager.java:2072)<br> E AndroidRuntime:        at android.view.ViewGroup.dispatchTouchEvent(ViewGroup.java:2573)<br> E AndroidRuntime:        at android.view.ViewGroup.dispatchTransformedTouchEvent(ViewGroup.java:3030)</p>
+</blockquote>
+<p><strong>原因:</strong> 根据上面异常信息可以发现出错位置在ViewPager.java2072行ev.getX(pointerIndex)（如下），而这次的异常也就是其中的参数（pointerIndex）超出了范围导致，pointerIndex每次通过MotionEvent.findPointerIndex(activePointerId)来获取，在双指对图片进行双指缩放时，一个手指抬起，activePointerId却没有进行重新赋值，获取到值错误，就直接影响了pointerIndex，也就在这个时候出现了异常。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">@Override</span><br><span class="line">    public boolean onInterceptTouchEvent(MotionEvent ev) &#123;</span><br><span class="line">    </span><br><span class="line">    ...</span><br><span class="line">    </span><br><span class="line">    switch (action) &#123;</span><br><span class="line">            case MotionEvent.ACTION_MOVE: &#123;</span><br><span class="line">                ...</span><br><span class="line">                final int activePointerId = mActivePointerId;</span><br><span class="line">                if (activePointerId == INVALID_POINTER) &#123;</span><br><span class="line">                    // If we don&apos;t have a valid id, the touch down wasn&apos;t on content.</span><br><span class="line">                    break;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">                final int pointerIndex = ev.findPointerIndex(activePointerId);</span><br><span class="line">                final float x = ev.getX(pointerIndex);</span><br><span class="line">                </span><br><span class="line">                ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><strong>解决方案：</strong><br>查阅了资料，比较简单明了的处理方法就是自定义Viewpager对ViewPager的onInterceptTouchEvent（）进行try{}catch()操作。<strong>值得注意的是</strong>，在try{}catch()中直接return super.onInterceptTouchEvent(ev)，图片会出现滑动异常，所以进行了如下的特殊处理。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CustomViewPager</span> <span class="keyword">extends</span> <span class="title">ViewPager</span> </span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">public</span> <span class="title">CustomViewPager</span><span class="params">(@NonNull Context context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">CustomViewPager</span><span class="params">(@NonNull Context context, @Nullable AttributeSet attrs)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(context, attrs);</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onInterceptTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">boolean</span> isIntercept = <span class="keyword">false</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            isIntercept = <span class="keyword">super</span>.onInterceptTouchEvent(ev);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalArgumentException exception) &#123;</span><br><span class="line">            exception.printStackTrace();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> isIntercept;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onTouchEvent</span><span class="params">(MotionEvent ev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">super</span>.onTouchEvent(ev);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IllegalArgumentException exception) &#123;</span><br><span class="line">            exception.printStackTrace();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
       
     </div>
     
@@ -490,7 +500,7 @@
 
     <footer id="footer" class="footer">
       <div class="footer-inner">
-        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2019</span>
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
   <span class="with-love">
     <i class="fa fa-user"></i>
   </span>
