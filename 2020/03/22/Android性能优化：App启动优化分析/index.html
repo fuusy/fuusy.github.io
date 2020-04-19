@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="性能优化,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="应用启动的时间作为应用的门面，重要性可想而知。尤其在如今的快时代，一款秒开的App比一款启动需要耗费好几秒的App更容易被用户喜爱和长期使用，整的不好还容易被用户永久拉入黑名单。这时候，应用的启动优化就必不可少了。那么接下来就来了解下关于启动优化的一些注意事项。">
+<meta name="keywords" content="性能优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android性能优化：App启动优化分析">
+<meta property="og:url" content="http://fuusy.github.io/2020/03/22/Android性能优化：App启动优化分析/index.html">
+<meta property="og:site_name" content="指尖触碰世界！">
+<meta property="og:description" content="应用启动的时间作为应用的门面，重要性可想而知。尤其在如今的快时代，一款秒开的App比一款启动需要耗费好几秒的App更容易被用户喜爱和长期使用，整的不好还容易被用户永久拉入黑名单。这时候，应用的启动优化就必不可少了。那么接下来就来了解下关于启动优化的一些注意事项。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://fuusy.github.io/2020/03/22/Android性能优化：App启动优化分析/11.jpg">
+<meta property="og:image" content="http://fuusy.github.io/2020/03/22/Android性能优化：App启动优化分析/22.jpg">
+<meta property="og:updated_time" content="2020-04-19T13:24:47.937Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android性能优化：App启动优化分析">
+<meta name="twitter:description" content="应用启动的时间作为应用的门面，重要性可想而知。尤其在如今的快时代，一款秒开的App比一款启动需要耗费好几秒的App更容易被用户喜爱和长期使用，整的不好还容易被用户永久拉入黑名单。这时候，应用的启动优化就必不可少了。那么接下来就来了解下关于启动优化的一些注意事项。">
+<meta name="twitter:image" content="http://fuusy.github.io/2020/03/22/Android性能优化：App启动优化分析/11.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'goofy'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fuusy.github.io/2020/03/22/Android性能优化：App启动优化分析/">
+
+
+
+
+
+  <title>Android性能优化：App启动优化分析 | 指尖触碰世界！</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">指尖触碰世界！</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2020/03/22/Android性能优化：App启动优化分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="付十一">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/image.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="指尖触碰世界！">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android性能优化：App启动优化分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-22T21:16:51+08:00">
+                2020-03-22
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 本文阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>应用启动的时间作为应用的门面，重要性可想而知。尤其在如今的快时代，一款秒开的App比一款启动需要耗费好几秒的App更容易被用户喜爱和长期使用，整的不好还容易被用户永久拉入黑名单。这时候，应用的启动优化就必不可少了。那么接下来就来了解下关于启动优化的一些注意事项。</p>
+<a id="more"></a>
+<h2 id="一、应用启动类型"><a href="#一、应用启动类型" class="headerlink" title="一、应用启动类型"></a>一、应用启动类型</h2><h3 id="1-1-冷启动"><a href="#1-1-冷启动" class="headerlink" title="1.1.冷启动"></a>1.1.冷启动</h3><p>冷启动是指应用程序从零开始，系统的进程在此启动之前没有创建应用程序的进程，或者由于系统杀死了应用后再启动。在冷启动开始时，系统有三个任务。这些任务包括:</p>
+<ul>
+<li>加载并启动应用程序。</li>
+</ul>
+<ul>
+<li>启动后立即显示一个空白的启动窗口。</li>
+</ul>
+<ul>
+<li>创建应用程序app进程。</li>
+</ul>
+<p>一旦app进程创建完成，系统就开始下一阶段：</p>
+<ul>
+<li>创建app对象；</li>
+<li>启动主线程。</li>
+<li>创建主Activity</li>
+<li>开始对View进行布局。</li>
+</ul>
+<h3 id="1-2-热启动"><a href="#1-2-热启动" class="headerlink" title="1.2.热启动"></a>1.2.热启动</h3><p>热启动不同于冷启动，热启动在启动应用时，系统中已经有了该应用的进程，启动时也就少了创建进程等一系列耗时的操作。</p>
+<h3 id="1-3-温启动"><a href="#1-3-温启动" class="headerlink" title="1.3.温启动"></a>1.3.温启动</h3><p>温启动的启动速度处于冷启动和热启动之间，温启动会重新走Activity的onCreate生命周期。</p>
+<h2 id="二、应用启动流程"><a href="#二、应用启动流程" class="headerlink" title="二、应用启动流程"></a>二、应用启动流程</h2><p>优化应用的启动速度主要是在于冷启动时，应用的启动耗时。冷启动时应用会从零开启，这就需要先了解一下当我们点击Launcher上app图标后，进程之间做了什么处理？</p>
+<h3 id="2-1-启动基本流程"><a href="#2-1-启动基本流程" class="headerlink" title="2.1.启动基本流程"></a>2.1.启动基本流程</h3><img src="/2020/03/22/Android性能优化：App启动优化分析/11.jpg">
+<ol>
+<li>点击App图标，Launcher进程向SystemServer进程发起startActivity请求；</li>
+<li>SystemServer进程收到请求后，向Zygote进程发送创建App进程的请求；</li>
+<li>Zygote进程fork出新的App进程，App进程就开始向SystemServer进程发出attachApplication请求，在此同时，App进程会执行bindApplication，即创建Application，调用Application的onCreate；</li>
+<li>SystemServer在收到attachApplication请求后，再次向App进程发送scheduleLauncherActivity请求；</li>
+<li>App进程收到请求后，通过handler向主线程发送LAUNCHE_ACTIVITY消息，主线程收到消息后通过反射机制创建目标Activity，并回调Activity.OnCreate()等方法。到此，App才正式启动，开始Activity的生命周期。</li>
+</ol>
+<p>从应用的启动流程可以发现，应用的启动其实是App进程与SystemServer进程，Zygote进程相互配合的过程。对于启动速度的优化，应用层我们所要关注并且能够干预的也就是Application和Activity的创建。</p>
+<h3 id="2-2-Application"><a href="#2-2-Application" class="headerlink" title="2.2.Application"></a>2.2.Application</h3><p>App运行时，会首先自动创建Application类并实例化 Application对象，且只有一个。Application的创建时间比Activity要早，在上面应用的启动流程中也提到，在启动App时，会创建Application，那么就需要先去了解下它的生命周期。</p>
+<ul>
+<li>attachBaseContext():得到应用上下文的Context，在应用创建时会首先调用；</li>
+<li>onCreate():同样在应用创建时调用，但比attachBaseContext()要晚；</li>
+<li>onTerminate():应用结束时调用；</li>
+<li>onConfigurationChange():系统配置发生变化时调用；</li>
+<li>onLowMemory():系统低内存时调用；</li>
+<li>onTrimMemory():系统要求应用释放内存时调用。</li>
+</ul>
+<p>从Application的生命周期可以看到，应用创建时会依次调用<strong>attachBaseContext()和onCreate()</strong>，这两个生命周期包含在应用的启动流程中，启动速度优化可以以此为一个切入点。</p>
+<h3 id="2-3-Activity"><a href="#2-3-Activity" class="headerlink" title="2.3.Activity"></a>2.3.Activity</h3><p>从点击图标到用户看见前台数据所经历的生命周期，也就是Activity的<strong>onCreate(),onResume()</strong>。众所周知，Activity会在onCreate()中加载布局以及进行数据的初始化。既然包含在应用的启动中，那么也可以作为一个切入点。</p>
+<h3 id="2-4-小结"><a href="#2-4-小结" class="headerlink" title="2.4.小结"></a>2.4.小结</h3><p>从上面的启动流程到Application和Activity的介绍，应用启动优化的切入点也就如下图所示：</p>
+<img src="/2020/03/22/Android性能优化：App启动优化分析/22.jpg">
+<p>作为应用层所能监控并且能处理的，<strong>第一点是属于Application的创建，第二点就是Activity的创建</strong>。那么接下来就需要去监测各个部分所耗费的时间，再针对性的进行优化。</p>
+<h2 id="三、启动耗时的监测"><a href="#三、启动耗时的监测" class="headerlink" title="三、启动耗时的监测"></a>三、启动耗时的监测</h2><h3 id="3-1-logcat生成所有log"><a href="#3-1-logcat生成所有log" class="headerlink" title="3.1.logcat生成所有log"></a>3.1.logcat生成所有log</h3><p>在连接上设备后可以在串口或者adb中利用命令打印出所有的log：</p>
+<ol>
+<li>生成log文件：<strong>logcat &gt; /data/xxx.tx</strong>t</li>
+<li>利用adb将文件pull出来：<strong>adb pull /data/xxx.txt</strong></li>
+</ol>
+<p>执行完上面两条命令后，就会生成一个全log的txt文件，pull出文件后，可以在文件中查看所有的信息，包括启动发生的时间，类名，线程号等。</p>
+<p>logcat生成的xxx.txt虽然包含了很详细的信息，但是还需要我们自己去计算各个生命周期间所耗费的时间。</p>
+<h3 id="3-2-adb命令执行"><a href="#3-2-adb命令执行" class="headerlink" title="3.2.adb命令执行"></a>3.2.adb命令执行</h3><p>除了3.1提到的用logcat打印全log外，adb还有一条命令可以直接生成应用启动的时间。<u><strong>adb shell am start -W [packageName]/[AppstartActivity]</strong></u></p>
+<p>执行完后台会生成<strong>ThisTime</strong>、<strong>TotalTime</strong>和<strong>WaitTime</strong>这三个时间，ThisTime代表一连串启动 Activity 的最后一个 Activity 的启动耗时；TotalTime表示应用的启动时间，包括创建进程，Application初始化和Activity初始化到界面显示，一般来说与ThisTime一样；WaitTime则表示AMS启动Activity的总耗时，一般比TotalTime大。</p>
+<p>对于监测应用的启动速度，我们只需要关注TotalTime这个值。</p>
+<p>如上所述，利用adb命令得到启动时间，也只是一个阶段的总时间，却不能如3.1一样监测到每个生命周期所耗费的时间，无法得到具体的耗时，无疑对启动速度针对性优化没有多大的帮助。</p>
+<h3 id="3-3-代码打点"><a href="#3-3-代码打点" class="headerlink" title="3.3.代码打点"></a>3.3.代码打点</h3><p>代码打点是通过代码编写一个工具类，通过代码的形式获取每个方法的执行的时间，这个方法与3.1所达到的目的是一致的，都能得到每个周期具体的耗时。唯一不同的是3.1的方式需要不断敲击命令，再在文件中去查找有效信息，无疑是耗费人力的，而通过代码打点的方式可以实时监测每个方法的耗时，也可以生成信息上传到服务器。</p>
+<p>下面是一个基本的代码打点的案例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TimeMonitorManager</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> String TAG = <span class="string">"TimeMonitorManager"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> HashMap&lt;String, Long&gt; mTimeTagMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">long</span> mStartTime = <span class="number">0</span>;</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">volatile</span> TimeMonitorManager mMonitorManager;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="title">TimeMonitorManager</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> TimeMonitorManager <span class="title">getInstance</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mMonitorManager == <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (TimeMonitorManager.class) &#123;</span><br><span class="line">                <span class="keyword">if</span> (mMonitorManager == <span class="keyword">null</span>) &#123;</span><br><span class="line">                    mMonitorManager = <span class="keyword">new</span> TimeMonitorManager();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> mMonitorManager;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 开始监听.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">startMonitor</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mTimeTagMap.size() &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            mTimeTagMap.clear();</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        mStartTime = System.currentTimeMillis();</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 结束监听.</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> tag 所要打印的tag.</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">endMonitor</span><span class="params">(String tag)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mTimeTagMap.get(tag) != <span class="keyword">null</span>) &#123;</span><br><span class="line">            mTimeTagMap.remove(tag);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">long</span> time = System.currentTimeMillis() - mStartTime;</span><br><span class="line">        mTimeTagMap.put(tag, time);</span><br><span class="line">        showData();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">showData</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (mTimeTagMap.size() &lt;= <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">return</span>;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">for</span> (String tag: mTimeTagMap.keySet()</span><br><span class="line">             ) &#123;</span><br><span class="line">            <span class="keyword">long</span> time = mTimeTagMap.get(tag);</span><br><span class="line">            Log.d(TAG, tag + <span class="string">": "</span> + time);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在需要打点开始的地方调用<strong>startMonitor()</strong>,在结束的地方调用<strong>endMonitor(String tag)</strong>,例如Activity在加载布局,也就是setContentView(R.layout.activity_main)时是耗时的,根据打点规则,在setContentView(R.layout.activity_main);前后调用TimeMonitorManager的方法,以达到监测setContentView所耗费的时间.如下:</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">    TimeMonitorManager.getInstance().startMonitor();</span><br><span class="line">    setContentView(R.layout.activity_main);</span><br><span class="line">    TimeMonitorManager.getInstance().endMonitor(TAG + <span class="string">" onCreate setContentView"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>运行后Logcat中打印的效果如下:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">TimeMonitorManager: MainActivity onCreate setContentView: 60</span><br></pre></td></tr></table></figure>
+<p>可以发现,Activity在setContentView()时所耗费的时间大约为60ms.</p>
+<p>利用TimeMonitorManager打点的好处在于可以清楚的监测到每一处的耗时,更加精准;</p>
+<p>从第二节应用启动流程就了解到，应用启动耗时能够监测的切入点为Application的创建和Activity的创建，我们就可以通过代码打点的方式在以下这些地方进行打点：</p>
+<ul>
+<li>Application的onCreate()</li>
+<li>Activity的onCreate()，onStart(),onResume()</li>
+<li>初始化对象的方法，注册等方法</li>
+<li>一些耗时的操作</li>
+</ul>
+<h2 id="四、优化方向"><a href="#四、优化方向" class="headerlink" title="四、优化方向"></a>四、优化方向</h2><p>从上面三节可以了解到，影响应用启动时间的要素一般可分为Application里一些数据的准备，Activity的布局以及在初始化的耗时操作。下面也将从这几个方面分别描述下优化策略。</p>
+<h3 id="4-1-布局优化"><a href="#4-1-布局优化" class="headerlink" title="4.1.布局优化"></a>4.1.布局优化</h3><h4 id="4-1-1-按需选择布局方式"><a href="#4-1-1-按需选择布局方式" class="headerlink" title="4.1.1.按需选择布局方式"></a>4.1.1.按需选择布局方式</h4><p>我们都知道onCreate()里的setContentView()是用来加载布局，应用启动时会去解析xml中的结构，当一个xml里结构嵌套过多，系统需要去解析的时间就大大增加了。</p>
+<p>当布局比较复杂，可以使用ConstraintLayout布局，ConstraintLayout是Android Studio 2.2新增的一个功能，它的一大特点就是为了解决布局嵌套。具体使用方法可参考</p>
+<p>另外，当版本较低且布局复杂，RelativeLayout布局优化的效果是要优于LinearLayout。但是当布局简单时，LinearLayout却优于RelativeLayout，所以大家可依照具体情况进行选择。</p>
+<h4 id="4-1-2-lt-include-gt-、-lt-merge-gt"><a href="#4-1-2-lt-include-gt-、-lt-merge-gt" class="headerlink" title="4.1.2.&lt; include &gt;、&lt; merge &gt;"></a>4.1.2.&lt; include &gt;、&lt; merge &gt;</h4><p>&lt; include &gt;与&lt; merge &gt;是布局优化的两个利器。&lt; include &gt;标签是可以允许在一个布局当中引入另外一个布局，当多个布局中有用到相同的部分，就可以采用&lt; include &gt;标签将相同的部分提取出来，利用&lt; include &gt;将公告部分替代。</p>
+<p>而&lt; merge &gt;标签的作用是作为&lt; include &gt;标签的一种辅助扩展来使用的，它的主要作用是为了防止在引用布局文件时产生多余的布局嵌套。</p>
+<h4 id="4-1-3-ViewStub"><a href="#4-1-3-ViewStub" class="headerlink" title="4.1.3.ViewStub"></a>4.1.3.ViewStub</h4><p>ViewStub是一个比较轻量级的控件，没有大小，不需要绘制，同时也不参与布局，所以消耗的资源是非常小的。ViewStub的使用就在于当我们存在时而需要显示时而不显示的view的时候，就可以使用它。例如我们进行网络请求时的loading bar，请求时，会显示，当请求结束，loading bar就会消失，这个时候就可以使用ViewStub，减少资源的消耗的同时也减少了布局解析的时间。</p>
+<p>另外，针对布局的优化，AS提供了Profile和Hierarchy View两个工具分别检查View的绘制和分析布局。</p>
+<p>具体使用可参考</p>
+<h3 id="4-2-逻辑加载优化"><a href="#4-2-逻辑加载优化" class="headerlink" title="4.2.逻辑加载优化"></a>4.2.逻辑加载优化</h3><p>逻辑耗时一般分为Application中和Activity中的逻辑加载。在Application或者Activity中进行初始化的时候，有些的逻辑初始化是必要的，而有些初始化非必要，可以适当的延时去加载。例如在最近的项目中，应用启动时需要提前去连接服务并且去注册回调接口，为了提前连接上服务，将连接的操作就放置在了Application里进行初始化。这就是属于必要的逻辑操作。对于不同优先级的逻辑，我们可以大致分为以下几点：</p>
+<h4 id="4-2-1-异步加载（必要且耗时）"><a href="#4-2-1-异步加载（必要且耗时）" class="headerlink" title="4.2.1.异步加载（必要且耗时）"></a>4.2.1.异步加载（必要且耗时）</h4><p>有些逻辑处理的优先级比较高，并且初始化耗时，可以采用<strong>异步加载</strong>的方式，利用RxJava，HandlerThread，IntentService等在后台进行加载，这样就不会阻塞主线程，UI展现到用户眼前的时间也会缩短。</p>
+<h4 id="4-2-2-延时加载（非必要且耗时）"><a href="#4-2-2-延时加载（非必要且耗时）" class="headerlink" title="4.2.2.延时加载（非必要且耗时）"></a>4.2.2.延时加载（非必要且耗时）</h4><p>当逻辑操作的优先级不是很高时，可以采取<strong>延时加载</strong>的方式，也就是应用启动过程中暂时不去初始化这些逻辑，将之前在Application或者Activity onCreate()中的操作移除，在主线程空闲的时候再进行加载操作。</p>
+<p>另外，MessageQueue内部有一个接口<strong>IdleHandler</strong>，可以很好的处理延时问题。IdleHandler在looper里面的message都处理完了的时候就会回调这个接口，返回false，就会移除它，返回true就会在下次message处理完了的时候继续回调。</p>
+<p><strong>举个例子</strong>，一般情况下，应用启动时会去绘制布局，会去调用measure, layout, draw等方法，在执行这些操作后，用户才会去看见UI，而之前优先级不高的初始化，就可以延时在这些操作后加载，那么主要的问题就是我们如何去判断measure, layout, draw等操作已经完成了？延时加载的时机在哪？IdleHandler就帮我们解决了这个问题，上面也都知道IdleHandler是在队列为空的时候会去回调它，measure, layout, draw都可以作为一个个message，IdleHandler就会在他们执行完成后响应。这个时候就可以进行之前需要延时的初始化操作。</p>
+<p>另外，当代码中同时有UI绘制和逻辑加载，可以在IdleHandler回调中再去处理逻辑加载，UI绘制与逻辑分开操作，可以减少数据空白时间长的问题。</p>
+<h4 id="4-2-3-分步加载"><a href="#4-2-3-分步加载" class="headerlink" title="4.2.3.分步加载"></a>4.2.3.分步加载</h4><p>当初始化对象有很多时，且必要，可以采取<strong>分步加载</strong>的方式，将逻辑的优先级区分开来，优先级高的先加载。</p>
+<h2 id="五、总结"><a href="#五、总结" class="headerlink" title="五、总结"></a>五、总结</h2><p>启动优化需要针对不同的业务做出不同的优化方式，例如可以采用<strong>Multidex预加载</strong>优化，但是虚拟机在5.0以上默认就使用ART，对于项目是5.0以上版本就不需要去优化此方面。</p>
+<p>总的来说，<strong>优化方向可以分为布局优化，减少解析xml和绘制的时间；逻辑优化，将必要且耗时的操作异步加载，将非必要的采用延时加载，另外，将操作优先级高的可以优先加载。</strong></p>
+<p>最后，启动速度优化是一个大工程，后续还需要针对具体场景继续深度挖掘。</p>
+<blockquote>
+<p>参考：《Android应用性能优化最佳实践》</p>
+</blockquote>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/性能优化/" rel="tag"># 性能优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/16/不使用第三方库，Bitmap的优化策略/" rel="next" title="不使用第三方库，Bitmap的优化策略">
+                <i class="fa fa-chevron-left"></i> 不使用第三方库，Bitmap的优化策略
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="付十一">
+            
+              <p class="site-author-name" itemprop="name">付十一</p>
+              <p class="site-description motion-element" itemprop="description">指尖触碰世界！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">17</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">12</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5c7f243a5188251bdd53e9c4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-globe"></i>掘金</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、应用启动类型"><span class="nav-number">1.</span> <span class="nav-text">一、应用启动类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-1-冷启动"><span class="nav-number">1.1.</span> <span class="nav-text">1.1.冷启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-2-热启动"><span class="nav-number">1.2.</span> <span class="nav-text">1.2.热启动</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#1-3-温启动"><span class="nav-number">1.3.</span> <span class="nav-text">1.3.温启动</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、应用启动流程"><span class="nav-number">2.</span> <span class="nav-text">二、应用启动流程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-启动基本流程"><span class="nav-number">2.1.</span> <span class="nav-text">2.1.启动基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-Application"><span class="nav-number">2.2.</span> <span class="nav-text">2.2.Application</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-Activity"><span class="nav-number">2.3.</span> <span class="nav-text">2.3.Activity</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-小结"><span class="nav-number">2.4.</span> <span class="nav-text">2.4.小结</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、启动耗时的监测"><span class="nav-number">3.</span> <span class="nav-text">三、启动耗时的监测</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-1-logcat生成所有log"><span class="nav-number">3.1.</span> <span class="nav-text">3.1.logcat生成所有log</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-adb命令执行"><span class="nav-number">3.2.</span> <span class="nav-text">3.2.adb命令执行</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-代码打点"><span class="nav-number">3.3.</span> <span class="nav-text">3.3.代码打点</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#四、优化方向"><span class="nav-number">4.</span> <span class="nav-text">四、优化方向</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-布局优化"><span class="nav-number">4.1.</span> <span class="nav-text">4.1.布局优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-1-按需选择布局方式"><span class="nav-number">4.1.1.</span> <span class="nav-text">4.1.1.按需选择布局方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-2-lt-include-gt-、-lt-merge-gt"><span class="nav-number">4.1.2.</span> <span class="nav-text">4.1.2.&lt; include &gt;、&lt; merge &gt;</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-1-3-ViewStub"><span class="nav-number">4.1.3.</span> <span class="nav-text">4.1.3.ViewStub</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-逻辑加载优化"><span class="nav-number">4.2.</span> <span class="nav-text">4.2.逻辑加载优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-1-异步加载（必要且耗时）"><span class="nav-number">4.2.1.</span> <span class="nav-text">4.2.1.异步加载（必要且耗时）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-2-延时加载（非必要且耗时）"><span class="nav-number">4.2.2.</span> <span class="nav-text">4.2.2.延时加载（非必要且耗时）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4-2-3-分步加载"><span class="nav-number">4.2.3.</span> <span class="nav-text">4.2.3.分步加载</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#五、总结"><span class="nav-number">5.</span> <span class="nav-text">五、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">付十一</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
