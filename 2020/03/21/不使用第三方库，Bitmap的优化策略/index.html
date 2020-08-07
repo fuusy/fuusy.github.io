@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="性能优化,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="如今市场上有很多封装好的第三方库，对Bitmap内存也是做到了很好的优化，比如Glide、Fresco，每次加载只要直接调用就好，但是除掉第三方库外，我们还是需要去了解一下Bitmap的基本优化手段。">
+<meta name="keywords" content="性能优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="不使用第三方库，Bitmap的优化策略">
+<meta property="og:url" content="http://fuusy.github.io/2020/03/21/不使用第三方库，Bitmap的优化策略/index.html">
+<meta property="og:site_name" content="指尖触碰世界！">
+<meta property="og:description" content="如今市场上有很多封装好的第三方库，对Bitmap内存也是做到了很好的优化，比如Glide、Fresco，每次加载只要直接调用就好，但是除掉第三方库外，我们还是需要去了解一下Bitmap的基本优化手段。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://fuusy.github.io/2020/03/21/不使用第三方库，Bitmap的优化策略/image2.jpg">
+<meta property="og:image" content="http://fuusy.github.io/2020/03/21/不使用第三方库，Bitmap的优化策略/image3.jpg">
+<meta property="og:updated_time" content="2020-08-07T15:19:42.340Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="不使用第三方库，Bitmap的优化策略">
+<meta name="twitter:description" content="如今市场上有很多封装好的第三方库，对Bitmap内存也是做到了很好的优化，比如Glide、Fresco，每次加载只要直接调用就好，但是除掉第三方库外，我们还是需要去了解一下Bitmap的基本优化手段。">
+<meta name="twitter:image" content="http://fuusy.github.io/2020/03/21/不使用第三方库，Bitmap的优化策略/image2.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'goofy'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fuusy.github.io/2020/03/21/不使用第三方库，Bitmap的优化策略/">
+
+
+
+
+
+  <title>不使用第三方库，Bitmap的优化策略 | 指尖触碰世界！</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">指尖触碰世界！</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2020/03/21/不使用第三方库，Bitmap的优化策略/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="付十一">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/image.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="指尖触碰世界！">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">不使用第三方库，Bitmap的优化策略</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-03-21T22:10:52+08:00">
+                2020-03-21
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 本文阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>如今市场上有很多封装好的第三方库，对Bitmap内存也是做到了很好的优化，比如Glide、Fresco，每次加载只要直接调用就好，但是除掉第三方库外，我们还是需要去了解一下Bitmap的基本优化手段。</p>
+<a id="more"></a>
+<h2 id="一、Bitmap内存进程"><a href="#一、Bitmap内存进程" class="headerlink" title="一、Bitmap内存进程"></a>一、Bitmap内存进程</h2><p>首先我们有必要去了解一下Bitmap的基本知识点，在Android3.0之前，Bitmap的对象是放在Java堆中，而Bitmap的像素是放置在Native内存中，这个时候需要手动的去调用recycle，才能去回收Native内存；</p>
+<p>在Android3.0到Android7.0，Bitmap对象和像素都是放置到Java堆中，这个时候即使不调用recycle，Bitmap内存也会随着对象一起被回收。虽然Bitmap内存可以很容易被回收，但是Java堆的内存有很大的限制，也很容易造成GC。</p>
+<p>在Android8.0的时候，Bitmap内存又重新放置到了Native中。</p>
+<p>Bitmap造成OOM很多时候也是因为对Bitmap的资源没有得到很好的利用，同时没有做到及时的释放。</p>
+<h2 id="二、优化策略"><a href="#二、优化策略" class="headerlink" title="二、优化策略"></a>二、优化策略</h2><p>对于Bitmap的优化主要分为针对不同密度的设备合理的分配资源，压缩以及缓存处理三种。</p>
+<h3 id="2-1-drawable的合理分配"><a href="#2-1-drawable的合理分配" class="headerlink" title="2.1.drawable的合理分配"></a>2.1.drawable的合理分配</h3><img src="/2020/03/21/不使用第三方库，Bitmap的优化策略/image2.jpg">
+<p>总所周知，drawable时放置本地图片资源的地方，从上图可以发现,AS将drawable分为了mdpi,hdpi,xhdpi…不同的等级,简单概括为不同等级的dpi代表着不同的设备密度,它们之间的区别暂时先不论,有必要先去了解一下AS对于drawable的匹配规则.</p>
+<p>当当前的设备密度为xhdpi,此时代码中ImageView需要去引用drawable中的图片,那么根据匹配规则,系统首先会在drawable-xhdpi文件夹中去搜索,如果需要的图片存在,那么直接显示;如果不存在,那么系统将会开始从更高dpi中搜索,例如drawable-xxhdpi,drawable-xxxhdpi,如果在高dpi中搜索不到需要的图片,那么就会去drawable-nodpi中搜索,有则显示,无则继续向低dpi,如drawable-hdpi,drawable-mdpi,drawable-ldpi等文件夹一级一级搜索.</p>
+<p>当在比当前设备密度低的文件夹中搜到图片,那么在ImageView(宽高在wrap_content状态下)中显示的图片将会被放大.图片放大也就意味着所占内存也开始增多.这也就是为什么分辨率不高的图片随意放置在drawable中也会出现OOM.而在高密度文件夹中搜到图片,图片在该设备上将会被缩小,内存也就相应减少.</p>
+<p>在理想的状态下,不同dpi的文件下应该放置相应dpi的图片资源,以对不同的设备进行适配.但在图片资源没有做dpi区分的时候,根据以上所说的匹配规则,将图片资源放置在高dpi 如drawable-xdpi,drawable-xxdpi文件夹中.是比较好的选择,在最大程度上减少OOM的几率。</p>
+<h3 id="2-2-尺寸优化"><a href="#2-2-尺寸优化" class="headerlink" title="2.2.尺寸优化"></a>2.2.尺寸优化</h3><p>当装载图片的容器例如ImageView只有100<em>100，而图片的分辨率为800 </em> 800，这个时候将图片直接放置在容器上，很容易OOM，同时也是对图片和内存资源的一种浪费。当容器的宽高都很小于图片的宽高，其实就需要对图片进行尺寸上的压缩，将图片的分辨率调整为ImageView宽高的大小，一方面不会对图片的质量有影响，同时也可以很大程度上减少内存的占用。</p>
+<p>对于尺寸压缩首先需要去了解一个知识点<strong>inSampleSize</strong>,</p>
+<img src="/2020/03/21/不使用第三方库，Bitmap的优化策略/image3.jpg">
+<p>从上图发现Android官方对它的解释是，如果inSampleSize 设置的值大于1，则请求解码器对原始的bitmap进行子采样图像，然后返回较小的图片来减少内存的占用，例如inSampleSize == 4，则采样后的图像宽高为原图像的1/4，而像素值为原图的1/16，也就是说采样后的图像所占内存也为原图所占内存的1/16；当inSampleSize &lt;=1时，就当作1来处理也就是和原图一样大小。另外最后一句还注明，inSampleSize的值一直为2的幂，如1，2，4，8。任何其他的值也都是四舍五入到最接近2的幂。</p>
+<p>采样率inSampleSize其实是一个规定图片压缩倍数的一个参数，通过图片宽高的比较得到一个新的数值，inSampleSize设置到BitmapFactory中重新去解码图片。下面就是利用inSampleSize对图片进行尺寸上的优化代码。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 对图片进行解码压缩。</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> resourceId 所需压缩的图片资源</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> reqHeight  所需压缩到的高度</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> reqWidth   所需压缩到的宽度</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> Bitmap</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">private</span> Bitmap <span class="title">decodeBitmap</span><span class="params">(<span class="keyword">int</span> resourceId, <span class="keyword">int</span> reqHeight, <span class="keyword">int</span> reqWidth)</span> </span>&#123;</span><br><span class="line">        BitmapFactory.Options options = <span class="keyword">new</span> BitmapFactory.Options();</span><br><span class="line">        <span class="comment">//inJustDecodeBounds设置为true，解码器将返回一个null的Bitmap，系统将不会为此Bitmap上像素分配内存。</span></span><br><span class="line">        <span class="comment">//只做查询图片宽高用。</span></span><br><span class="line">        options.inJustDecodeBounds = <span class="keyword">true</span>;</span><br><span class="line">        BitmapFactory.decodeResource(getResources(), resourceId, options);</span><br><span class="line">        <span class="comment">//查询该图片的宽高。</span></span><br><span class="line">        <span class="keyword">int</span> height = options.outHeight;</span><br><span class="line">        <span class="keyword">int</span> width = options.outWidth;</span><br><span class="line">        <span class="keyword">int</span> inSampleSize = <span class="number">1</span>;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//如果当前图片的高或者宽大于所需的高或宽，</span></span><br><span class="line">        <span class="comment">// 就进行inSampleSize的2倍增加处理，直到图片宽高符合所需要求。</span></span><br><span class="line">        <span class="keyword">if</span> (height &gt; reqHeight || width &gt; reqWidth) &#123;</span><br><span class="line">            <span class="keyword">int</span> halfHeight = height / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">int</span> halfWidth = width / <span class="number">2</span>;</span><br><span class="line">            <span class="keyword">while</span> ((halfHeight / inSampleSize &gt;= reqHeight)</span><br><span class="line">                    &amp;&amp; (halfWidth / inSampleSize) &gt;= reqWidth) &#123;</span><br><span class="line">                inSampleSize *= <span class="number">2</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="comment">//inSampleSize获取结束后，需要将inJustDecodeBounds置为false。</span></span><br><span class="line">        options.inJustDecodeBounds = <span class="keyword">false</span>;</span><br><span class="line">        <span class="comment">//返回压缩后的Bitmap。</span></span><br><span class="line">        <span class="keyword">return</span> BitmapFactory.decodeResource(getResources(), resourceId, options);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<h3 id="2-3-质量优化"><a href="#2-3-质量优化" class="headerlink" title="2.3.质量优化"></a>2.3.质量优化</h3><p>一般情况下质量压缩是不推荐的一种优化手法，此手法压缩后图片将会失真。但不排除有项目对图片的清晰度没有过高的要求。</p>
+<p>在开始谈如何压缩之前我们需要了解一下Bitmap的质量等级，在API29中，将Bitmap分为<strong>ALPHA_8, RGB_565, ARGB_4444, ARGB_8888, RGBA_F16, HARDWARE</strong>六个等级。</p>
+<ul>
+<li>ALPHA_8：不存储颜色信息，每个像素占1个字节；</li>
+<li>RGB_565：仅存储RGB通道，每个像素占2个字节，对Bitmap色彩没有高要求，可以使用该模式；</li>
+<li><del>ARGB_4444：已弃用，用ARGB_8888代替；</del></li>
+<li>ARGB_8888：每个像素占用4个字节，保持高质量的色彩保真度，默认使用该模式；</li>
+<li>RGBA_F16：每个像素占用8个字节，适合宽色域和HDR；</li>
+<li>HARDWARE：一种特殊的配置，减少了内存占用同时也加快了Bitmap的绘制。</li>
+</ul>
+<p>每个等级每个像素所占用的字节也都不一样，所存储的色彩信息也不同。同一张100像素的图片，ARGB_8888就占了400字节，RGB_565才占200字节，RGB_565在内存上取得了优势，但是Bitmap的色彩值以及清晰度却不如ARGB_8888模式下的Bitmap。质量压缩说到底就是用清晰度来换内存。</p>
+<p>质量压缩的具体操作也和上面2.2一样，只是将<strong>options.inPreferredConfig</strong> 设置为所需的图片质量，如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">options.inPreferredConfig = Bitmap.Config.ARGB_8888;</span><br></pre></td></tr></table></figure>
+<h3 id="2-4-缓存"><a href="#2-4-缓存" class="headerlink" title="2.4.缓存"></a>2.4.缓存</h3><p>不管是从网络上下载图片，还是直接从USB中读取图片，缓存对于图片加载的优化起到了至关重要的作用。当我们首次从网络上或者USB读取图片，会对图片进行相应的压缩处理。在处理过后不加入缓存，下一次请求图片还是直接从网络上或者USB中直接读取，不仅消耗了用户的流量还重复对图片进行压缩处理，占用多余内存的同时加载图片也很缓慢。</p>
+<p>对于缓存，目前的策略是内存缓存和存储设备缓存。当加载一张图片时，首先会从内存中去读取，如果没有就接着在存储设备中读，最后才直接从网络或者USB中读取。接下来就聊一聊这两种缓存的具体内容。</p>
+<h4 id="2-4-1-内存缓存"><a href="#2-4-1-内存缓存" class="headerlink" title="2.4.1.内存缓存"></a>2.4.1.内存缓存</h4><p>LRU是用于实现内存缓存的一种常见算法，LRU也叫做最近最少使用算法，通俗来讲就是当缓存满了的时候，就会优先的去淘汰最近最少使用的缓存对象。接下来就以代码的方式直观的分析。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="keyword">private</span> LruCache&lt;Integer,Bitmap&gt; mCache;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">       setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">       <span class="comment">//1.初始化LruCache.</span></span><br><span class="line">       <span class="keyword">int</span> maxMemory = (<span class="keyword">int</span>) (Runtime.getRuntime().maxMemory() / <span class="number">1024</span>);</span><br><span class="line">       <span class="keyword">int</span> cacheSize = maxMemory / <span class="number">8</span>;</span><br><span class="line">       mCache = <span class="keyword">new</span> LruCache&lt;Integer,Bitmap&gt;(cacheSize)&#123;</span><br><span class="line">           <span class="meta">@Override</span></span><br><span class="line">           <span class="function"><span class="keyword">protected</span> <span class="keyword">int</span> <span class="title">sizeOf</span><span class="params">(Integer key, Bitmap value)</span> </span>&#123;</span><br><span class="line">               <span class="keyword">return</span> value.getRowBytes() * value.getHeight() / <span class="number">1024</span>;</span><br><span class="line">           &#125;</span><br><span class="line">       &#125;;</span><br><span class="line"></span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//2.从Cache中获取数据</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> Bitmap <span class="title">getDataFromCache</span><span class="params">(<span class="keyword">int</span> key)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (mCache.size() != <span class="number">0</span>) &#123;</span><br><span class="line">           <span class="keyword">return</span> mCache.get(key);</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line">   <span class="comment">//3.将数据存储到Cache中</span></span><br><span class="line">   <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">putDataToCache</span><span class="params">(<span class="keyword">int</span> key, Bitmap bitmap)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">if</span> (getDataFromCache(key) == <span class="keyword">null</span>) &#123;</span><br><span class="line">           mCache.put(key,bitmap);</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>从代码中看首先对LruCache进行初始化，获取当前进程可用的内存，然后将内存缓存的容量制定为可用内存的1/8，同时对Bitmap对象进行大小的计算。接着构造出两个对外的方法，一个是根据Key从Cache中获取数据，一个是将数据存储到cache中。简单的3步也就完成了LruCache的使用。</p>
+<h4 id="2-4-2-磁盘缓存"><a href="#2-4-2-磁盘缓存" class="headerlink" title="2.4.2.磁盘缓存"></a>2.4.2.磁盘缓存</h4><p>磁盘缓存所使用的算法为DiskLruCache，它的使用比内存缓存要复杂一点，但是还是离不开上面的3步，初始化，查找和添加。同样的，直接从代码中开始分析。</p>
+<h5 id="2-4-2-1-DiskLruCache的初始化"><a href="#2-4-2-1-DiskLruCache的初始化" class="headerlink" title="2.4.2.1.DiskLruCache的初始化"></a>2.4.2.1.DiskLruCache的初始化</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">final</span> <span class="keyword">static</span> <span class="keyword">int</span> DISK_MAX_SIZE = <span class="number">20</span> * <span class="number">1024</span> * <span class="number">1024</span>;</span><br><span class="line">   <span class="keyword">private</span> DiskLruCache mDiskLruCache;</span><br><span class="line"></span><br><span class="line">   <span class="meta">@Override</span></span><br><span class="line">   <span class="function"><span class="keyword">protected</span> <span class="keyword">void</span> <span class="title">onCreate</span><span class="params">(Bundle savedInstanceState)</span> </span>&#123;</span><br><span class="line">       <span class="keyword">super</span>.onCreate(savedInstanceState);</span><br><span class="line">       setContentView(R.layout.activity_main);</span><br><span class="line"></span><br><span class="line">       <span class="comment">//初始化DiskLruCache。</span></span><br><span class="line">       File directory = getFile(<span class="keyword">this</span>,<span class="string">"DiskCache"</span>);</span><br><span class="line">       <span class="keyword">if</span> (!directory.exists()) &#123;</span><br><span class="line">           directory.mkdirs();</span><br><span class="line">       &#125;</span><br><span class="line">       <span class="keyword">try</span> &#123;</span><br><span class="line">           mDiskLruCache = DiskLruCache.open(directory, <span class="number">1</span>, <span class="number">1</span>, DISK_MAX_SIZE);</span><br><span class="line">       &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">           e.printStackTrace();</span><br><span class="line">       &#125;</span><br><span class="line">   &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> File <span class="title">getFile</span><span class="params">(Context context,String dirName)</span></span>&#123;</span><br><span class="line">       String filePath = Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)</span><br><span class="line">               ? Objects.requireNonNull(context.getExternalCacheDir()).getPath() : 								context.getCacheDir().getPath();</span><br><span class="line">       <span class="keyword">return</span> <span class="keyword">new</span> File(filePath + File.pathSeparator + dirName);</span><br><span class="line">   &#125;</span><br></pre></td></tr></table></figure>
+<p>DiskLruCache的创建是DiskLruCache.open()来创建，其中会传入4个参数，第一个参数表示磁盘缓存所要存储的路径，一般来说，如果外部设备存在，那么存储路径放置在<strong>/storage/emulated/0/Android/data/package_name/cache</strong>中；反之就放置在<strong>/data/data/package_name/cache</strong> 这个目录下。存储路径可以根据自己的实际要求进行制定，值得注意的是，如果缓存路径选择SD卡上的缓存目录，即<strong>/storage/emulated/0/Android/data/package_name/cache</strong>，那么当应用被卸载时，该目录也会被删除。</p>
+<p>第二个参数表示应用的版本号，直接设置为1即可；第三个参数表示单个节点所对应的数据的个数，设置为1即可；第四个参数表示磁盘缓存的容量大小。</p>
+<h5 id="2-4-2-2-DiskLruCache的添加"><a href="#2-4-2-2-DiskLruCache的添加" class="headerlink" title="2.4.2.2.DiskLruCache的添加"></a>2.4.2.2.DiskLruCache的添加</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">addDataToDisk</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//采用url的md5值作为key。</span></span><br><span class="line">        String key = hashKeyFromUrl(url);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            DiskLruCache.Editor editor = mDiskLruCache.edit(key);</span><br><span class="line">            <span class="keyword">if</span> (editor != <span class="keyword">null</span>) &#123;</span><br><span class="line">                OutputStream outputStream = editor.newOutputStream(<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">if</span> (downloadDataFromNet(url, outputStream)) &#123;</span><br><span class="line">                    <span class="comment">//提交至缓存</span></span><br><span class="line">                    editor.commit();</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//回退整个操作</span></span><br><span class="line">                    editor.abort();</span><br><span class="line">                &#125;</span><br><span class="line">                mDiskLruCache.flush();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">hashKeyFromUrl</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">        String cacheKey;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="keyword">final</span> MessageDigest digest = MessageDigest.getInstance(<span class="string">"MD5"</span>);</span><br><span class="line">            digest.update(url.getBytes());</span><br><span class="line"></span><br><span class="line">            cacheKey = bytesToHexString(digest.digest());</span><br><span class="line"></span><br><span class="line">        &#125; <span class="keyword">catch</span> (NoSuchAlgorithmException e) &#123;</span><br><span class="line">            cacheKey = String.valueOf(url.hashCode());</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> cacheKey;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">private</span> String <span class="title">bytesToHexString</span><span class="params">(<span class="keyword">byte</span>[] bytes)</span> </span>&#123;</span><br><span class="line">        StringBuilder sb = <span class="keyword">new</span> StringBuilder();</span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; bytes.length; i++) &#123;</span><br><span class="line">            String hex = Integer.toHexString(<span class="number">0xFF</span> &amp; bytes[i]);</span><br><span class="line">            <span class="keyword">if</span> (hex.length() == <span class="number">1</span>) &#123;</span><br><span class="line">                sb.append(<span class="string">'0'</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            sb.append(hex);</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">return</span> sb.toString();</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>DiskLruCache的添加主要是由DiskLruCache.Editor来完成，首先我们会采用url的md5值来作为key，通过.Editor和key获取一个文件输出流，下载好图片通过这个文件输出流写入到文件系统中，最后通过editor.commit()的方法将文件提交才算真正将图片写入文件系统。</p>
+<h5 id="2-4-2-3-DiskLruCache的查找"><a href="#2-4-2-3-DiskLruCache的查找" class="headerlink" title="2.4.2.3.DiskLruCache的查找"></a>2.4.2.3.DiskLruCache的查找</h5><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Bitmap <span class="title">getDataFromDisk</span><span class="params">(String url)</span> </span>&#123;</span><br><span class="line">        Bitmap bitmap = <span class="keyword">null</span>;</span><br><span class="line">        String key = hashKeyFromUrl(url);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            DiskLruCache.Snapshot snapshot = mDiskLruCache.get(key);</span><br><span class="line">            <span class="keyword">if</span> (snapshot != <span class="keyword">null</span>) &#123;</span><br><span class="line">                FileInputStream inputStream = (FileInputStream) snapshot.getInputStream(<span class="number">0</span>);</span><br><span class="line">                <span class="keyword">return</span> BitmapFactory.decodeStream(inputStream);</span><br><span class="line">            &#125;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>DiskLruCache的添加是通过Editor来完成，而查找是由DiskLruCache.Snapshot来完成的。首先通过url获取到当前文件的key值，初始化Snapshot后获取一个文件输入流，最后通过该文件输入流来解析出当前缓存的文件。</p>
+<h2 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h2><p>上面已经分别描述了几种优化手段，最后再来总结一下。</p>
+<ol>
+<li>根据不同的密度的设备将图片资源放置再不同的drawable文件夹中；</li>
+<li>利用<strong>inSampleSize</strong>对图片进行尺寸上的压缩；</li>
+<li>利用<strong>inPreferredConfig</strong>对图片进行质量上的压缩；</li>
+<li>利用三级缓存，依次从内存缓存（LruCache）、磁盘缓存（DiskCache）、网络上获取图片；</li>
+<li>使用第三方库Glide、Fresco等。</li>
+</ol>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/性能优化/" rel="tag"># 性能优化</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/02/16/Android/" rel="next" title="Android界面刷新机制分析">
+                <i class="fa fa-chevron-left"></i> Android界面刷新机制分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/05/02/Android性能优化：App启动优化分析/" rel="prev" title="Android性能优化：App启动优化分析">
+                Android性能优化：App启动优化分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="付十一">
+            
+              <p class="site-author-name" itemprop="name">付十一</p>
+              <p class="site-description motion-element" itemprop="description">指尖触碰世界！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5c7f243a5188251bdd53e9c4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-globe"></i>掘金</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#一、Bitmap内存进程"><span class="nav-number">1.</span> <span class="nav-text">一、Bitmap内存进程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#二、优化策略"><span class="nav-number">2.</span> <span class="nav-text">二、优化策略</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-drawable的合理分配"><span class="nav-number">2.1.</span> <span class="nav-text">2.1.drawable的合理分配</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-尺寸优化"><span class="nav-number">2.2.</span> <span class="nav-text">2.2.尺寸优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-3-质量优化"><span class="nav-number">2.3.</span> <span class="nav-text">2.3.质量优化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-4-缓存"><span class="nav-number">2.4.</span> <span class="nav-text">2.4.缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-1-内存缓存"><span class="nav-number">2.4.1.</span> <span class="nav-text">2.4.1.内存缓存</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-4-2-磁盘缓存"><span class="nav-number">2.4.2.</span> <span class="nav-text">2.4.2.磁盘缓存</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-2-1-DiskLruCache的初始化"><span class="nav-number">2.4.2.1.</span> <span class="nav-text">2.4.2.1.DiskLruCache的初始化</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-2-2-DiskLruCache的添加"><span class="nav-number">2.4.2.2.</span> <span class="nav-text">2.4.2.2.DiskLruCache的添加</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#2-4-2-3-DiskLruCache的查找"><span class="nav-number">2.4.2.3.</span> <span class="nav-text">2.4.2.3.DiskLruCache的查找</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">付十一</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

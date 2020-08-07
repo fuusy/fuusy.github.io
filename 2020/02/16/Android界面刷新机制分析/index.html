@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next gemini use-motion" lang>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+  
+  
+    
+    
+  <script src="/lib/pace/pace.min.js?v=1.0.2"></script>
+  <link href="/lib/pace/pace-theme-minimal.min.css?v=1.0.2" rel="stylesheet">
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="刷新机制,">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="UI流畅性一直是Android口碑的问题之一，在Android4.1的时候，推出了Project Butter。而Project butter引入了三个重要元素：VSYBC、TripleBuffer、Choreographer，下面就是基于这三个要素对屏幕刷新机制进行分析。">
+<meta name="keywords" content="刷新机制">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android界面刷新机制分析">
+<meta property="og:url" content="http://fuusy.github.io/2020/02/16/Android界面刷新机制分析/index.html">
+<meta property="og:site_name" content="指尖触碰世界！">
+<meta property="og:description" content="UI流畅性一直是Android口碑的问题之一，在Android4.1的时候，推出了Project Butter。而Project butter引入了三个重要元素：VSYBC、TripleBuffer、Choreographer，下面就是基于这三个要素对屏幕刷新机制进行分析。">
+<meta property="og:locale" content="default">
+<meta property="og:image" content="http://fuusy.github.io/2020/02/16/Android界面刷新机制分析/last.jpg">
+<meta property="og:updated_time" content="2020-08-07T15:19:06.717Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android界面刷新机制分析">
+<meta name="twitter:description" content="UI流畅性一直是Android口碑的问题之一，在Android4.1的时候，推出了Project Butter。而Project butter引入了三个重要元素：VSYBC、TripleBuffer、Choreographer，下面就是基于这三个要素对屏幕刷新机制进行分析。">
+<meta name="twitter:image" content="http://fuusy.github.io/2020/02/16/Android界面刷新机制分析/last.jpg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Gemini',
+    version: '5.1.4',
+    sidebar: {"position":"right","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: 'goofy'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="http://fuusy.github.io/2020/02/16/Android界面刷新机制分析/">
+
+
+
+
+
+  <title>Android界面刷新机制分析 | 指尖触碰世界！</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="default">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-right page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">指尖触碰世界！</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            Home
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-tags">
+          <a href="/tags/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-question-circle"></i> <br>
+            
+            Tags
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            Archives
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://fuusy.github.io/2020/02/16/Android界面刷新机制分析/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="付十一">
+      <meta itemprop="description" content>
+      <meta itemprop="image" content="/images/image.jpeg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="指尖触碰世界！">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android界面刷新机制分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+              <time title="Post created" itemprop="dateCreated datePublished" datetime="2020-02-16T23:06:59+08:00">
+                2020-02-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+            <span class="post-meta-divider">|</span>
+            <span class="page-pv"><i class="fa fa-file-o"></i> 本文阅读
+            <span class="busuanzi-value" id="busuanzi_value_page_pv"></span>次
+            </span>
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>UI流畅性一直是Android口碑的问题之一，在Android4.1的时候，推出了Project Butter。而Project butter引入了三个重要元素：VSYBC、TripleBuffer、Choreographer，下面就是基于这三个要素对屏幕刷新机制进行分析。</p>
+<a id="more"></a>
+<h3 id="一、屏幕绘制流程"><a href="#一、屏幕绘制流程" class="headerlink" title="一、屏幕绘制流程"></a>一、屏幕绘制流程</h3><p>屏幕绘制机制的基本原理可以概括如下：</p>
+
+<p>整个屏幕绘制的基本流程是：</p>
+<ul>
+<li>应用向系统服务申请buffer</li>
+<li>系统服务返回buffer</li>
+<li>应用绘制后提交buffer给系统服务</li>
+</ul>
+<p>如果放到Android中来，那么就是：</p>
+
+<p>在Android中，一块Surface对应一块内存，当内存申请成功后，App端才有绘图的地方。由于Android的view绘制不是今天的重点，所以这里点到为止~</p>
+<h3 id="二、屏幕刷新分析"><a href="#二、屏幕刷新分析" class="headerlink" title="二、屏幕刷新分析"></a>二、屏幕刷新分析</h3><p>屏幕刷新的时机是当Vsync信号到来的时候，具体如图：</p>
+
+<p>在Android端，是谁在控制 <code>Vsync</code> 的产生？又是谁来通知我们应用进行刷新的呢？ 在Android中， <code>Vysnc</code> 信号的产生是由底层 <code>HWComposer</code> 负责的，而通知应用进行刷新，是Java层的 <code>Choreographer</code> ，Android整个屏幕刷新的核心就在于这个 <code>Choreographer</code> 。</p>
+<p>下面我们结合代码一起来看一下。</p>
+<p>每次当我们要进行ui重绘的时候，都会调用 <code>requestLayout()</code> ，所以，我们从这个方法入手：</p>
+<p><strong>2.1 requestLayout()</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">ViewRootImpl.java</span><br><span class="line"></span><br><span class="line">@Override</span><br><span class="line">public void requestLayout() &#123;</span><br><span class="line"></span><br><span class="line">      if (!mHandlingLayoutInLayoutRequest) &#123;</span><br><span class="line"></span><br><span class="line">          checkThread();</span><br><span class="line"></span><br><span class="line">          mLayoutRequested =true;</span><br><span class="line"></span><br><span class="line">          scheduleTraversals();</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>2.2 scheduleTraversals()</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ViewRootImpl.java</span><br><span class="line"></span><br><span class="line">void scheduleTraversals() &#123;</span><br><span class="line"></span><br><span class="line">      if (!mTraversalScheduled) &#123;</span><br><span class="line"></span><br><span class="line">      mTraversalScheduled = true;</span><br><span class="line"></span><br><span class="line">      mTraversalBarrier = mHandler.getLooper().getQueue().postSyncBarrier();</span><br><span class="line"></span><br><span class="line">      mChoreographer.postCallback(</span><br><span class="line"></span><br><span class="line">                Choreographer.CALLBACK_TRAVERSAL, mTraversalRunnable,null);</span><br><span class="line"></span><br><span class="line">      ......</span><br><span class="line">       &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>可以看到，在这里并没有立即进行重绘，而是做了两件事情：</p>
+<ul>
+<li>往消息队列里面插入一条SyncBarrier（同步屏障）</li>
+<li>通过Cherographer post了一个callback</li>
+</ul>
+<p>接下来，我们简单说一下这个 <code>SyncBarrier</code> （同步屏障）。</p>
+<p>异步屏障的作用在于：</p>
+<ul>
+<li>阻止同步消息的执行</li>
+<li>优先执行异步消息</li>
+</ul>
+<p>为什么要设计这个 <code>SyncBarrier</code> 呢？主要原因在于，在Android中，有些消息是十分紧急的，需要马上执行，如果说消息队列里面普通消息太多的话，那等到执行它的时候可能早就过了时机了。</p>
+<p>到这里，可能有人会跟我一样，觉得为什么不干脆在Message里搞个优先级，按照优先级来进行排序呢？弄个 <code>PriorityQueue</code> 不就完了吗？</p>
+<p>我自己的理解是，在Android中，消息队列的设计是一个 <code>单链表</code> ，整个链表的排序是根据时间进行排序的，如果此时再加入一个优先级的排序规则，一方面会复杂会排序规则，另一方面，也会使得消息不可控。因为优先级是可以用户自己在外面填的，那样不就乱套了吗？如果用户每次总填最高的优先级，这样就会导致系统消息很久才会消费，整个系统运作就会出问题，最后影响用户体验，所以，我自己觉得Android的同步屏障这个设计还是挺巧妙的~</p>
+<p>好了，总结一下，执行 <code>scheduleTraversals()</code> 后，会插入一个屏障，保证异步消息的优先执行。</p>
+<p>插入一个小小的思考题： 如果说我们在一个方法里连续调用了 <code>requestLayout()</code> 多次，那么请问：系统会插入多条屏障或者 <code>post</code> 多个 <code>Callback</code> 吗？ 答案是不会，为什么呢？看到 <code>mTraversalScheduled</code> 这个变量了吗？它就是答案~</p>
+<p><strong>2.3 Choreographer.postCallback()</strong></p>
+<p>先来简单说一下 <code>Choreographer</code> ， <code>Choreographer</code> 中文翻译叫 <code>编舞者</code> ，它的主要作用是进行系统协调的。</p>
+<p><code>Choreographer</code> 这个类是应用怎么初始化的呢？是通过 <code>getInstance()</code> 方法：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">public static Choreographer getInstance() &#123;</span><br><span class="line"></span><br><span class="line">        return sThreadInstance.get();</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line">// Thread local storage for the choreographer.</span><br><span class="line"></span><br><span class="line">private static final ThreadLocal&lt;Choreographer&gt; sThreadInstance =  new ThreadLocal&lt;Choreographer&gt;() &#123;</span><br><span class="line">@Override</span><br><span class="line">protected Choreographer initialValue() &#123;</span><br><span class="line">      Looper looper = Looper.myLooper();</span><br><span class="line">      if (looper ==  null) &#123;</span><br><span class="line">            throw new  IllegalStateException(&quot;The current thread must have a looper!&quot;);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">Choreographer choreographer =new Choreographer(looper, VSYNC_SOURCE_APP);</span><br><span class="line">if (looper == Looper.getMainLooper()) &#123;</span><br><span class="line">     mMainInstance = choreographer;</span><br><span class="line">&#125;</span><br><span class="line">    return choreographer;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>这里贴出来是为了提醒大家， <code>Choreographer</code> 不是单例，而是每个线程都有单独的一份。</p>
+<p>好了，回到我们的代码：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Choreographer.java</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public void postCallback(int callbackType, Runnable action, Object token) &#123;</span><br><span class="line">   postCallbackDelayed(callbackType, action, token, 0);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"> public void postCallbackDelayed(int callbackType,</span><br><span class="line">     Runnable action, Object token, long delayMillis) &#123;</span><br><span class="line">   ....</span><br><span class="line">   postCallbackDelayedInternal(callbackType, action, token, delayMillis);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">private void postCallbackDelayedInternal(int callbackType,</span><br><span class="line">     Object action, Object token, long delayMillis) &#123;</span><br><span class="line">       ...</span><br><span class="line">       mCallbackQueues[callbackType].addCallbackLocked(dueTime, action, token);</span><br><span class="line">       if (dueTime &lt;= now) &#123;</span><br><span class="line">       scheduleFrameLocked(now);</span><br><span class="line">     &#125; else &#123;</span><br><span class="line">       ...</span><br><span class="line">      &#125;</span><br><span class="line">     &#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>Choreographer</code> post的callback会放入 <code>CallbackQueue</code> 里面，这个 <code>CallbackQueue</code> 是一个单链表。</p>
+<p>首先会根据callbackType得到一条 <code>CallbackQueue</code> 单链表，之后会根据时间顺序，将这个callback插入到单链表中；</p>
+<p><strong>2.4 scheduleFrameLocked（）</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">private void scheduleFrameLocked(long now) &#123;</span><br><span class="line">   ...</span><br><span class="line">   // If running on the Looper thread, then schedule the vsync immediately,</span><br><span class="line">       // otherwise post a message to schedule the vsync from the UI thread</span><br><span class="line">       // as soon as possible.</span><br><span class="line">       if (isRunningOnLooperThreadLocked()) &#123;</span><br><span class="line">         scheduleVsyncLocked();</span><br><span class="line">       &#125; else &#123;</span><br><span class="line">         Message msg = mHandler.obtainMessage(MSG_DO_SCHEDULE_VSYNC);</span><br><span class="line">         msg.setAsynchronous(true);</span><br><span class="line">         mHandler.sendMessageAtFrontOfQueue(msg);</span><br><span class="line">       &#125;</span><br><span class="line">     &#125; else &#123;</span><br><span class="line">       ...</span><br><span class="line">     &#125;</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><code>scheduleFrameLocked</code> 的作用是：</p>
+<ul>
+<li>如果当前线程就是 <code>Cherographer</code> 的工作线程的话，那么就直接执行 <code>scheduleVysnLocked</code></li>
+<li>否则，就发送一个异步消息到消息队列里面去 ，这个异步消息是不受同步屏障影响的，而且这个消息还要插入到消息队列的头部，可见这个消息是非常紧急的</li>
+</ul>
+<p>跟踪源代码，我们发现，其实 <code>MSG_DO_SCHEDULE_VSYNC</code> 这条消息，最终执行的也是 <code>scheduleFrameLocked</code> 这个方法，所以我们直接跟踪 <code>scheduleVsyncLocked()</code> 这个方法。</p>
+<p><strong>2.5 scheduleVsyncLocked()</strong><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">private void scheduleVsyncLocked() &#123;</span><br><span class="line">  mDisplayEventReceiver.scheduleVsync();</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"> public void scheduleVsync() &#123;</span><br><span class="line">  if (mReceiverPtr == 0) &#123;</span><br><span class="line">    Log.w(TAG, &quot;Attempted to schedule a vertical sync pulse but the display event &quot;</span><br><span class="line">        + &quot;receiver has already been disposed.&quot;);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">  //mReceiverPtr是Native层一个类的指针地址</span><br><span class="line">  //这里这个类指的是底层NativeDisplayEventReceiver这个类</span><br><span class="line">  //nativeScheduleVsync底层会调用到requestNextVsync（）去请求下一个Vsync，</span><br><span class="line">  //具体不跟踪了，native层代码更长，还涉及到各种描述符监听以及跨进程数据传输</span><br><span class="line">    nativeScheduleVsync(mReceiverPtr);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>这里我们可以看到一个新的类： <code>DisplayEventReceiver</code> ,这个类的作用是注册Vsync信号的监听，当下个Vsync信号到来的时候就会通知到这个 <code>DisplayEventReceiver</code> 了。</p>
+<p>在哪里通知呢？源码里注释写的非常清楚了：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">DisplayEventReceiver.java</span><br><span class="line"> // Called from native code. </span><br><span class="line"> private void dispatchVsync(long timestampNanos, int builtInDisplayId, int frame) &#123;</span><br><span class="line">   onVsync(timestampNanos, builtInDisplayId, frame);</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>当下一个Vysnc信号到来的时候，会最终调用 <code>onVsync</code> 方法：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">public void onVsync(long timestampNanos, int builtInDisplayId, int frame) &#123;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p>点进去一看，是个空实现，回到类定义，原来是个抽象类，它的实现类是： <code>FrameDisplayEventReceiver</code> ,定义在 <code>Cherographer</code> 里面：<br> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">private final class FrameDisplayEventReceiver extends DisplayEventReceiver</span><br><span class="line">      implements Runnable &#123;</span><br><span class="line">      ....</span><br><span class="line">      &#125;</span><br></pre></td></tr></table></figure></p>
+<p><strong>2.6 FrameDisplayEventReceiver.onVysnc()</strong></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">private final class FrameDisplayEventReceiver extends DisplayEventReceiver</span><br><span class="line">     implements Runnable &#123;</span><br><span class="line"> </span><br><span class="line">   @Override</span><br><span class="line">   public void onVsync(long timestampNanos, int builtInDisplayId, int frame) &#123;</span><br><span class="line">      ....</span><br><span class="line">     mTimestampNanos = timestampNanos;</span><br><span class="line">     mFrame = frame;</span><br><span class="line">     Message msg = Message.obtain(mHandler, this);</span><br><span class="line">     msg.setAsynchronous(true);</span><br><span class="line">     mHandler.sendMessageAtTime(msg, timestampNanos / TimeUtils.NANOS_PER_MS);</span><br><span class="line">   &#125;</span><br><span class="line"> </span><br><span class="line">   @Override</span><br><span class="line">   public void run() &#123;</span><br><span class="line">     ....</span><br><span class="line">     doFrame(mTimestampNanos, mFrame);</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
+<p><code>onVsync</code> 方法往 <code>Cherographer</code> 所在线程的消息队列中发送的一个消息，这个消息是就是它自己（它实现了Runnable），所以最终会调用到 <code>doFrame()</code> 方法。</p>
+<p><strong>2.7 doFrame(mTimestampNanos, mFrame)</strong></p>
+<p>doFrame（）的处理分为两个阶段：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">void doFrame(long frameTimeNanos, int frame) &#123;</span><br><span class="line">  final long startNanos;</span><br><span class="line">  synchronized (mLock) &#123;</span><br><span class="line">    //1、阶段一</span><br><span class="line">    long intendedFrameTimeNanos = frameTimeNanos;</span><br><span class="line">    startNanos = System.nanoTime();</span><br><span class="line">    final long jitterNanos = startNanos - frameTimeNanos;</span><br><span class="line">    if (jitterNanos &gt;= mFrameIntervalNanos) &#123;</span><br><span class="line">      final long skippedFrames = jitterNanos / mFrameIntervalNanos;</span><br><span class="line">      if (skippedFrames &gt;= SKIPPED_FRAME_WARNING_LIMIT) &#123;</span><br><span class="line">        Log.i(TAG, &quot;Skipped &quot; + skippedFrames + &quot; frames! &quot;</span><br><span class="line">            + &quot;The application may be doing too much work on its main thread.&quot;);</span><br><span class="line">      &#125;</span><br><span class="line">      ...</span><br><span class="line">    &#125;</span><br><span class="line">    ...</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>frameTimeNanos</code> 是当前的时间戳，将当前的时间和开始时间相减，得到这一帧处理花费了多长，如果大于 <code>mFrameIntervalNano</code> ，说明处理耗时了，之后就打印出我们日常见到的 <code>The application may be doing too much work on its main thread</code> 。</p>
+<p>阶段二：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">void doFrame(long frameTimeNanos, int frame) &#123;</span><br><span class="line"> ...</span><br><span class="line">try &#123;</span><br><span class="line">//阶段2</span><br><span class="line">      Trace.traceBegin(Trace.TRACE_TAG_VIEW, &quot;Choreographer#doFrame&quot;);</span><br><span class="line">      AnimationUtils.lockAnimationClock(frameTimeNanos / TimeUtils.NANOS_PER_MS);</span><br><span class="line"> </span><br><span class="line">      mFrameInfo.markInputHandlingStart();</span><br><span class="line">      doCallbacks(Choreographer.CALLBACK_INPUT, frameTimeNanos);</span><br><span class="line"> </span><br><span class="line">      mFrameInfo.markAnimationsStart();</span><br><span class="line">      doCallbacks(Choreographer.CALLBACK_ANIMATION, frameTimeNanos);</span><br><span class="line"> </span><br><span class="line">      mFrameInfo.markPerformTraversalsStart();</span><br><span class="line">      doCallbacks(Choreographer.CALLBACK_TRAVERSAL, frameTimeNanos);</span><br><span class="line"> </span><br><span class="line">      doCallbacks(Choreographer.CALLBACK_COMMIT, frameTimeNanos);</span><br><span class="line">    &#125; </span><br><span class="line">    ...</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></p>
+<p><code>doFrame()</code> 的第二个阶段做的是处理各种callback，从CallbackQueue里面取出到执行时间的callback进行处理，那这个callback是怎么样呢？</p>
+<p>这里要回忆一下之前的 <code>postCallback()</code> 操作：</p>
+
+<p>这个 <code>Callback</code> 其实就一个 <code>mTraversalRunnable</code> ，它是一个 <code>Runnable</code> ，最终会调用到 <code>run()</code> 方法，实现界面的真正刷新：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">ViewRootImpl.java</span><br><span class="line"> final class TraversalRunnable implements Runnable &#123;</span><br><span class="line">   @Override</span><br><span class="line">   public void run() &#123;</span><br><span class="line">     doTraversal();</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line">  </span><br><span class="line"> void doTraversal() &#123;</span><br><span class="line">   if (mTraversalScheduled) &#123;</span><br><span class="line">    ...</span><br><span class="line">     performTraversals();</span><br><span class="line">    ...</span><br><span class="line">   &#125;</span><br><span class="line"> &#125;</span><br><span class="line">  </span><br><span class="line"> private void performTraversals() &#123;</span><br><span class="line">  ...</span><br><span class="line">  //开始真正的界面绘制</span><br><span class="line">   performDraw();</span><br><span class="line">  ...</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure></p>
+<h3 id="三、总结"><a href="#三、总结" class="headerlink" title="三、总结"></a>三、总结</h3><p>经过漫长的代码跟踪，整个界面刷新流程算是跟踪完了，下面我们来总结一下：</p>
+<img src="/2020/02/16/Android界面刷新机制分析/last.jpg">
+<p>我们都知道Android的刷新频率是60帧/秒，这是不是意味着每隔16ms就会调用一次onDraw方法？</p>
+<p>这里60帧/秒是屏幕刷新频率，但是是否会调用onDraw()方法要看应用是否调用requestLayout()进行注册监听。</p>
+<p>如果界面不需要重绘，那么还16ms到后还会刷新屏幕吗？</p>
+<p>如果不需要重绘，那么应用就不会受到Vsync信号，但是还是会进行刷新，只不过绘制的数据不变而已；</p>
+<p>我们调用invalidate()之后会马上进行屏幕刷新吗？</p>
+<p>不会，到等到下一个Vsync信号到来</p>
+<p>我们说丢帧是因为主线程做了耗时操作，为什么主线程做了耗时操作就会引起丢帧</p>
+<p>原因是，如果在主线程做了耗时操作，就会影响下一帧的绘制，导致界面无法在这个Vsync时间进行刷新，导致丢帧了。</p>
+<p>如果在屏幕快要刷新的时候才去OnDraw（）绘制，会丢帧吗？</p>
+<p>这个没有太大关系，因为Vsync信号是周期的，我们什么时候发起onDraw（）不会影响界面刷新；</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+        <div class="post-tags">
+          
+            <a href="/tags/刷新机制/" rel="tag"># 刷新机制</a>
+          
+        </div>
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/11/10/异常-IllegalArgumentException-pointerIndex-out-of-rangea/" rel="next" title="Crash治理：图片缩放pointerIndex out of range.">
+                <i class="fa fa-chevron-left"></i> Crash治理：图片缩放pointerIndex out of range.
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2020/02/16/Android/" rel="prev" title="Android界面刷新机制分析">
+                Android界面刷新机制分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/image.jpeg" alt="付十一">
+            
+              <p class="site-author-name" itemprop="name">付十一</p>
+              <p class="site-description motion-element" itemprop="description">指尖触碰世界！</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">19</span>
+                  <span class="site-state-item-name">posts</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-tags">
+                <a href="/tags/index.html">
+                  <span class="site-state-item-count">13</span>
+                  <span class="site-state-item-name">tags</span>
+                </a>
+              </div>
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://juejin.im/user/5c7f243a5188251bdd53e9c4" target="_blank" title="掘金">
+                      
+                        <i class="fa fa-fw fa-globe"></i>掘金</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#一、屏幕绘制流程"><span class="nav-number">1.</span> <span class="nav-text">一、屏幕绘制流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#二、屏幕刷新分析"><span class="nav-number">2.</span> <span class="nav-text">二、屏幕刷新分析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#三、总结"><span class="nav-number">3.</span> <span class="nav-text">三、总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; 2018 &mdash; <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">付十一</span>
+
+  
+</div>
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a></div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Gemini</a> v5.1.4</div>
+
+
+
+
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+  
+    <span class="site-uv">
+      <i class="fa fa-user"></i> 本站访客数
+      <span class="busuanzi-value" id="busuanzi_value_site_uv"></span>
+      人次
+    </span>
+  
+
+  
+    <span class="site-pv">
+      <i class="fa fa-eye"></i> 总访问量
+      <span class="busuanzi-value" id="busuanzi_value_site_pv"></span>
+      次
+    </span>
+  
+</div>
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
